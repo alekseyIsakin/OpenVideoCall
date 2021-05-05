@@ -145,6 +145,9 @@
     <ClInclude Include="AGJson.h">
       <Filter>AgoraObject\Config</Filter>
     </ClInclude>
+    <ClInclude Include="Tokens.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -246,6 +249,9 @@
     <ClCompile Include="AGJson.cpp">
       <Filter>AgoraObject\Config</Filter>
     </ClCompile>
+    <ClCompile Include="Tokens.cpp">
+      <Filter>Headers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenVideoCall.rc">
@@ -256,6 +262,7 @@
     <None Include="res\OpenVideoCall.rc2">
       <Filter>Resources</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\IDB_DLG_MAIN.bmp">
