@@ -145,6 +145,7 @@
     <ClInclude Include="AGJson.h">
       <Filter>AgoraObject\Config</Filter>
     </ClInclude>
+    <ClInclude Include="Tokens.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -246,6 +247,7 @@
     <ClCompile Include="AGJson.cpp">
       <Filter>AgoraObject\Config</Filter>
     </ClCompile>
+    <ClCompile Include="Tokens.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenVideoCall.rc">
