@@ -145,6 +145,9 @@
     <ClInclude Include="AGJson.h">
       <Filter>AgoraObject\Config</Filter>
     </ClInclude>
+    <ClInclude Include="Tokens.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -245,6 +248,9 @@
     </ClCompile>
     <ClCompile Include="AGJson.cpp">
       <Filter>AgoraObject\Config</Filter>
+    </ClCompile>
+    <ClCompile Include="Tokens.cpp">
+      <Filter>Headers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
