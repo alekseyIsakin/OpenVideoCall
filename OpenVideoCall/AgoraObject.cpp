@@ -688,3 +688,38 @@ std::string CAgoraObject::GetToken()
 
     return temp;
 }
+
+Tokens CAgoraObject::GetComplexToken()
+{
+	if (!m_token.isEmptyToken())
+		return m_token;
+	return Tokens();
+}
+
+void CAgoraObject::SetComplexToken(Tokens token)
+{
+	m_token = token;
+}
+
+void CAgoraObject::AddUID(uid_t uid)
+{
+	CollectorUID.push_back(uid);
+}
+
+uid_t CAgoraObject::GetUID(int ind)
+{
+	return CollectorUID.at(ind);
+}
+
+void CAgoraObject::DelUID(uid_t uid)
+{
+	int vectorSize = CollectorUID.size();
+
+	for (int i = 0; i <= vectorSize; ++i)
+	{
+		if (CollectorUID[i] == uid)
+		{
+			CollectorUID.erase(CollectorUID.begin() + i);
+		}
+	}
+}

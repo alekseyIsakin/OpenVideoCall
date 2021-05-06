@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "AGEngineEventHandler.h"
 #include "AGEventDef.h"
+#include <vector>
 
 CAGEngineEventHandler::CAGEngineEventHandler(void)
 {
@@ -211,9 +212,11 @@ void CAGEngineEventHandler::onFirstRemoteVideoFrame(uid_t uid, int width, int he
 void CAGEngineEventHandler::onUserJoined(uid_t uid, int elapsed)
 {
 	LPAGE_USER_JOINED lpData = new AGE_USER_JOINED;
-
+	
 	lpData->uid = uid;
 	lpData->elapsed = elapsed;
+
+	CAgoraObject::GetAgoraObject()->GetUID(uid);
 
 	if(m_hMainWnd != NULL)
 		::PostMessage(m_hMainWnd, WM_MSGID(EID_USER_JOINED), (WPARAM)lpData, 0);
@@ -225,6 +228,8 @@ void CAGEngineEventHandler::onUserOffline(uid_t uid, USER_OFFLINE_REASON_TYPE re
 
 	lpData->uid = uid;
 	lpData->reason = reason;
+
+	CAgoraObject::GetAgoraObject()->DelUID(uid);
 
 	if(m_hMainWnd != NULL)
 		::PostMessage(m_hMainWnd, WM_MSGID(EID_USER_OFFLINE), (WPARAM)lpData, 0);

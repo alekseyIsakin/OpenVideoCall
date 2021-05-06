@@ -3,9 +3,12 @@
 #include <IAgoraRtcEngine.h>
 #include "AGEngineEventHandler.h"
 #include <string>
+#include "Tokens.h"
+
 #define AVC_VER _T("V1.12.0, Build234, 08/14/2017, SDK1.12 .0")
 
 using namespace agora::rtc;
+
 
 // ������λ
 #define AG_ENGFLAG_ENNETTEST	0x00000001
@@ -109,9 +112,15 @@ public:
 	static BOOL EnableWhiteboardFeq(BOOL bEnable);
 
     void SetDefaultParameters();
-    std::string GetToken();
+
+	std::string GetToken();
+
+	Tokens GetComplexToken();
+	void SetComplexToken(Tokens token);
 protected:
 	CAgoraObject(void);
+
+	std::vector<int> CollectorUID;
 
 private:
 	DWORD	m_dwEngineFlag;
@@ -128,12 +137,18 @@ private:
 	BOOL		m_bEchoTest;
 
 	BOOL		m_bScreenCapture;
-
+	
 //	int			m_nCodecType;
-
+	Tokens m_token;
 public:
 	static CAgoraObject *GetAgoraObject(LPCTSTR lpVendorKey = NULL);
 	static void CloseAgoraObject();
 
 	static CAGEngineEventHandler m_EngineEventHandler;
+
+	std::vector<int> CollectAllUID();
+
+	void AddUID(uid_t uid);
+	uid_t GetUID(int ind);
+	void DelUID(uid_t uid);
 };
