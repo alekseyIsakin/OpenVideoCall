@@ -260,13 +260,14 @@ LRESULT CVideoDlg::MuteClient(WPARAM wParam, LPARAM lParam)
 	rep.muteRemoteAudioStream(lpAgora->GetAgoraObject()->GetUID(lpAgora->SearchUID(lParam)), 1);
 	//
 	/*if (lpAgora->IsLocalAudioMuted()) {
+
 		lpAgora->MuteLocalAudio(FALSE);
 		m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
 	}
 	else {
 		lpAgora->MuteLocalAudio(TRUE);
 		m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
-	}*/
+	}
 	return 0;
 }
 
