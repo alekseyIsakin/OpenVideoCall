@@ -30,7 +30,7 @@ using namespace agora::rtc;
     Leave this value empty if Security keys/Token is not enabled for your project
     APP_TOKEN "<YOUR TOKEN>"
 */
-#define APP_ID _T("31f0e571a89542b09049087e3283417f")
+#define APP_ID _T("8f5f3639ee4941238369d5ecbcecad14")
 #define APP_TOKEN ""
 
 class CAgoraObject

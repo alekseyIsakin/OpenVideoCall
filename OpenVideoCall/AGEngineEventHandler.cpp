@@ -336,3 +336,11 @@ void CAGEngineEventHandler::onUserEnableVideo(uid_t uid, bool enabled)
 
 }
 
+void CAGEngineEventHandler::onChannelMediaRelayEvent(CHANNEL_MEDIA_RELAY_EVENT code)
+{
+}
+
+void CAGEngineEventHandler::onChannelMediaRelayStateChanged(CHANNEL_MEDIA_RELAY_STATE state, CHANNEL_MEDIA_RELAY_ERROR code)
+{
+}
+

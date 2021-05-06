@@ -313,13 +313,17 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 	CAgoraObject	*lpAgoraObject = CAgoraObject::GetAgoraObject();
     lpAgoraObject->SetDefaultParameters();
 
-	CString strChannelName = m_dlgEnterChannel.GetChannelName();
+	//10482357
+	//CString strChannelName = m_dlgEnterChannel.GetChannelName();
+	CString strChannelName = _T("10482357");
 
 	Tokens netToken;
 	netToken.GetCloudToken(strChannelName);
 
 	if (netToken.isEmptyToken())
 		return -1;
+
+	lpAgoraObject->SetComplexToken(netToken);
 
 	m_dlgVideo.MoveWindow(0, 0, 960, 720, 1);
 	m_dlgVideo.ShowWindow(SW_SHOW);
@@ -346,11 +350,41 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 
 	m_dlgVideo.SetWindowText(strChannelName);
 	lpRtcEngine->setupLocalVideo(vc);
-	lpRtcEngine->startPreview();
-    std::string token = lpAgoraObject->GetToken();
+	//lpRtcEngine->startPreview();
 
-	lpAgoraObject->JoinChannel(netToken.GetName(lParam), 0, netToken.GetToken(lParam).length() > 0 ? netToken.GetToken(lParam).c_str() : NULL);
+    netToken = lpAgoraObject->GetComplexToken();
 
+	lpRtcEngine->setChannelProfile(CHANNEL_PROFILE_LIVE_BROADCASTING);
+	lpRtcEngine->setClientRole(CLIENT_ROLE_BROADCASTER);
+	
+	//lpAgoraObject->JoinChannel(
+	//	CString((*(netToken.GetTargetLngBgnItr())).langFull.c_str()), 0,
+	//	(*(netToken.GetTargetLngBgnItr())).token.c_str());
+	
+	lpAgoraObject->JoinChannel(
+		CString((*(netToken.GetRelayLngBgnItr())).langFull.c_str()), 0,
+		(*(netToken.GetRelayLngBgnItr())).token.c_str()
+	);
+	
+	ChannelMediaRelayConfiguration cmrc;
+	ChannelMediaInfo*cnSrc1 = new ChannelMediaInfo;
+
+	cnSrc1->channelName		= (*(netToken.GetTargetLngBgnItr())).langFull.c_str();
+	cnSrc1->token			= (*(netToken.GetTargetLngBgnItr())).token.c_str();
+	cnSrc1->uid				= 0;
+
+	cmrc.srcInfo   = cnSrc1;
+
+
+	ChannelMediaInfo*cnDest1 = new ChannelMediaInfo;
+	cnDest1->channelName		= (*(netToken.GetTargetLngBgnItr()+1)).langFull.c_str();
+	cnDest1->token				= (*(netToken.GetTargetLngBgnItr()+1)).token.c_str();
+	cnDest1->uid				= 0;
+
+	cmrc.destInfos = cnDest1;
+	cmrc.destCount = 1;
+
+	lpRtcEngine->startChannelMediaRelay(cmrc);
 	lpAgoraObject->SetMsgHandlerWnd(m_dlgVideo.GetSafeHwnd());
 
 	return 0;

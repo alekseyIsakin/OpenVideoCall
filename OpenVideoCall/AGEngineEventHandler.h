@@ -46,6 +46,8 @@ public:
 
 	virtual void onUserEnableVideo(uid_t uid, bool enabled) override;
 
+	virtual void onChannelMediaRelayEvent(CHANNEL_MEDIA_RELAY_EVENT code) override;
+	virtual void onChannelMediaRelayStateChanged(CHANNEL_MEDIA_RELAY_STATE state, CHANNEL_MEDIA_RELAY_ERROR code) override;
 private:
 	HWND		m_hMainWnd;
 };
