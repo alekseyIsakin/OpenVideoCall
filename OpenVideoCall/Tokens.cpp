@@ -1,4 +1,3 @@
-#include "..\..\OpenLive-Windows-MFC-broadcast\OpenLive\Tokens.h"
 #include "stdafx.h"
 #include "Tokens.h"
 
@@ -114,6 +113,11 @@ CString Tokens::GetHostName()
 BOOL Tokens::isEmptyToken()
 {
 	return _hostToken == EMPTY_TOKEN;
+}
+
+u_int Tokens::GetCountLang()
+{
+	return _countLang;
 }
 
 std::vector<langHolder>::iterator Tokens::GetTargetLngBgnItr()
