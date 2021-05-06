@@ -96,6 +96,8 @@ protected:
 	
     afx_msg LRESULT OnStreamMessage(WPARAM wParam, LPARAM lParam);
 
+	afx_msg LRESULT MuteClient(WPARAM wParam, LPARAM lParam);
+
 	DECLARE_MESSAGE_MAP()
 
 protected:
@@ -177,4 +179,5 @@ private:	// data
 	BOOL			m_bFullScreen;
     BOOL            m_bFilter;
     BOOL            m_bShowInfo;
+
 };

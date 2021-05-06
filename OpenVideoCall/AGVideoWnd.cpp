@@ -130,6 +130,7 @@ BEGIN_MESSAGE_MAP(CAGVideoWnd, CWnd)
 	ON_WM_SIZE()
 	ON_WM_LBUTTONDBLCLK()
     ON_WM_PAINT()
+	ON_BN_CLICKED(IDC_BTNSCR_VIDEO, &CAGVideoWnd::OnMuteClick)
 END_MESSAGE_MAP()
 
 
@@ -166,6 +167,7 @@ void CAGVideoWnd::SetUID(UINT nUID)
 		m_wndInfo.ShowWindow(SW_HIDE);
 	else
 		m_wndInfo.ShowWindow(SW_SHOW);
+
 }
 
 UINT CAGVideoWnd::GetUID()
@@ -190,6 +192,8 @@ BOOL CAGVideoWnd::SetBackImage(UINT nID, UINT nWidth, UINT nHeight, COLORREF crM
 	m_imgBackGround.Create(nWidth, nHeight, ILC_COLOR24 | ILC_MASK, 1, 1);
 	m_imgBackGround.Add(&bmBackImage, crMask);
 	bmBackImage.DeleteObject();
+
+
 
 	Invalidate(TRUE);
 
@@ -249,7 +253,18 @@ void CAGVideoWnd::OnLButtonDown(UINT nFlags, CPoint point)
 void CAGVideoWnd::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	::SendMessage(GetParent()->GetSafeHwnd(), WM_SHOWMODECHANGED, (WPARAM)this, (LPARAM)m_nUID);
+	//::SendMessage(GetParent()->GetSafeHwnd(), WM_SHOWMODECHANGED, (WPARAM)this, (LPARAM)m_nUID);
+
+	if (!ctr_Created)
+	{
+		CRect		rcClient;
+		GetClientRect(&rcClient);
+		ctr_Created = m_btnShow.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNSCR_VIDEO);
+		m_btnShow.MoveWindow(rcClient.Width() - 72, rcClient.Height() - 84, 48, 48, TRUE);
+		m_btnShow.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
+		m_btnShow.EnableFrameEffect(FALSE);
+		m_btnShow.SetBackImage(IDB_BTNFULLSCR_VIDEO, RGB(0x26, 0x26, 0x26));
+	}
 
 	CWnd::OnRButtonDown(nFlags, point);
 }
@@ -259,10 +274,8 @@ int CAGVideoWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
-
 	// TODO:  在此添加您专用的创建代码
 	m_wndInfo.Create(NULL, NULL, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, CRect(0, 0, 192, 28), this, IDC_STATIC);
-
 	return 0;
 }
 
@@ -272,6 +285,7 @@ void CAGVideoWnd::ShowVideoInfo(BOOL bShow)
 	m_bShowVideoInfo = bShow;
 
 	m_wndInfo.ShowTips(bShow);
+
 	Invalidate(TRUE);
 
 /*	if (!bShow) {
@@ -321,8 +335,7 @@ void CAGVideoWnd::OnSize(UINT nType, int cx, int cy)
 void CAGVideoWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	::SendMessage(GetParent()->GetSafeHwnd(), WM_SHOWMODECHANGED, (WPARAM)this, (LPARAM)m_nUID);
-
+	//::SendMessage(GetParent()->GetSafeHwnd(), WM_SHOWMODECHANGED, (WPARAM)this, (LPARAM)m_nUID);
 	CWnd::OnLButtonDblClk(nFlags, point);
 }
 
@@ -333,10 +346,13 @@ void CAGVideoWnd::OnPaint()
     // TODO:  在此处添加消息处理程序代码
     // 不为绘图消息调用 CWnd::OnPaint()
 
+
+
     if (m_bBackground) {
         CRect		rcClient;
         CPoint		ptDraw;
         IMAGEINFO	imgInfo;
+
 
         GetClientRect(&rcClient);
 
@@ -354,4 +370,10 @@ void CAGVideoWnd::OnPaint()
     }
     else
         return CWnd::OnPaint();
+}
+
+void CAGVideoWnd::OnMuteClick()
+{
+	::SendMessage(GetParent()->GetSafeHwnd(), WM_SHOWMODECHANGED, (WPARAM)this, (LPARAM)m_nUID);
+	//::SendMessage(GetParent()->GetSafeHwnd(), EID_USER_MUTE_VIDEO, (WPARAM)this, (LPARAM)m_nUID);
 }
