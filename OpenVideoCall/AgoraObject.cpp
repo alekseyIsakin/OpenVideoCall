@@ -688,3 +688,15 @@ std::string CAgoraObject::GetToken()
 
     return temp;
 }
+
+Tokens CAgoraObject::GetComplexToken()
+{
+	if (!m_token.isEmptyToken())
+		return m_token;
+	return Tokens();
+}
+
+void CAgoraObject::SetComplexToken(Tokens token)
+{
+	m_token = token;
+}

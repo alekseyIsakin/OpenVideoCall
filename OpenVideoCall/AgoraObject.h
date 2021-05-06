@@ -3,6 +3,7 @@
 #include <IAgoraRtcEngine.h>
 #include "AGEngineEventHandler.h"
 #include <string>
+#include "Tokens.h"
 #define AVC_VER _T("V1.12.0, Build234, 08/14/2017, SDK1.12 .0")
 
 using namespace agora::rtc;
@@ -109,7 +110,11 @@ public:
 	static BOOL EnableWhiteboardFeq(BOOL bEnable);
 
     void SetDefaultParameters();
-    std::string GetToken();
+
+	std::string GetToken();
+
+	Tokens GetComplexToken();
+	void SetComplexToken(Tokens token);
 protected:
 	CAgoraObject(void);
 
@@ -130,7 +135,7 @@ private:
 	BOOL		m_bScreenCapture;
 
 //	int			m_nCodecType;
-
+	Tokens m_token;
 public:
 	static CAgoraObject *GetAgoraObject(LPCTSTR lpVendorKey = NULL);
 	static void CloseAgoraObject();
