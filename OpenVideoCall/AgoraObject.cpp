@@ -706,6 +706,11 @@ void CAgoraObject::AddUID(uid_t uid)
 	CollectorUID.push_back(uid);
 }
 
+uid_t CAgoraObject::GetUID(int ind)
+{
+	return CollectorUID.at(ind);
+}
+
 void CAgoraObject::DelUID(uid_t uid)
 {
 	int vectorSize = CollectorUID.size();
