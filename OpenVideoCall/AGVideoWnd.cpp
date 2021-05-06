@@ -255,7 +255,7 @@ void CAGVideoWnd::OnRButtonDown(UINT nFlags, CPoint point)
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
 	//::SendMessage(GetParent()->GetSafeHwnd(), WM_SHOWMODECHANGED, (WPARAM)this, (LPARAM)m_nUID);
 
-	if (!ctr_Created)
+	if (!ctr_Created) //Creates only ones
 	{
 		CRect		rcClient;
 		GetClientRect(&rcClient);

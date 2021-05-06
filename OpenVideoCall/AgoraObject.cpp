@@ -711,7 +711,7 @@ uid_t CAgoraObject::GetUID(int ind)
 	return CollectorUID.at(ind);
 }
 
-int CAgoraObject::SearchUID(uid_t uid)
+int CAgoraObject::SearchUID(uid_t uid) //Searches specific UID
 {
 	int index = 0;
 	for each (uid_t id in CollectorUID)
