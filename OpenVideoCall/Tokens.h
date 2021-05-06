@@ -27,6 +27,8 @@ protected:
 
 	// from ROOMS_NAMES_TARGET
 	std::vector<langHolder> setLang(nlohmann::json langsJson);
+
+	u_int _countLang;
 public:
 	Tokens();
 	BOOL GetCloudToken(CString roomNumber);
@@ -38,6 +40,8 @@ public:
 	CString GetHostName();
 
 	BOOL isEmptyToken();
+
+	u_int GetCountLang();
 
 	std::vector<langHolder>::iterator GetTargetLngBgnItr();
 	std::vector<langHolder>::iterator GetTargetLngEndItr();

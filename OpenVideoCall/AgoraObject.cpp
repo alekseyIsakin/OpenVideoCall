@@ -689,6 +689,18 @@ std::string CAgoraObject::GetToken()
     return temp;
 }
 
+Tokens CAgoraObject::GetComplexToken()
+{
+	if (!m_token.isEmptyToken())
+		return m_token;
+	return Tokens();
+}
+
+void CAgoraObject::SetComplexToken(Tokens token)
+{
+	m_token = token;
+}
+
 int CAgoraObject::GetUID(uid_t uid)
 {
 	CAgoraObject::CollectorUID;
