@@ -256,10 +256,11 @@ LRESULT CVideoDlg::MuteClient(WPARAM wParam, LPARAM lParam)
 
 	RtcEngineParameters rep(*lpAgora->GetEngine());
 
-	int ret = rep.muteLocalAudioStream(1);
-	//rep.muteRemoteAudioStream();
+	//int ret = rep.muteLocalAudioStream(1);
+	rep.muteRemoteAudioStream(lpAgora->GetAgoraObject()->GetUID(lpAgora->SearchUID(lParam)), 1);
+	//
+	/*if (lpAgora->IsLocalAudioMuted()) {
 
-	if (lpAgora->IsLocalAudioMuted()) {
 		lpAgora->MuteLocalAudio(FALSE);
 		m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
 	}
