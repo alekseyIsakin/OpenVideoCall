@@ -150,5 +150,4 @@ public:
 
 	void GetUID(uid_t uid);
 	void DelUID(uid_t uid);
-	int SearchUID(uid_t uid);
 };
