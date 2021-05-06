@@ -5,6 +5,10 @@
 #define EMPTY_TOKEN ""
 #define RSI_URL _T("https://secure.rsi.exchange:3222/get_tokens_by_uuid_keyvalue?uuid_=")
 
+#define JSON_HOST "ROOMS_NAMES_HOST"
+#define JSON_TARGET_LANGS "ROOMS_NAMES_TARGET"
+#define JSON_RELAY_LANGS  "ROOMS_NAMES_CHAT"
+
 class langHolder {
 public:
 	std::string langShort;
@@ -22,7 +26,7 @@ protected:
 	std::vector<langHolder> _listRelayLang;
 
 	// from ROOMS_NAMES_TARGET
-	void setLang(nlohmann::json langsJson);
+	std::vector<langHolder> setLang(nlohmann::json langsJson);
 public:
 	Tokens();
 	BOOL GetCloudToken(CString roomNumber);
@@ -35,7 +39,10 @@ public:
 
 	BOOL isEmptyToken();
 
-	std::vector<langHolder>::iterator GetLngBgnIterator();
-	std::vector<langHolder>::iterator GetLngEndIterator();
+	std::vector<langHolder>::iterator GetTargetLngBgnItr();
+	std::vector<langHolder>::iterator GetTargetLngEndItr();
+
+	std::vector<langHolder>::iterator GetRelayLngBgnItr();
+	std::vector<langHolder>::iterator GetRelayLngEndItr();
 };
 

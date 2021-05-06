@@ -350,7 +350,7 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
     std::string token = lpAgoraObject->GetToken();
 
 	lpAgoraObject->JoinChannel(netToken.GetName(lParam), 0, netToken.GetToken(lParam).length() > 0 ? netToken.GetToken(lParam).c_str() : NULL);
-	
+
 	lpAgoraObject->SetMsgHandlerWnd(m_dlgVideo.GetSafeHwnd());
 
 	return 0;
@@ -362,7 +362,7 @@ LRESULT COpenVideoCallDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 
 	lpAgoraObject->LeaveCahnnel();
     m_dlgEnterChannel.CleanEncryptionSecret();
-
+	
 	return 0;
 }
 

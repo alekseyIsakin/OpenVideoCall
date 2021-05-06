@@ -6,9 +6,9 @@
 #include <fstream>
 
 
-void Tokens::setLang(nlohmann::json langsJson)
+std::vector<langHolder> Tokens::setLang(nlohmann::json langsJson)
 {
-	_listTargetLang.clear();
+	std::vector<langHolder> langs;
 
 	for (auto val = langsJson.begin(); val != langsJson.end(); val++)
 	{
@@ -27,12 +27,15 @@ void Tokens::setLang(nlohmann::json langsJson)
 		if (langNm == "HOST")
 		{
 			lh.langShort = "Floor";
-			_listTargetLang.insert(_listTargetLang.begin(), lh);
+			langs.insert(langs.begin(), lh);
 		}
 		else
-			_listTargetLang.push_back(lh);
+		{
+			langs.push_back(lh);
+		}
 
 	}
+	return langs;
 }
 
 Tokens::Tokens()
@@ -74,9 +77,11 @@ BOOL Tokens::GetCloudToken(CString roomNumber)
 
 		if (j["status"] == "ok") {
 			{
-				_hostToken = std::string(j["ROOMS_NAMES_HOST"].begin().value()).c_str();
-				_hostName = std::string(j["ROOMS_NAMES_HOST"].begin().key()).c_str();
-				setLang(j["ROOMS_NAMES_TARGET"]);
+				_hostToken = std::string(j[JSON_HOST].begin().value()).c_str();
+				_hostName = std::string(j[JSON_HOST].begin().key()).c_str();
+
+				_listTargetLang = setLang(j[JSON_TARGET_LANGS]);
+				_listRelayLang  = setLang(j[JSON_RELAY_LANGS]);
 			}
 		}
 	}
@@ -111,17 +116,31 @@ BOOL Tokens::isEmptyToken()
 	return _hostToken == EMPTY_TOKEN;
 }
 
-std::vector<langHolder>::iterator Tokens::GetLngBgnIterator()
+std::vector<langHolder>::iterator Tokens::GetTargetLngBgnItr()
 {
 	if (_listTargetLang.size() > 0)
 		return _listTargetLang.begin();
 	return _listTargetLang.end();
 }
 
-std::vector<langHolder>::iterator Tokens::GetLngEndIterator()
+std::vector<langHolder>::iterator Tokens::GetTargetLngEndItr()
 {
 	if (_listTargetLang.size() > 0)
 		return _listTargetLang.end();
 	return _listTargetLang.end();
+}
+
+std::vector<langHolder>::iterator Tokens::GetRelayLngBgnItr()
+{
+	if (_listRelayLang.size() > 0)
+		return _listRelayLang.begin();
+	return _listRelayLang.begin();
+}
+
+std::vector<langHolder>::iterator Tokens::GetRelayLngEndItr()
+{
+	if (_listRelayLang.size() > 0)
+		return _listRelayLang.end();
+	return _listRelayLang.end();
 }
 
