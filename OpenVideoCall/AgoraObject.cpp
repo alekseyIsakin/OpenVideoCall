@@ -701,9 +701,14 @@ void CAgoraObject::SetComplexToken(Tokens token)
 	m_token = token;
 }
 
-void CAgoraObject::GetUID(uid_t uid)
+void CAgoraObject::AddUID(uid_t uid)
 {
 	CollectorUID.push_back(uid);
+}
+
+uid_t CAgoraObject::GetUID(int ind)
+{
+	return CollectorUID.at(ind);
 }
 
 void CAgoraObject::DelUID(uid_t uid)
