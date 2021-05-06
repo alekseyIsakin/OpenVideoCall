@@ -7,6 +7,8 @@
 #include "OpenVideoCallDlg.h"
 #include "afxdialogex.h"
 
+#include "Tokens.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -312,8 +314,12 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
     lpAgoraObject->SetDefaultParameters();
 
 	CString strChannelName = m_dlgEnterChannel.GetChannelName();
-    if (strChannelName.GetLength() == 0)
-        return 0;
+
+	Tokens netToken;
+	netToken.GetCloudToken(strChannelName);
+
+	if (netToken.isEmptyToken())
+		return -1;
 
 	m_dlgVideo.MoveWindow(0, 0, 960, 720, 1);
 	m_dlgVideo.ShowWindow(SW_SHOW);
@@ -342,7 +348,9 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 	lpRtcEngine->setupLocalVideo(vc);
 	lpRtcEngine->startPreview();
     std::string token = lpAgoraObject->GetToken();
-    lpAgoraObject->JoinChannel(strChannelName, 0, token.length() > 0 ? token.c_str() : NULL);
+
+	lpAgoraObject->JoinChannel(netToken.GetName(lParam), 0, netToken.GetToken(lParam).length() > 0 ? netToken.GetToken(lParam).c_str() : NULL);
+
 	lpAgoraObject->SetMsgHandlerWnd(m_dlgVideo.GetSafeHwnd());
 
 	return 0;
@@ -354,7 +362,7 @@ LRESULT COpenVideoCallDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 
 	lpAgoraObject->LeaveCahnnel();
     m_dlgEnterChannel.CleanEncryptionSecret();
-
+	
 	return 0;
 }
 
