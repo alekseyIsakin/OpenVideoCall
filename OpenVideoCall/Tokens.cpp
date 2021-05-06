@@ -1,4 +1,3 @@
-#include "..\..\OpenLive-Windows-MFC-broadcast\OpenLive\Tokens.h"
 #include "stdafx.h"
 #include "Tokens.h"
 

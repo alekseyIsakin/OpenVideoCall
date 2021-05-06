@@ -59,7 +59,7 @@ void CChatDlg::OnSize(UINT nType, int cx, int cy)
 
     // TODO:  在此处添加消息处理程序代码
     if (::IsWindow(m_edtChatBox.GetSafeHwnd()))
-        m_edtChatBox.MoveWindow(1, cy - 21, cx - 2, 20);
+        m_edtChatBox.MoveWindow(500, cy - 21, cx - 2, 20);
 }
 
 
@@ -99,7 +99,7 @@ void CChatDlg::OnPaint()
     
     while (pos != NULL) {
         CString str = m_strMsgList.GetNext(pos);
-        dc.TextOut(20, y, str);
+        dc.TextOut(10, y, str);
         y -= 20;
     }
 }
@@ -113,7 +113,7 @@ void CChatDlg::AddChatMessage(UINT nUID, LPCTSTR lpMessage)
     else
         str.Format(_T("me: %s"), lpMessage);
     
-    if (m_strMsgList.GetCount() >= 5)
+    if (m_strMsgList.GetCount() >= 6)
         m_strMsgList.RemoveTail();
 
     m_strMsgList.AddHead(str);

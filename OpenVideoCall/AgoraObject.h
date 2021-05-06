@@ -3,9 +3,11 @@
 #include <IAgoraRtcEngine.h>
 #include "AGEngineEventHandler.h"
 #include <string>
+#include <vector>
 #define AVC_VER _T("V1.12.0, Build234, 08/14/2017, SDK1.12 .0")
 
 using namespace agora::rtc;
+
 
 // ������λ
 #define AG_ENGFLAG_ENNETTEST	0x00000001
@@ -112,6 +114,7 @@ public:
     std::string GetToken();
 protected:
 	CAgoraObject(void);
+	std::vector<int> CollectorUID;
 
 private:
 	DWORD	m_dwEngineFlag;
@@ -128,7 +131,7 @@ private:
 	BOOL		m_bEchoTest;
 
 	BOOL		m_bScreenCapture;
-
+	
 //	int			m_nCodecType;
 
 public:
@@ -136,4 +139,9 @@ public:
 	static void CloseAgoraObject();
 
 	static CAGEngineEventHandler m_EngineEventHandler;
+
+	std::vector<int> CollectAllUID();
+
+	int GetUID(uid_t uid);
+	int DelUID(uid_t uid);
 };

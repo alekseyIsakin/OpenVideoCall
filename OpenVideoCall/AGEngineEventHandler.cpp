@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "AGEngineEventHandler.h"
 #include "AGEventDef.h"
+#include <vector>
 
 CAGEngineEventHandler::CAGEngineEventHandler(void)
 {
@@ -211,7 +212,7 @@ void CAGEngineEventHandler::onFirstRemoteVideoFrame(uid_t uid, int width, int he
 void CAGEngineEventHandler::onUserJoined(uid_t uid, int elapsed)
 {
 	LPAGE_USER_JOINED lpData = new AGE_USER_JOINED;
-
+	
 	lpData->uid = uid;
 	lpData->elapsed = elapsed;
 

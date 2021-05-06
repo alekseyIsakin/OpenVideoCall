@@ -688,3 +688,8 @@ std::string CAgoraObject::GetToken()
 
     return temp;
 }
+
+int CAgoraObject::GetUID(uid_t uid)
+{
+	CAgoraObject::CollectorUID;
+}
