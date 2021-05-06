@@ -1,4 +1,5 @@
 #pragma once
+#include "AGButton.h"
 
 #define WM_SHOWMODECHANGED	WM_USER+300
 #define WM_SHOWBIG			WM_USER+301
@@ -77,6 +78,7 @@ protected:
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnMuteClick();
 
 	DECLARE_MESSAGE_MAP()
 
@@ -97,6 +99,9 @@ private:
 	BOOL		m_bBigShow;
 
     BOOL        m_bBackground;
+
+	CAGButton		m_btnShow;
+	BOOL ctr_Created;
 public:
     afx_msg void OnPaint();
 };

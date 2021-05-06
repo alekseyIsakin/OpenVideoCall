@@ -5,7 +5,7 @@
 #include "DeviceDlg.h"
 #include "afxwin.h"
 
-// CEnterChannelDlg 对话框
+// CEnterChannelDlg 对话框//
 
 class CEnterChannelDlg : public CDialogEx
 {

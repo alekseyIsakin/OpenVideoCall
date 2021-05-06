@@ -46,7 +46,8 @@ BEGIN_MESSAGE_MAP(CVideoDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_NCHITTEST()
 
-	ON_MESSAGE(WM_SHOWMODECHANGED, &CVideoDlg::OnShowModeChanged)
+	//ON_MESSAGE(WM_SHOWMODECHANGED, &CVideoDlg::OnShowModeChanged)
+	ON_MESSAGE(WM_SHOWMODECHANGED, &CVideoDlg::MuteClient)
 	ON_MESSAGE(WM_SHOWBIG, &CVideoDlg::OnShowBig)
 
 	ON_MESSAGE(WM_WINDOWSHARE, &CVideoDlg::OnWindowShareStart)
@@ -247,6 +248,26 @@ void CVideoDlg::AdjustSizeVideoMulti(int cx, int cy)
 			nLocalIndex++;
 		}
 	}
+}
+
+LRESULT CVideoDlg::MuteClient(WPARAM wParam, LPARAM lParam)
+{
+	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
+
+	RtcEngineParameters rep(*lpAgora->GetEngine());
+
+	//int ret = rep.muteLocalAudioStream(1);
+	rep.muteRemoteAudioStream(lpAgora->GetAgoraObject()->GetUID(lpAgora->SearchUID(lParam)), 1);
+
+	/*if (lpAgora->IsLocalAudioMuted()) {
+		lpAgora->MuteLocalAudio(FALSE);
+		m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+	}
+	else {
+		lpAgora->MuteLocalAudio(TRUE);
+		m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
+	}*/
+	return 0;
 }
 
 

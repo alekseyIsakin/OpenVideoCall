@@ -711,6 +711,18 @@ uid_t CAgoraObject::GetUID(int ind)
 	return CollectorUID.at(ind);
 }
 
+int CAgoraObject::SearchUID(uid_t uid)
+{
+	int index = 0;
+	for each (uid_t id in CollectorUID)
+	{
+		if (id == uid)
+			return index;
+		index++;
+	}
+	return -1;
+}
+
 void CAgoraObject::DelUID(uid_t uid)
 {
 	int vectorSize = CollectorUID.size();

@@ -216,7 +216,7 @@ void CAGEngineEventHandler::onUserJoined(uid_t uid, int elapsed)
 	lpData->uid = uid;
 	lpData->elapsed = elapsed;
 
-	CAgoraObject::GetAgoraObject()->GetUID(uid);
+	CAgoraObject::GetAgoraObject()->AddUID(uid);
 
 	if(m_hMainWnd != NULL)
 		::PostMessage(m_hMainWnd, WM_MSGID(EID_USER_JOINED), (WPARAM)lpData, 0);

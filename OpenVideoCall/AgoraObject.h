@@ -151,4 +151,5 @@ public:
 	void AddUID(uid_t uid);
 	uid_t GetUID(int ind);
 	void DelUID(uid_t uid);
+	int SearchUID(uid_t uid);
 };
