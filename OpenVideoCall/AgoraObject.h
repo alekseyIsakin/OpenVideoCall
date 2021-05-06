@@ -148,6 +148,6 @@ public:
 
 	std::vector<int> CollectAllUID();
 
-	void GetUID(uid_t uid);
+	void AddUID(uid_t uid);
 	void DelUID(uid_t uid);
 };
