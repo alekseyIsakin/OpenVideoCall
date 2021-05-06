@@ -267,7 +267,7 @@ LRESULT CVideoDlg::MuteClient(WPARAM wParam, LPARAM lParam)
 	else {
 		lpAgora->MuteLocalAudio(TRUE);
 		m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
-	}
+	}*/
 	return 0;
 }
 
