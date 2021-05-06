@@ -701,7 +701,20 @@ void CAgoraObject::SetComplexToken(Tokens token)
 	m_token = token;
 }
 
-int CAgoraObject::GetUID(uid_t uid)
+void CAgoraObject::GetUID(uid_t uid)
 {
-	CAgoraObject::CollectorUID;
+	CollectorUID.push_back(uid);
+}
+
+void CAgoraObject::DelUID(uid_t uid)
+{
+	int vectorSize = CollectorUID.size();
+
+	for (int i = 0; i <= vectorSize; ++i)
+	{
+		if (CollectorUID[i] == uid)
+		{
+			CollectorUID.erase(CollectorUID.begin() + i);
+		}
+	}
 }

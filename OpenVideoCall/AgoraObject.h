@@ -119,6 +119,7 @@ public:
 	void SetComplexToken(Tokens token);
 protected:
 	CAgoraObject(void);
+
 	std::vector<int> CollectorUID;
 
 private:
@@ -147,6 +148,6 @@ public:
 
 	std::vector<int> CollectAllUID();
 
-	int GetUID(uid_t uid);
-	int DelUID(uid_t uid);
+	void GetUID(uid_t uid);
+	void DelUID(uid_t uid);
 };
