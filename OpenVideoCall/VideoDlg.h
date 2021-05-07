@@ -97,6 +97,9 @@ protected:
     afx_msg LRESULT OnStreamMessage(WPARAM wParam, LPARAM lParam);
 
 	afx_msg LRESULT MuteClient(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT UnMuteClient(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT HideClient(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT UnHideClient(WPARAM wParam, LPARAM lParam);
 
 	DECLARE_MESSAGE_MAP()
 

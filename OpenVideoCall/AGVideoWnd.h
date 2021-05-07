@@ -71,6 +71,8 @@ public:
 	void SetBigShowFlag(BOOL bBigShow);
 	BOOL IsBigShow() { return m_bBigShow; };
 
+	void InitCtrls();
+
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
@@ -79,6 +81,7 @@ protected:
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnMuteClick();
+	afx_msg void OnVideoMuteClick();
 
 	DECLARE_MESSAGE_MAP()
 
@@ -100,8 +103,12 @@ private:
 
     BOOL        m_bBackground;
 
-	CAGButton		m_btnShow;
+	CAGButton		m_btnEnableAudio;
+	CAGButton		m_btnShowVid;
 	BOOL ctr_Created;
+	BOOL bMuted;
+	BOOL bHidden;
+	BOOL CtrlMode;
 public:
     afx_msg void OnPaint();
 };

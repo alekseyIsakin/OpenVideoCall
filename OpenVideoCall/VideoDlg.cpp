@@ -46,8 +46,11 @@ BEGIN_MESSAGE_MAP(CVideoDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_NCHITTEST()
 
-	//ON_MESSAGE(WM_SHOWMODECHANGED, &CVideoDlg::OnShowModeChanged)
-	ON_MESSAGE(WM_SHOWMODECHANGED, &CVideoDlg::MuteClient)
+	ON_MESSAGE(WM_SHOWMODECHANGED, &CVideoDlg::OnShowModeChanged)
+	ON_MESSAGE(WM_AUDIOMUTECLIENT, &CVideoDlg::MuteClient)
+	ON_MESSAGE(WM_AUDIOUNMUTECLIENT, &CVideoDlg::UnMuteClient)
+	ON_MESSAGE(WM_VIDEOMUTECLIENT, &CVideoDlg::HideClient)
+	ON_MESSAGE(WM_VIDEOUNMUTECLIENT, &CVideoDlg::UnHideClient)
 	ON_MESSAGE(WM_SHOWBIG, &CVideoDlg::OnShowBig)
 
 	ON_MESSAGE(WM_WINDOWSHARE, &CVideoDlg::OnWindowShareStart)
@@ -250,47 +253,46 @@ void CVideoDlg::AdjustSizeVideoMulti(int cx, int cy)
 	}
 }
 
-LRESULT CVideoDlg::MuteClient(WPARAM wParam, LPARAM lParam)
+LRESULT CVideoDlg::MuteClient(WPARAM wParam, LPARAM lParam) //Mutes specific user
+{
+	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
+
+	RtcEngineParameters rep(*lpAgora->GetEngine());
+	lpAgora->MuteClient(lParam, 1);
+
+	return 0;
+}
+
+LRESULT CVideoDlg::UnMuteClient(WPARAM wParam, LPARAM lParam) //UnMutes specific user
+{
+	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
+
+	RtcEngineParameters rep(*lpAgora->GetEngine());
+	lpAgora->MuteClient(lParam, 0);
+
+	return 0;
+}
+
+
+LRESULT CVideoDlg::HideClient(WPARAM wParam, LPARAM lParam) //Hides user's webcam
 {
 	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
 
 	RtcEngineParameters rep(*lpAgora->GetEngine());
 
-	//int ret = rep.muteLocalAudioStream(1);
-	rep.muteRemoteAudioStream(lpAgora->GetAgoraObject()->GetUID(lpAgora->SearchUID(lParam)), 1);
-	//
-	/*if (lpAgora->IsLocalAudioMuted()) {
-
-		lpAgora->MuteLocalAudio(FALSE);
-		m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
-	}
-	else {
-		lpAgora->MuteLocalAudio(TRUE);
-		m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
-	}*/
+	rep.muteRemoteVideoStream(lpAgora->GetUID(lpAgora->SearchUID(lParam)), 1);
 	return 0;
 }
 
-LRESULT CVideoDlg::MuteClient(WPARAM wParam, LPARAM lParam)
+LRESULT CVideoDlg::UnHideClient(WPARAM wParam, LPARAM lParam) //Shows user's webcam
 {
 	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
 
 	RtcEngineParameters rep(*lpAgora->GetEngine());
 
-	//int ret = rep.muteLocalAudioStream(1);
-	rep.muteRemoteAudioStream(lpAgora->GetAgoraObject()->GetUID(lpAgora->SearchUID(lParam)), 1);
-	//
-	/*if (lpAgora->IsLocalAudioMuted()) {
-		lpAgora->MuteLocalAudio(FALSE);
-		m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
-	}
-	else {
-		lpAgora->MuteLocalAudio(TRUE);
-		m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
-	}*/
+	rep.muteRemoteVideoStream(lpAgora->GetUID(lpAgora->SearchUID(lParam)), 0);
 	return 0;
 }
-
 
 void CVideoDlg::OnMouseMove(UINT nFlags, CPoint point)
 {

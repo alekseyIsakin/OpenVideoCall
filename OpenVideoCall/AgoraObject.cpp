@@ -720,7 +720,7 @@ int CAgoraObject::SearchUID(uid_t uid) //Searches specific UID
 			return index;
 		index++;
 	}
-	return -1;
+	return index;
 }
 
 void CAgoraObject::DelUID(uid_t uid)
@@ -734,4 +734,33 @@ void CAgoraObject::DelUID(uid_t uid)
 			CollectorUID.erase(CollectorUID.begin() + i);
 		}
 	}
+}
+
+void CAgoraObject::MuteAllAudio(int mute) //Mutes all clients
+{
+	RtcEngineParameters rep(this->GetEngine());
+
+	rep.muteAllRemoteAudioStreams(mute);
+}
+
+void CAgoraObject::MuteClient(LPARAM id, int mute) //Searches id and mutes client
+{
+	RtcEngineParameters rep(this->GetEngine());
+
+	rep.muteRemoteAudioStream(this->GetUID(this->SearchUID(id)), mute);
+}
+
+void CAgoraObject::MuteClient(int id, int mute) //Mutes provided client by its id
+{
+	RtcEngineParameters rep(this->GetEngine());
+
+	rep.muteRemoteAudioStream(this->GetUID(id), mute);
+}
+
+
+void CAgoraObject::MuteSelf(int mute) //Mutes local audio
+{
+	RtcEngineParameters rep(this->GetEngine());
+
+	rep.muteLocalAudioStream(mute);
 }

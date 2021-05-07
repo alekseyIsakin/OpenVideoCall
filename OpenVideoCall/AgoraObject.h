@@ -152,4 +152,8 @@ public:
 	uid_t GetUID(int ind);
 	void DelUID(uid_t uid);
 	int SearchUID(uid_t uid); //Important
+	void MuteAllAudio(int mute);
+	void MuteClient(LPARAM id, int mute);
+	void MuteClient(int id, int mute);
+	void MuteSelf(int mute);
 };
