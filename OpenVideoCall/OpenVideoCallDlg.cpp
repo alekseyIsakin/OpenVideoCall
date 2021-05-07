@@ -355,33 +355,21 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
     netToken = lpAgoraObject->GetComplexToken();
 
 	lpRtcEngine->setChannelProfile(CHANNEL_PROFILE_LIVE_BROADCASTING);
+	lpRtcEngine->setClientRole(CLIENT_ROLE_BROADCASTER);
 
-	IChannel* pChannel = static_cast<IRtcEngine2*>(lpRtcEngine)->createChannel((*(netToken.GetTargetLngBgnItr())).langFull.c_str());
-	IChannel* pChannel2 = static_cast<IRtcEngine2*>(lpRtcEngine) -> createChannel((*(netToken.GetTargetLngBgnItr()+1)).langFull.c_str());
+	//lpAgoraObject->JoinChannel(
+	//	CString((*(netToken.GetTargetLngBgnItr()+1)).langFull.c_str()), 0,
+	//	(*(netToken.GetTargetLngBgnItr() + 1)).token.c_str()
+	//);
 
-	AGChannelEventHandler* pEvt1 = new AGChannelEventHandler;
-	AGChannelEventHandler* pEvt2 = new AGChannelEventHandler;
-	pEvt1->setMsgHandler(m_dlgVideo.GetSafeHwnd());
-	pEvt2->setMsgHandler(m_dlgVideo.GetSafeHwnd());
-	pChannel->setChannelEventHandler(pEvt1);
-	pChannel2->setChannelEventHandler(pEvt2);
-
-	ChannelMediaOptions options;
-	options.autoSubscribeAudio = 0;
-	options.autoSubscribeVideo = 0;
-
-	int res = 0;
-
-	pChannel2->setClientRole(CLIENT_ROLE_BROADCASTER);
-	res = pChannel->joinChannel((*(netToken.GetTargetLngBgnItr())).token.c_str(), "", 0, ChannelMediaOptions());
-
-	pChannel2->setClientRole(CLIENT_ROLE_BROADCASTER);
-	res = pChannel2->joinChannel(
-		(*(netToken.GetTargetLngBgnItr()+1)).token.c_str(), 
-		"", 0, 
-		options
+	lpAgoraObject->JoinChannelSrc(
+		CString((*(netToken.GetTargetLngBgnItr())).langFull.c_str()),
+		(*(netToken.GetTargetLngBgnItr())).token.c_str(), 0
 	);
-	res = pChannel2->publish();
+	lpAgoraObject->JoinChannelDest(
+		CString((*(netToken.GetTargetLngBgnItr()+1)).langFull.c_str()),
+		(*(netToken.GetTargetLngBgnItr()+1)).token.c_str(), 0
+	);
 
 	lpAgoraObject->SetMsgHandlerWnd(m_dlgVideo.GetSafeHwnd());
 
@@ -393,6 +381,8 @@ LRESULT COpenVideoCallDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 	CAgoraObject	*lpAgoraObject = CAgoraObject::GetAgoraObject();
 
 	lpAgoraObject->LeaveCahnnel();
+	lpAgoraObject->LeaveSrcChannel();
+	lpAgoraObject->LeaveDestChannel();
     m_dlgEnterChannel.CleanEncryptionSecret();
 	
 	return 0;

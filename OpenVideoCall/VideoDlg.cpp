@@ -719,7 +719,7 @@ LRESULT CVideoDlg::OnEIDFirstLocalFrame(WPARAM wParam, LPARAM lParam)
 	LPAGE_FIRST_LOCAL_VIDEO_FRAME lpData = (LPAGE_FIRST_LOCAL_VIDEO_FRAME)wParam;
 
 	if (m_listWndInfo.GetCount() == 0)
-		ShowVideo1();
+		ShowMulti();
 
 	delete lpData;
 
@@ -759,12 +759,37 @@ LRESULT CVideoDlg::OnEIDFirstRemoteFrameDecoded(WPARAM wParam, LPARAM lParam)
 
 LRESULT CVideoDlg::OnEIDUserJoined(WPARAM wParam, LPARAM lParam)
 {
-    CString str;
-    LPAGE_USER_JOINED lpData = (LPAGE_USER_JOINED)wParam;
+	UINT t = CAgoraObject::GetAgoraObject()->GetSelfUID();
+	
+	LPAGE_USER_JOINED lpData = (LPAGE_USER_JOINED)wParam;
+	BOOL bFound = FALSE;
 
-    str.Format(_T("%d joined the channel"), lpData->uid);
-    MessageBox(str);
+	POSITION pos = m_listWndInfo.GetHeadPosition();
+	while (pos != NULL) {
+		AGVIDEO_WNDINFO& agvWndInfo = m_listWndInfo.GetNext(pos);
+		if (agvWndInfo.nUID == lpData->uid) {
+			bFound = TRUE;
+			break;
+		}
+	}
+
+	if (!bFound) {
+		AGVIDEO_WNDINFO agvWndInfo;
+		memset(&agvWndInfo, 0, sizeof(AGVIDEO_WNDINFO));
+		agvWndInfo.nUID = lpData->uid;
+		m_listWndInfo.AddTail(agvWndInfo);
+	}
+
+	delete lpData;
+	//RebindVideoWnd();
 	return 0;
+
+ //   CString str;
+ //   LPAGE_USER_JOINED lpData = (LPAGE_USER_JOINED)wParam;
+
+ //   str.Format(_T("%d joined the channel"), lpData->uid);
+ //   MessageBox(str);
+	//return 0;
 }
 
 LRESULT CVideoDlg::OnEIDUserOffline(WPARAM wParam, LPARAM lParam)

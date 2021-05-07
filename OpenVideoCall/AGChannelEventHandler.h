@@ -14,7 +14,6 @@ public:
 	void setMsgHandler(HWND msgHandler)
 	{
 		this->m_hMsgHanlder = msgHandler;
-
 	}
 
 	/** Reports the warning code of `IChannel`.

@@ -152,6 +152,8 @@ void CAgoraObject::CloseAgoraObject()
 void CAgoraObject::SetMsgHandlerWnd(HWND hWnd)
 {
 	m_EngineEventHandler.SetMsgReceiver(hWnd);
+	m_ChannelDestEventHandler.setMsgHandler(hWnd);
+	m_ChannelSrcEventHandler.setMsgHandler(hWnd);
 }
 
 HWND CAgoraObject::GetMsgHandlerWnd()
@@ -282,6 +284,73 @@ BOOL CAgoraObject::LeaveCahnnel()
 	int nRet = m_lpAgoraEngine->leaveChannel();
 
 	return nRet == 0 ? TRUE : FALSE;
+}
+
+BOOL CAgoraObject::JoinChannelSrc(LPCTSTR lpChannelName, LPCSTR token, UINT nUID, LPCSTR info)
+{
+	int ret = 0;
+	LeaveSrcChannel();
+
+#ifdef UNICODE
+	CHAR szChannelName[128];
+
+	::WideCharToMultiByte(CP_ACP, 0, lpChannelName, -1, szChannelName, 128, NULL, NULL);
+	IChannel* m_channel_src = static_cast<IRtcEngine2*>(CAgoraObject::GetEngine())->createChannel(szChannelName);
+
+	m_channel_src->setClientRole(CLIENT_ROLE_BROADCASTER);
+	m_channel_src->setChannelEventHandler(&m_ChannelSrcEventHandler);
+	ret = m_channel_src->joinChannel(token, info, nUID, ChannelMediaOptions());
+#else
+#endif
+
+	return 0 == ret;
+}
+
+BOOL CAgoraObject::JoinChannelDest(LPCTSTR lpChannelName, LPCSTR token, UINT nUID, LPCSTR info)
+{
+	int ret = 0;
+	LeaveDestChannel();
+
+#ifdef UNICODE
+	CHAR szChannelName[128];
+
+	::WideCharToMultiByte(CP_ACP, 0, lpChannelName, -1, szChannelName, 128, NULL, NULL);
+	IChannel* m_channel_dest = static_cast<IRtcEngine2*>(CAgoraObject::GetEngine())->createChannel(szChannelName);
+
+	ChannelMediaOptions options;
+	options.autoSubscribeAudio = 0;
+	options.autoSubscribeVideo = 0;
+	
+	m_channel_dest->setClientRole(CLIENT_ROLE_BROADCASTER);
+	m_channel_dest->setChannelEventHandler(&m_ChannelDestEventHandler);
+	m_channel_dest->joinChannel(token, info, nUID, options);
+	ret = m_channel_dest->publish();
+#else
+#endif
+
+	return 0 == ret;
+}
+
+BOOL CAgoraObject::LeaveDestChannel() 
+{
+	int ret = -1;
+	if (m_channel_dest != NULL)
+	{
+		m_channel_dest->unpublish();
+		ret =m_channel_dest->leaveChannel();
+		//m_channel_dest->release();
+	}
+	return 0 == ret;
+}
+BOOL CAgoraObject::LeaveSrcChannel()
+{
+	int ret = -1;
+	if (m_channel_src != NULL)
+	{
+		ret = m_channel_src->leaveChannel();
+		 //m_channel_src->release();
+	}
+	return 0 == ret;
 }
 
 CString CAgoraObject::GetChanelName()

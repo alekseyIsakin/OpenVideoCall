@@ -63,8 +63,15 @@ public:
 
 	BOOL SetLogFilePath(LPCTSTR lpLogPath = NULL);
 
-	BOOL JoinChannel(LPCTSTR lpChannelName, UINT nUID = 0,LPCSTR lpChannelToken = NULL);
+	BOOL JoinChannel(LPCTSTR lpChannelName, UINT nUID = 0, LPCSTR lpChannelToken = NULL);
 	BOOL LeaveCahnnel();
+
+	BOOL JoinChannelSrc(LPCTSTR channel, LPCSTR token, UINT nUID, LPCSTR info = "");
+	BOOL JoinChannelDest(LPCTSTR channel, LPCSTR token, UINT nUID, LPCSTR info = "");
+
+	BOOL LeaveDestChannel();
+	BOOL LeaveSrcChannel();
+
 	CString GetChanelName();
 	CString GetCallID();
 	CString GetVendorKey() { return m_strVendorKey; };
@@ -126,7 +133,13 @@ private:
 	static  CAgoraObject	*m_lpAgoraObject;
 	static	IRtcEngine	    *m_lpAgoraEngine;
 	static	CString			m_strVendorKey;
+
+	IChannel* m_channel_src;
+	IChannel* m_channel_dest;
 	
+	AGChannelEventHandler m_ChannelSrcEventHandler;
+	AGChannelEventHandler m_ChannelDestEventHandler;
+
 	UINT		m_nSelfUID;
 	CString		m_strChannelName;
 	BOOL		m_bVideoEnable;
