@@ -366,10 +366,10 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 		CString((*(netToken.GetTargetLngBgnItr())).langFull.c_str()),
 		(*(netToken.GetTargetLngBgnItr())).token.c_str(), 0
 	);
-	lpAgoraObject->JoinChannelDest(
-		CString((*(netToken.GetTargetLngBgnItr()+1)).langFull.c_str()),
-		(*(netToken.GetTargetLngBgnItr()+1)).token.c_str(), 0
-	);
+	//lpAgoraObject->JoinChannelDest(
+	//	CString((*(netToken.GetTargetLngBgnItr()+1)).langFull.c_str()),
+	//	(*(netToken.GetTargetLngBgnItr()+1)).token.c_str(), 0
+	//);
 
 	lpAgoraObject->SetMsgHandlerWnd(m_dlgVideo.GetSafeHwnd());
 

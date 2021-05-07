@@ -3,13 +3,24 @@
 #include "StdAfx.h"
 #include "AGEventDef.h"
 
+enum class CHANNEL_TYPE {
+	CHANNEL_SRC,
+	CHANNEL_DEST
+};
+
 class AGChannelEventHandler 
 	:public agora::rtc::IChannelEventHandler
 {
 private:
 	HWND m_hMsgHanlder;
+	CHANNEL_TYPE m_channelType;
 
 public:
+
+	void SetChannelType(CHANNEL_TYPE type) 
+	{
+		m_channelType = type;
+	}
 
 	void setMsgHandler(HWND msgHandler)
 	{
@@ -54,64 +65,42 @@ public:
 		strcpy_s(lpData->channel, nChannelLen, rtcChannel->channelId());
 
 		if (m_hMsgHanlder != NULL)
-			::PostMessage(m_hMsgHanlder, WM_MSGID(EID_JOINCHANNEL_SUCCESS), (WPARAM)lpData, 0);
+			::PostMessage(m_hMsgHanlder, WM_MSGID(EID_JOINCHANNEL_SUCCESS), (WPARAM)lpData, (int)m_channelType);
 		//if (m_hMsgHanlder)
 		//	::PostMessage(m_hMsgHanlder, WM_MSGID(EID_JOINCHANNEL_SUCCESS), (WPARAM)rtcChannel, uid);
 	}
-	/** Occurs when a user rejoins the channel after being disconnected due to network problems.
 
-	 @param rtcChannel IChannel
-	 @param uid The user ID.
-	 @param elapsed Time elapsed (ms) from the local user starting to reconnect until this callback is triggered.
-
-	 */
 	virtual void onRejoinChannelSuccess(IChannel* rtcChannel, uid_t uid, int elapsed) {
+		LPAGE_JOINCHANNEL_SUCCESS lpData = new AGE_JOINCHANNEL_SUCCESS;
+
+		int nChannelLen = strlen(rtcChannel->channelId()) + 1;
+
+		lpData->channel = new char[nChannelLen];
+		lpData->uid = uid;
+		lpData->elapsed = elapsed;
+
+		strcpy_s(lpData->channel, nChannelLen, rtcChannel->channelId());
+
+		if (m_hMsgHanlder != NULL)
+			::PostMessage(m_hMsgHanlder, WM_MSGID(EID_REJOINCHANNEL_SUCCESS), (WPARAM)lpData, 0);
 	}
-	/** Occurs when a user leaves the channel.
 
-	 This callback notifies the application that a user leaves the channel when the application calls the \ref agora::rtc::IChannel::leaveChannel "leaveChannel" method.
-
-	 The application retrieves information, such as the call duration and statistics.
-
-	 @param rtcChannel IChannel
-	 @param stats The call statistics: RtcStats.
-	 */
 	virtual void onLeaveChannel(IChannel* rtcChannel, const RtcStats& stats) {
-		if (m_hMsgHanlder)
-			::PostMessage(m_hMsgHanlder, WM_MSGID(EID_LEAVE_CHANNEL), (WPARAM)rtcChannel, 0);
+
+		LPAGE_LEAVE_CHANNEL lpData = new AGE_LEAVE_CHANNEL;
+
+		memcpy(&lpData->rtcStat, &stat, sizeof(RtcStats));
+
+		if (m_hMsgHanlder != NULL)
+			::PostMessage(m_hMsgHanlder, WM_MSGID(EID_LEAVE_CHANNEL), (WPARAM)lpData, 0);
+
+		//if (m_hMsgHanlder)
+		//	::PostMessage(m_hMsgHanlder, WM_MSGID(EID_LEAVE_CHANNEL), (WPARAM)rtcChannel, 0);
 	}
-	/** Occurs when the user role switches in the live interactive streaming. For example, from a host to an audience or vice versa.
 
-	 This callback notifies the application of a user role switch when the application calls the \ref IChannel::setClientRole "setClientRole" method.
-
-	 The SDK triggers this callback when the local user switches the user role by calling the \ref IChannel::setClientRole "setClientRole" method after joining the channel.
-
-	 @param rtcChannel IChannel
-	 @param oldRole Role that the user switches from: #CLIENT_ROLE_TYPE.
-	 @param newRole Role that the user switches to: #CLIENT_ROLE_TYPE.
-	 */
 	virtual void onClientRoleChanged(IChannel* rtcChannel, CLIENT_ROLE_TYPE oldRole, CLIENT_ROLE_TYPE newRole) {
 	}
-	/** Occurs when a remote user (`COMMUNICATION`)/ host (`LIVE_BROADCASTING`) joins the channel.
 
-	 - `COMMUNICATION` profile: This callback notifies the application that another user joins the channel. If other users are already in the channel, the SDK also reports to the application on the existing users.
-	 - `LIVE_BROADCASTING` profile: This callback notifies the application that the host joins the channel. If other hosts are already in the channel, the SDK also reports to the application on the existing hosts. We recommend limiting the number of hosts to 17.
-
-	 The SDK triggers this callback under one of the following circumstances:
-	 - A remote user/host joins the channel by calling the \ref agora::rtc::IChannel::joinChannel "joinChannel" method.
-	 - A remote user switches the user role to the host by calling the \ref agora::rtc::IChannel::setClientRole "setClientRole" method after joining the channel.
-	 - A remote user/host rejoins the channel after a network interruption.
-	 - The host injects an online media stream into the channel by calling the \ref agora::rtc::IChannel::addInjectStreamUrl "addInjectStreamUrl" method.
-
-	 @note In the `LIVE_BROADCASTING` profile:
-	 - The host receives this callback when another host joins the channel.
-	 - The audience in the channel receives this callback when a new host joins the channel.
-	 - When a web application joins the channel, the SDK triggers this callback as long as the web application publishes streams.
-
-	 @param rtcChannel IChannel
-	 @param uid User ID of the user or host joining the channel.
-	 @param elapsed Time delay (ms) from the local user calling the \ref IChannel::joinChannel "joinChannel" method until the SDK triggers this callback.
-	 */
 	virtual void onUserJoined(IChannel* rtcChannel, uid_t uid, int elapsed) {
 			LPAGE_USER_JOINED lpData = new AGE_USER_JOINED;
 
@@ -120,56 +109,25 @@ public:
 
 			if (m_hMsgHanlder != NULL)
 				::PostMessage(m_hMsgHanlder, WM_MSGID(EID_USER_JOINED), (WPARAM)lpData, 0);
-		//if (m_hMsgHanlder)
-		//	::PostMessage(m_hMsgHanlder, WM_MSGID(EID_USER_JOINED), (WPARAM)rtcChannel, (LPARAM)uid);
 	}
-	/** Occurs when a remote user ( `COMMUNICATION`)/host (`LIVE_BROADCASTING`) leaves the channel.
 
-	 Reasons why the user is offline:
-
-	 - Leave the channel: When the user/host leaves the channel, the user/host sends a goodbye message. When the message is received, the SDK assumes that the user/host leaves the channel.
-	 - Drop offline: When no data packet of the user or host is received for a certain period of time, the SDK assumes that the user/host drops offline. Unreliable network connections may lead to false detections, so we recommend using the Agora RTM SDK for more reliable offline detection.
-
-	 @param rtcChannel IChannel
-	 @param uid User ID of the user leaving the channel or going offline.
-	 @param reason Reason why the user is offline: #USER_OFFLINE_REASON_TYPE.
-	 */
 	virtual void onUserOffline(IChannel* rtcChannel, uid_t uid, USER_OFFLINE_REASON_TYPE reason) {
-		if (m_hMsgHanlder)
-			::PostMessage(m_hMsgHanlder, WM_MSGID(EID_USER_OFFLINE), (WPARAM)rtcChannel, (LPARAM)uid);
+		LPAGE_USER_OFFLINE lpData = new AGE_USER_OFFLINE;
+
+		lpData->uid = uid;
+		lpData->reason = reason;
+
+		if (m_hMsgHanlder != NULL)
+			::PostMessage(m_hMsgHanlder, WM_MSGID(EID_USER_OFFLINE), (WPARAM)lpData, 0);
+		//if (m_hMsgHanlder)
+		//	::PostMessage(m_hMsgHanlder, WM_MSGID(EID_USER_OFFLINE), (WPARAM)rtcChannel, (LPARAM)uid);
 	}
-	/** Occurs when the SDK cannot reconnect to Agora's edge server 10 seconds after its connection to the server is interrupted.
 
-	 The SDK triggers this callback when it cannot connect to the server 10 seconds after calling the \ref IChannel::joinChannel "joinChannel" method, whether or not it is in the channel.
-
-	 This callback is different from \ref agora::rtc::IRtcEngineEventHandler::onConnectionInterrupted "onConnectionInterrupted":
-
-	 - The SDK triggers the `onConnectionInterrupted` callback when it loses connection with the server for more than four seconds after it successfully joins the channel.
-	 - The SDK triggers the `onConnectionLost` callback when it loses connection with the server for more than 10 seconds, whether or not it joins the channel.
-
-	 If the SDK fails to rejoin the channel 20 minutes after being disconnected from Agora's edge server, the SDK stops rejoining the channel.
-
-	 @param rtcChannel IChannel
-	 */
 	virtual void onConnectionLost(IChannel* rtcChannel) {
 	}
-	/** Occurs when the token expires.
 
-	 After a token is specified by calling the \ref IChannel::joinChannel "joinChannel" method, if the SDK losses connection with the Agora server due to network issues, the token may expire after a certain period of time and a new token may be required to reconnect to the server.
-
-	 This callback notifies the app to generate a new token and call `joinChannel` to rejoin the channel with the new token.
-
-	 @param rtcChannel IChannel
-	 */
 	virtual void onRequestToken(IChannel* rtcChannel) {
 	}
-	/** Occurs when the token expires in 30 seconds.
-
-	 The user becomes offline if the token used in the \ref IChannel::joinChannel "joinChannel" method expires. The SDK triggers this callback 30 seconds before the token expires to remind the application to get a new token. Upon receiving this callback, generate a new token on the server and call the \ref IChannel::renewToken "renewToken" method to pass the new token to the SDK.
-
-	 @param rtcChannel IChannel
-	 @param token Token that expires in 30 seconds.
-	 */
 	virtual void onTokenPrivilegeWillExpire(IChannel* rtcChannel, const char* token) {
 
 	}
@@ -351,7 +309,17 @@ public:
 	 @param length Length of the data in bytes.
 	*/
 	virtual void onStreamMessage(IChannel* rtcChannel, uid_t uid, int streamId, const char* data, size_t length) {
+		LPAGE_STREAM_MESSAGE lpData = new AGE_STREAM_MESSAGE;
 
+		lpData->uid = uid;
+		lpData->streamId = streamId;
+		lpData->data = new char[length];
+		lpData->length = length;
+
+		memcpy_s(lpData->data, length, data, length);
+
+		if (m_hMsgHanlder != NULL)
+			::PostMessage(m_hMsgHanlder, WM_MSGID(EID_STREAM_MESSAGE), (WPARAM)lpData, 0);
 	}
 	/** Occurs when the local user does not receive the data stream from the remote user within five seconds.
 
@@ -484,4 +452,21 @@ public:
 		CONNECTION_CHANGED_REASON_TYPE reason) {
 
 	}
+
+	void onStreamMessage(uid_t uid, int streamId, const char* data, size_t length)
+	{
+		LPAGE_STREAM_MESSAGE lpData = new AGE_STREAM_MESSAGE;
+
+		lpData->uid = uid;
+		lpData->streamId = streamId;
+		lpData->data = new char[length];
+		lpData->length = length;
+
+		memcpy_s(lpData->data, length, data, length);
+
+		if (m_hMsgHanlder != NULL)
+			::PostMessage(m_hMsgHanlder, WM_MSGID(EID_STREAM_MESSAGE), (WPARAM)lpData, 0);
+
+	}
+
 };

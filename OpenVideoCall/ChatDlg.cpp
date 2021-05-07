@@ -47,10 +47,14 @@ BOOL CChatDlg::OnInitDialog()
 
     SetBackgroundColor(RGB(0, 0, 0));
     SetLayeredWindowAttributes(0, 130, LWA_ALPHA);
-    m_nStreamID = CAgoraObject::GetAgoraObject()->CreateMessageStream();
-
+    UpdateMessageStream();
     return TRUE;  // return TRUE unless you set the focus to a control
     // 异常:  OCX 属性页应返回 FALSE
+}
+
+void CChatDlg::UpdateMessageStream() 
+{
+    m_nStreamID = CAgoraObject::GetAgoraObject()->CreateMessageStream();
 }
 
 void CChatDlg::OnSize(UINT nType, int cx, int cy)

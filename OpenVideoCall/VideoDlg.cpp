@@ -696,9 +696,8 @@ void CVideoDlg::OnBnClickedBtnaudio()
 LRESULT CVideoDlg::OnEIDJoinChannelSuccess(WPARAM wParam, LPARAM lParam)
 {
 	LPAGE_JOINCHANNEL_SUCCESS lpData = (LPAGE_JOINCHANNEL_SUCCESS)wParam;
-
+	m_dlgChat.UpdateMessageStream();
 	m_listWndInfo.RemoveAll();
-	CAgoraObject::GetAgoraObject()->SetSelfUID(lpData->uid);
 
 	delete lpData;
 	return 0;
@@ -759,8 +758,6 @@ LRESULT CVideoDlg::OnEIDFirstRemoteFrameDecoded(WPARAM wParam, LPARAM lParam)
 
 LRESULT CVideoDlg::OnEIDUserJoined(WPARAM wParam, LPARAM lParam)
 {
-	UINT t = CAgoraObject::GetAgoraObject()->GetSelfUID();
-	
 	LPAGE_USER_JOINED lpData = (LPAGE_USER_JOINED)wParam;
 	BOOL bFound = FALSE;
 

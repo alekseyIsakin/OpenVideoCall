@@ -295,10 +295,15 @@ BOOL CAgoraObject::JoinChannelSrc(LPCTSTR lpChannelName, LPCSTR token, UINT nUID
 	CHAR szChannelName[128];
 
 	::WideCharToMultiByte(CP_ACP, 0, lpChannelName, -1, szChannelName, 128, NULL, NULL);
-	IChannel* m_channel_src = static_cast<IRtcEngine2*>(CAgoraObject::GetEngine())->createChannel(szChannelName);
+	m_channel_src = static_cast<IRtcEngine2*>(CAgoraObject::GetEngine())->createChannel(szChannelName);
 
+	m_ChannelSrcEventHandler.SetChannelType(CHANNEL_TYPE::CHANNEL_SRC);
 	m_channel_src->setClientRole(CLIENT_ROLE_BROADCASTER);
 	m_channel_src->setChannelEventHandler(&m_ChannelSrcEventHandler);
+
+	int data = 0;
+	m_channel_src->createDataStream(&data, true, true);
+
 	ret = m_channel_src->joinChannel(token, info, nUID, ChannelMediaOptions());
 #else
 #endif
@@ -315,12 +320,13 @@ BOOL CAgoraObject::JoinChannelDest(LPCTSTR lpChannelName, LPCSTR token, UINT nUI
 	CHAR szChannelName[128];
 
 	::WideCharToMultiByte(CP_ACP, 0, lpChannelName, -1, szChannelName, 128, NULL, NULL);
-	IChannel* m_channel_dest = static_cast<IRtcEngine2*>(CAgoraObject::GetEngine())->createChannel(szChannelName);
+	m_channel_dest = static_cast<IRtcEngine2*>(CAgoraObject::GetEngine())->createChannel(szChannelName);
 
 	ChannelMediaOptions options;
 	options.autoSubscribeAudio = 0;
 	options.autoSubscribeVideo = 0;
 	
+	m_ChannelSrcEventHandler.SetChannelType(CHANNEL_TYPE::CHANNEL_DEST);
 	m_channel_dest->setClientRole(CLIENT_ROLE_BROADCASTER);
 	m_channel_dest->setChannelEventHandler(&m_ChannelDestEventHandler);
 	m_channel_dest->joinChannel(token, info, nUID, options);
@@ -631,7 +637,9 @@ BOOL CAgoraObject::EnableLocalRender(BOOL bEnable)
 int CAgoraObject::CreateMessageStream()
 {
     int nDataStream = 0;
-    m_lpAgoraEngine->createDataStream(&nDataStream, true, true);
+
+	if (m_channel_src != NULL)
+		m_channel_src->createDataStream(&nDataStream, true, true);
 
     return nDataStream;
 }
@@ -650,7 +658,7 @@ BOOL CAgoraObject::SendChatMessage(int nStreamID, LPCTSTR lpChatMessage)
     int nUTF8Len = ::MultiByteToWideChar(CP_UTF8, lpChatMessage, nMessageLen, szUTF8, 256);
 #endif
 
-    int nRet = m_lpAgoraEngine->sendStreamMessage(nStreamID, szUTF8, nUTF8Len);
+    int nRet = m_channel_src->sendStreamMessage(nStreamID, szUTF8, nUTF8Len);
 
     return nRet == 0 ? TRUE : FALSE;
 }
