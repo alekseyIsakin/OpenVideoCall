@@ -703,14 +703,17 @@ void CVideoDlg::OnBnClickedBtnaudio()
 {
 	CAgoraObject *lpAgora = CAgoraObject::GetAgoraObject();
 
-	if (lpAgora->IsLocalAudioMuted()) {
-		lpAgora->MuteLocalAudio(FALSE);
-		m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
-	}
-	else {
-		lpAgora->MuteLocalAudio(TRUE);
-		m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
-	}
+	lpAgora->SwitchMute();
+	lpAgora->MuteClient(0, 0);
+
+	//if (lpAgora->IsLocalAudioMuted()) {
+	//	lpAgora->MuteLocalAudio(FALSE);
+	//	m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+	//}
+	//else {
+	//	lpAgora->MuteLocalAudio(TRUE);
+	//	m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
+	//}
 }
 
 LRESULT CVideoDlg::OnEIDJoinChannelSuccess(WPARAM wParam, LPARAM lParam)

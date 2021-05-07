@@ -18,6 +18,8 @@ void CAGEngineEventHandler::SetMsgReceiver(HWND hWnd)
 
 void CAGEngineEventHandler::onJoinChannelSuccess(const char* channel, uid_t uid, int elapsed)
 {
+	CAgoraObject::GetAgoraObject()->MuteSelf(1);
+	
 	LPAGE_JOINCHANNEL_SUCCESS lpData = new AGE_JOINCHANNEL_SUCCESS;
 
 	int nChannelLen = strlen(channel) + 1;
@@ -33,6 +35,8 @@ void CAGEngineEventHandler::onJoinChannelSuccess(const char* channel, uid_t uid,
 
 void CAGEngineEventHandler::onRejoinChannelSuccess(const char* channel, uid_t uid, int elapsed)
 {
+	CAgoraObject::GetAgoraObject()->MuteSelf(1);
+
 	LPAGE_REJOINCHANNEL_SUCCESS lpData = new AGE_REJOINCHANNEL_SUCCESS;
 
 	int nChannelLen = strlen(channel) + 1;
@@ -215,8 +219,8 @@ void CAGEngineEventHandler::onUserJoined(uid_t uid, int elapsed)
 	
 	lpData->uid = uid;
 	lpData->elapsed = elapsed;
-
-	CAgoraObject::GetAgoraObject()->GetUID(uid);
+	
+	CAgoraObject::GetAgoraObject()->AddUID(uid);
 
 	if(m_hMainWnd != NULL)
 		::PostMessage(m_hMainWnd, WM_MSGID(EID_USER_JOINED), (WPARAM)lpData, 0);

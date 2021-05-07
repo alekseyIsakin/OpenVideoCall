@@ -735,3 +735,48 @@ void CAgoraObject::DelUID(uid_t uid)
 		}
 	}
 }
+
+void CAgoraObject::MuteAllAudio(int mute)
+{
+	RtcEngineParameters rep(this->GetEngine());
+	rep.muteAllRemoteAudioStreams(mute);
+}
+
+void CAgoraObject::MuteClient(LPARAM id, int mute)
+{
+	RtcEngineParameters rep(this->GetEngine());
+
+	rep.muteRemoteAudioStream(this->GetUID(this->SearchUID(id)), mute);
+}
+
+void CAgoraObject::MuteClient(int id, int mute)
+{
+	RtcEngineParameters rep(this->GetEngine());
+
+	rep.muteRemoteAudioStream(this->GetUID(id), mute);
+}
+
+
+void CAgoraObject::MuteSelf(int mute)
+{
+	RtcEngineParameters rep(this->GetEngine());
+
+	rep.muteLocalAudioStream(mute);
+}
+
+void CAgoraObject::SwitchMute()
+{
+	if (IsMuted == 1)
+	{
+		IsMuted = 0;
+		MuteAllAudio(0);
+		MuteSelf(1);
+	}
+	else
+	{
+		IsMuted = 1;
+		MuteAllAudio(1);
+		MuteSelf(0);
+	}
+}
+

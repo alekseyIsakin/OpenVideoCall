@@ -117,12 +117,15 @@ public:
 
 	Tokens GetComplexToken();
 	void SetComplexToken(Tokens token);
+
+	
 protected:
 	CAgoraObject(void);
 
 	std::vector<int> CollectorUID;
 
 private:
+
 	DWORD	m_dwEngineFlag;
 	static  CAgoraObject	*m_lpAgoraObject;
 	static	IRtcEngine	    *m_lpAgoraEngine;
@@ -140,6 +143,8 @@ private:
 	
 //	int			m_nCodecType;
 	Tokens m_token;
+
+	bool IsMuted;
 public:
 	static CAgoraObject *GetAgoraObject(LPCTSTR lpVendorKey = NULL);
 	static void CloseAgoraObject();
@@ -151,4 +156,10 @@ public:
 	void AddUID(uid_t uid);
 	void DelUID(uid_t uid);
 	int SearchUID(uid_t uid); //Important
+	void MuteAllAudio(int mute);
+	void MuteClient(LPARAM id, int mute);
+	void MuteClient(int id, int mute);
+	void MuteSelf(int mute);
+	void SwitchMute();
+	
 };
