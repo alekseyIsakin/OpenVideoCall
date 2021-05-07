@@ -723,17 +723,7 @@ int CAgoraObject::SearchUID(uid_t uid) //Searches specific UID
 	return index;
 }
 
-int CAgoraObject::SearchUID(uid_t uid) //Searches specific UID
-{
-	int index = 0;
-	for each (uid_t id in CollectorUID)
-	{
-		if (id == uid)
-			return index;
-		index++;
-	}
-	return -1;
-}
+
 
 void CAgoraObject::DelUID(uid_t uid)
 {
