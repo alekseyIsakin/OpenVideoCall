@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+ï»¿#include "StdAfx.h"
 #include "AgoraObject.h"
 #include "AGResourceVisitor.h"
 
@@ -113,7 +113,7 @@ CAgoraObject *CAgoraObject::GetAgoraObject(LPCTSTR lpVendorKey)
 	if(m_lpAgoraEngine == NULL)
 		m_lpAgoraEngine = (IRtcEngine *)createAgoraRtcEngine();
 
-	// Èç¹ûVendorKeyÎª¿ÕÔòÖ±½Ó·µ»Ø¶ÔÏó
+	// ï¿½ï¿½ï¿½VendorKeyÎªï¿½ï¿½ï¿½ï¿½Ö±ï¿½Ó·ï¿½ï¿½Ø¶ï¿½ï¿½ï¿½
 	if (lpVendorKey == NULL)
 		return m_lpAgoraObject;
 
@@ -709,6 +709,18 @@ void CAgoraObject::AddUID(uid_t uid)
 uid_t CAgoraObject::GetUID(int ind)
 {
 	return CollectorUID.at(ind);
+}
+
+int CAgoraObject::SearchUID(uid_t uid) //Searches specific UID
+{
+	int index = 0;
+	for each (uid_t id in CollectorUID)
+	{
+		if (id == uid)
+			return index;
+		index++;
+	}
+	return index;
 }
 
 int CAgoraObject::SearchUID(uid_t uid) //Searches specific UID
