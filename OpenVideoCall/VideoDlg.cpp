@@ -260,6 +260,27 @@ LRESULT CVideoDlg::MuteClient(WPARAM wParam, LPARAM lParam)
 	rep.muteRemoteAudioStream(lpAgora->GetAgoraObject()->GetUID(lpAgora->SearchUID(lParam)), 1);
 	//
 	/*if (lpAgora->IsLocalAudioMuted()) {
+
+		lpAgora->MuteLocalAudio(FALSE);
+		m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+	}
+	else {
+		lpAgora->MuteLocalAudio(TRUE);
+		m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
+	}*/
+	return 0;
+}
+
+LRESULT CVideoDlg::MuteClient(WPARAM wParam, LPARAM lParam)
+{
+	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
+
+	RtcEngineParameters rep(*lpAgora->GetEngine());
+
+	//int ret = rep.muteLocalAudioStream(1);
+	rep.muteRemoteAudioStream(lpAgora->GetAgoraObject()->GetUID(lpAgora->SearchUID(lParam)), 1);
+	//
+	/*if (lpAgora->IsLocalAudioMuted()) {
 		lpAgora->MuteLocalAudio(FALSE);
 		m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
 	}
