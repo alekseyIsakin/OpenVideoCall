@@ -147,9 +147,8 @@ public:
 	static CAGEngineEventHandler m_EngineEventHandler;
 
 	std::vector<int> CollectAllUID();
-
+	uid_t GetUID(int utd);
 	void AddUID(uid_t uid);
-	uid_t GetUID(int ind);
 	void DelUID(uid_t uid);
 	int SearchUID(uid_t uid); //Important
 	void MuteAllAudio(int mute);
