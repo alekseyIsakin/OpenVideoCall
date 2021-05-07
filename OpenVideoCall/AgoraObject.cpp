@@ -766,7 +766,7 @@ void CAgoraObject::MuteSelf(int mute)
 	rep.muteLocalAudioStream(mute);
 }
 
-void CAgoraObject::SwitchMute()
+int CAgoraObject::SwitchMute()
 {
 	if (IsMuted == 1)
 	{
@@ -780,5 +780,11 @@ void CAgoraObject::SwitchMute()
 		MuteAllAudio(1);
 		MuteSelf(0);
 	}
+
+	return IsMuted;
 }
 
+int CAgoraObject::GetIsMuted()
+{
+	return IsMuted;
+}

@@ -61,12 +61,15 @@ protected:
 
     afx_msg void OnBnClickedBtnmessage();
     afx_msg void OnBnClickedBtnmode();
-	afx_msg void OnBnClickedBtnaudio();
+	afx_msg void OnBnClickedBtnaudio();							//important audio
 	afx_msg void OnBnClickedBtnScreenCapture();
 	afx_msg void OnBnCliekedBtnWhiteBoard();
 	afx_msg void OnBnCliekedBtnCloseWhiteBoard();
     afx_msg void OnBnClickedBtnMore();
 	
+	afx_msg void OnBnClickedBtncough();
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+
     afx_msg void OnBnClickedBtntip();
     afx_msg void OnBnClickedBtnsetup();
     afx_msg void OnBnClickedBtnfilter();
@@ -133,10 +136,12 @@ private:
 
     CAGButton       m_btnMessage;
 	CAGButton		m_btnMode;
-	CAGButton		m_btnAudio;
+	CAGButton		m_btnAudio;						//important audio
 	CAGButton		m_btnEndCall;
 	CAGButton		m_btnScrCap;
     CAGButton       m_btnMore;
+
+	CAGButton		m_btnCough;
 
 	CAGButton		m_btnShow;
 

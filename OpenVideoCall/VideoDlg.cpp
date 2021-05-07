@@ -83,6 +83,8 @@ BEGIN_MESSAGE_MAP(CVideoDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTNMODE_VIDEO, &CVideoDlg::OnBnClickedBtnmode)
 	ON_BN_CLICKED(IDC_BTNAUDIO_VIDEO, &CVideoDlg::OnBnClickedBtnaudio)
 
+	ON_BN_CLICKED(IDB_BTNMCOUGH_VIDEO, &CVideoDlg::OnBnClickedBtncough)					//может быть баг
+
     ON_BN_CLICKED(ID_IDR_VIDEOINFO, &CVideoDlg::OnBnClickedBtntip)
     ON_BN_CLICKED(ID_IDR_DEVICE, &CVideoDlg::OnBnClickedBtnsetup)
     ON_BN_CLICKED(ID_IDR_FILTER, &CVideoDlg::OnBnClickedBtnfilter)
@@ -172,6 +174,8 @@ void CVideoDlg::ShowButtonsNormal()
 	m_btnMode.ShowWindow(nShowMode);
     m_btnMore.ShowWindow(nShowMode);
 	
+	m_btnCough.SetBackImage(IDB_BTNMAUDIO_VIDEO, RGB(0x26, 0x26, 0x26));
+	m_btnCough.ShowWindow(nShowMode);
 	m_btnAudio.SetBackImage(IDB_BTNMAUDIO_VIDEO, RGB(0x26, 0x26, 0x26));
 	m_btnAudio.ShowWindow(nShowMode);
 	m_btnEndCall.SetBackImage(IDB_BTNENDCALL_VIDEO, RGB(0x26, 0x26, 0x26));
@@ -188,7 +192,8 @@ void CVideoDlg::AdjustButtonsNormal(int cx, int cy)
 {
 //	if (m_btnSetup.GetSafeHwnd() != NULL)
 //		m_btnSetup.MoveWindow(30, cy - 48, 24, 24, TRUE);
-
+	if (m_btnCough.GetSafeHwnd() != NULL)
+		m_btnCough.MoveWindow(cx / 2 - 408, cy - 60, 48, 48, TRUE);
     if(m_btnMessage.GetSafeHwnd() != NULL)
         m_btnMessage.MoveWindow(cx / 2 - 312, cy - 60, 48, 48, TRUE);
 	if (m_btnMode.GetSafeHwnd() != NULL)
@@ -354,12 +359,18 @@ void CVideoDlg::EnableSize(BOOL bEnable)
 
 //		if (m_btnSetup.GetSafeHwnd() != NULL)
 //			m_btnSetup.MoveWindow(cx / 2 - 216, cy - 84, 72, 72, TRUE);
+		if (m_btnCough.GetSafeHwnd() != NULL)
+			m_btnCough.MoveWindow(cx / 2 + 144, cy - 84, 48, 48, TRUE);
+
 		if (m_btnMode.GetSafeHwnd() != NULL)
 			m_btnMode.MoveWindow(cx / 2 - 96, cy - 84, 48, 48, TRUE);
+
 		if (m_btnAudio.GetSafeHwnd() != NULL)
 			m_btnAudio.MoveWindow(cx / 2 + 24, cy - 84, 48, 48, TRUE);
+
 		if (m_btnShow.GetSafeHwnd() != NULL)
             m_btnShow.MoveWindow(cx - 72, cy - 84, 48, 48, TRUE);
+
 		if (m_btnEndCall.GetSafeHwnd() != NULL)
 			m_btnEndCall.MoveWindow(cx - 120, cy - 84, 48, 48, TRUE);
 
@@ -404,6 +415,9 @@ void CVideoDlg::OnBnClickedBtnclose()
     // unmute local audio
     CAgoraObject::GetAgoraObject()->MuteLocalAudio(FALSE);
     m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+
+	CAgoraObject::GetAgoraObject()->MuteLocalAudio(FALSE);		//может быть баг
+	m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
 
     CAgoraObject::GetAgoraObject()->EnableScreenCapture(NULL, 0, NULL, FALSE);
     m_btnScrCap.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
@@ -495,6 +509,8 @@ void CVideoDlg::OnBnClickedBtnfullscr()
 	m_btnScrCap.ShowWindow(nShowMode);
     m_btnMore.ShowWindow(nShowMode);
 	
+	m_btnCough.ShowWindow(nShowMode);
+
 	m_btnShow.ShowWindow(nShowMode);
 
 	switch (m_nScreenMode)
@@ -544,6 +560,8 @@ void CVideoDlg::ShowControlButton(BOOL bShow)
 	m_btnAudio.ShowWindow(nShowMode);
 	m_btnShow.ShowWindow(nShowMode);
 	m_btnEndCall.ShowWindow(nShowMode);
+
+	m_btnCough.ShowWindow(nShowMode);
 }
 
 void CVideoDlg::OnBnClickedBtntip()
@@ -737,6 +755,26 @@ void CVideoDlg::OnBnClickedBtnaudio()
 	//	m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
 	//}
 }
+
+void CVideoDlg::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	CWnd::OnLButtonDown(nFlags, point);
+}
+
+void CVideoDlg::OnBnClickedBtncough()
+{
+	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
+
+	if (lpAgora->IsLocalAudioMuted() == 0)
+	{
+		
+		lpAgora->MuteSelf(1);
+		m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+
+		
+	}
+}
+
 
 LRESULT CVideoDlg::OnEIDJoinChannelSuccess(WPARAM wParam, LPARAM lParam)
 {
@@ -937,6 +975,8 @@ void CVideoDlg::InitCtrls()
 	m_btnScrCap.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNSCRCAP_VIDEO);
     m_btnMore.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNMORE_VIDEO);
 
+	m_btnCough.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDB_BTNMCOUGH_VIDEO);
+
 	m_btnShow.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNSCR_VIDEO);
 	
 	for (int nIndex = 0; nIndex < 4; nIndex++){
@@ -961,6 +1001,8 @@ void CVideoDlg::InitCtrls()
     m_btnMore.MoveWindow(rcClient.Width() / 2 + 264, rcClient.Height() - 84, 48, 48, TRUE);
     m_btnEndCall.MoveWindow(rcClient.Width() - 120, rcClient.Height() - 84, 48, 48, TRUE);
     
+	m_btnCough.MoveWindow(rcClient.Width() / 2 + 24, rcClient.Height() - 84, 48, 48, TRUE);
+
 	m_wndVideo[0].MoveWindow(0, 24, rcClient.Width(), rcClient.Height() - 96, TRUE);
 
 	m_btnMin.SetBackImage(IDB_BTNMIN, RGB(0xFF, 0x00, 0xFF));
@@ -982,6 +1024,10 @@ void CVideoDlg::InitCtrls()
 	m_btnAudio.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
 	m_btnAudio.EnableFrameEffect(FALSE);
 	m_btnAudio.SetBackImage(IDB_BTNMAUDIO_VIDEO, RGB(0x26, 0x26, 0x26));
+
+	m_btnCough.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
+	m_btnCough.EnableFrameEffect(FALSE);
+	m_btnCough.SetBackImage(IDB_BTNMAUDIO_VIDEO, RGB(0x26, 0x26, 0x26));
 	
 	m_btnShow.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
 	m_btnShow.EnableFrameEffect(FALSE);

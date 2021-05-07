@@ -315,6 +315,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="IDB_TIP_VIDEO.BMP" />
+    <Image Include="res\IDB_BTNMCOUGH_VIDEO.bmp" />
     <Image Include="res\OpenVideoCall.ico" />
     <Image Include="res\bitmap2.bmp" />
     <Image Include="res\IDB_BACKGROUND_VIDEO.bmp" />
