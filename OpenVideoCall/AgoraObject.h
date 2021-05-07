@@ -1,7 +1,10 @@
 #pragma once
 
 #include <IAgoraRtcEngine.h>
+#include <IAgoraRtcChannel.h>
 #include "AGEngineEventHandler.h"
+#include "AGChannelEventHandler.h"
+
 #include <string>
 #include "Tokens.h"
 #define AVC_VER _T("V1.12.0, Build234, 08/14/2017, SDK1.12 .0")

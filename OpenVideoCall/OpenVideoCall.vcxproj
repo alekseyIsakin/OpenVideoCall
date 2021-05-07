@@ -230,6 +230,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AGButton.h" />
+    <ClInclude Include="AGChannelEventHandler.h" />
     <ClInclude Include="AGComboBox.h" />
     <ClInclude Include="AGConfig.h" />
     <ClInclude Include="AGDesktopCaptureDlg.h" />
@@ -267,6 +268,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AGButton.cpp" />
+    <ClCompile Include="AGChannelEventHandler.cpp" />
     <ClCompile Include="AGComboBox.cpp" />
     <ClCompile Include="AGConfig.cpp" />
     <ClCompile Include="AGDesktopCaptureDlg.cpp" />

@@ -6,8 +6,8 @@ class CAGEngineEventHandler :
 	public IRtcEngineEventHandler
 {
 public:
-	CAGEngineEventHandler(void) ;
-	~CAGEngineEventHandler(void) ;
+	//CAGEngineEventHandler(void) ;
+	//~CAGEngineEventHandler(void) ;
 
 	void SetMsgReceiver(HWND hWnd = NULL) ;
 	HWND GetMsgReceiver() {return m_hMainWnd;};
@@ -45,9 +45,6 @@ public:
 	virtual void onConnectionInterrupted() override;
 
 	virtual void onUserEnableVideo(uid_t uid, bool enabled) override;
-
-	virtual void onChannelMediaRelayEvent(CHANNEL_MEDIA_RELAY_EVENT code) override;
-	virtual void onChannelMediaRelayStateChanged(CHANNEL_MEDIA_RELAY_STATE state, CHANNEL_MEDIA_RELAY_ERROR code) override;
 private:
 	HWND		m_hMainWnd;
 };

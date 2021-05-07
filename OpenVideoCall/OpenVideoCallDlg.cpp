@@ -334,7 +334,7 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 	vc.uid = 0;
 	vc.view = m_dlgVideo.GetLocalVideoWnd();
 	vc.renderMode = RENDER_MODE_TYPE::RENDER_MODE_FIT;
-
+	
 	//cancel setVideoProfile bitrate since version 2.1.0
     m_nVideoSolution = m_dlgSetup.GetVideoSolution();
    // lpRtcEngine->setVideoProfile((VIDEO_PROFILE_TYPE)m_nVideoSolution, m_dlgSetup.IsWHSwap());
@@ -350,41 +350,39 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 
 	m_dlgVideo.SetWindowText(strChannelName);
 	lpRtcEngine->setupLocalVideo(vc);
-	//lpRtcEngine->startPreview();
+	lpRtcEngine->startPreview();
 
     netToken = lpAgoraObject->GetComplexToken();
 
 	lpRtcEngine->setChannelProfile(CHANNEL_PROFILE_LIVE_BROADCASTING);
-	lpRtcEngine->setClientRole(CLIENT_ROLE_BROADCASTER);
-	
-	//lpAgoraObject->JoinChannel(
-	//	CString((*(netToken.GetTargetLngBgnItr())).langFull.c_str()), 0,
-	//	(*(netToken.GetTargetLngBgnItr())).token.c_str());
-	
-	lpAgoraObject->JoinChannel(
-		CString((*(netToken.GetRelayLngBgnItr())).langFull.c_str()), 0,
-		(*(netToken.GetRelayLngBgnItr())).token.c_str()
+
+	IChannel* pChannel = static_cast<IRtcEngine2*>(lpRtcEngine)->createChannel((*(netToken.GetTargetLngBgnItr())).langFull.c_str());
+	IChannel* pChannel2 = static_cast<IRtcEngine2*>(lpRtcEngine) -> createChannel((*(netToken.GetTargetLngBgnItr()+1)).langFull.c_str());
+
+	AGChannelEventHandler* pEvt1 = new AGChannelEventHandler;
+	AGChannelEventHandler* pEvt2 = new AGChannelEventHandler;
+	pEvt1->setMsgHandler(m_dlgVideo.GetSafeHwnd());
+	pEvt2->setMsgHandler(m_dlgVideo.GetSafeHwnd());
+	pChannel->setChannelEventHandler(pEvt1);
+	pChannel2->setChannelEventHandler(pEvt2);
+
+	ChannelMediaOptions options;
+	options.autoSubscribeAudio = 0;
+	options.autoSubscribeVideo = 0;
+
+	int res = 0;
+
+	pChannel2->setClientRole(CLIENT_ROLE_BROADCASTER);
+	res = pChannel->joinChannel((*(netToken.GetTargetLngBgnItr())).token.c_str(), "", 0, ChannelMediaOptions());
+
+	pChannel2->setClientRole(CLIENT_ROLE_BROADCASTER);
+	res = pChannel2->joinChannel(
+		(*(netToken.GetTargetLngBgnItr()+1)).token.c_str(), 
+		"", 0, 
+		options
 	);
-	
-	ChannelMediaRelayConfiguration cmrc;
-	ChannelMediaInfo*cnSrc1 = new ChannelMediaInfo;
+	res = pChannel2->publish();
 
-	cnSrc1->channelName		= (*(netToken.GetTargetLngBgnItr())).langFull.c_str();
-	cnSrc1->token			= (*(netToken.GetTargetLngBgnItr())).token.c_str();
-	cnSrc1->uid				= 0;
-
-	cmrc.srcInfo   = cnSrc1;
-
-
-	ChannelMediaInfo*cnDest1 = new ChannelMediaInfo;
-	cnDest1->channelName		= (*(netToken.GetTargetLngBgnItr()+1)).langFull.c_str();
-	cnDest1->token				= (*(netToken.GetTargetLngBgnItr()+1)).token.c_str();
-	cnDest1->uid				= 0;
-
-	cmrc.destInfos = cnDest1;
-	cmrc.destCount = 1;
-
-	lpRtcEngine->startChannelMediaRelay(cmrc);
 	lpAgoraObject->SetMsgHandlerWnd(m_dlgVideo.GetSafeHwnd());
 
 	return 0;

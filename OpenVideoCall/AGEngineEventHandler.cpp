@@ -2,13 +2,13 @@
 #include "AGEngineEventHandler.h"
 #include "AGEventDef.h"
 
-CAGEngineEventHandler::CAGEngineEventHandler(void)
-{
-}
-
-CAGEngineEventHandler::~CAGEngineEventHandler(void)
-{
-}
+//CAGEngineEventHandler::CAGEngineEventHandler(void)
+//{
+//}
+//
+//CAGEngineEventHandler::~CAGEngineEventHandler(void)
+//{
+//}
 
 void CAGEngineEventHandler::SetMsgReceiver(HWND hWnd)
 {
@@ -334,13 +334,5 @@ void CAGEngineEventHandler::onUserEnableVideo(uid_t uid, bool enabled)
 //	if (m_hMainWnd != NULL)
 //		::PostMessage(m_hMainWnd, WM_MSGID(EID_CONNECTION_LOST), 0, 0);
 
-}
-
-void CAGEngineEventHandler::onChannelMediaRelayEvent(CHANNEL_MEDIA_RELAY_EVENT code)
-{
-}
-
-void CAGEngineEventHandler::onChannelMediaRelayStateChanged(CHANNEL_MEDIA_RELAY_STATE state, CHANNEL_MEDIA_RELAY_ERROR code)
-{
 }
 
