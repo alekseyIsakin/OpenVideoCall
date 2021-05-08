@@ -158,7 +158,7 @@ BOOL CAGVideoWnd::OnEraseBkgnd(CDC* pDC)
 	return TRUE;
 }
 
-void CAGVideoWnd::SetUID(UINT nUID)
+void CAGVideoWnd::SetUID(int nUID)
 {
 	m_nUID = nUID;
 
@@ -168,9 +168,19 @@ void CAGVideoWnd::SetUID(UINT nUID)
 		m_wndInfo.ShowWindow(SW_SHOW);
 }
 
-UINT CAGVideoWnd::GetUID()
+void CAGVideoWnd::SetChID(LPCSTR chr)
+{
+	strcpy_s(m_channelID, 64, chr);
+}
+
+int CAGVideoWnd::GetUID()
 {
 	return m_nUID;
+}
+
+LPCSTR CAGVideoWnd::GetChID()
+{
+	return LPCSTR(m_channelID);
 }
 
 BOOL CAGVideoWnd::IsWndFree()

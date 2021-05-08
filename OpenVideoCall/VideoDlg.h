@@ -182,7 +182,7 @@ private:	// data
     BOOL            m_bShowInfo;
 
 	POSITION		ListWindowGetHeadPos(CHANNEL_TYPE channel);
-	AGVIDEO_WNDINFO ListWindowGetNextPos(CHANNEL_TYPE channel, POSITION pos);
+	AGVIDEO_WNDINFO ListWindowGetNextPos(CHANNEL_TYPE channel, POSITION&pos);
 	
 	AGVIDEO_WNDINFO ListWindowGetAt(CHANNEL_TYPE channel, POSITION pos);
 	void			ListWindowRemoveAt(CHANNEL_TYPE channel, POSITION pos);

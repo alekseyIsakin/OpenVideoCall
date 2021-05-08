@@ -262,7 +262,7 @@ POSITION CVideoDlg::ListWindowGetHeadPos(CHANNEL_TYPE channel)
 	}
 }
 
-CVideoDlg::AGVIDEO_WNDINFO CVideoDlg::ListWindowGetNextPos(CHANNEL_TYPE channel, POSITION pos)
+CVideoDlg::AGVIDEO_WNDINFO CVideoDlg::ListWindowGetNextPos(CHANNEL_TYPE channel, POSITION& pos)
 {
 	switch (channel)
 	{
@@ -882,7 +882,7 @@ LRESULT CVideoDlg::OnEIDUserJoined(WPARAM wParam, LPARAM lParam)
 	delete lpData;
 
 
-	//RebindVideoWnd();
+	RebindVideoWnd();
 
 	return 0;
 }
@@ -1218,15 +1218,15 @@ void CVideoDlg::RebindVideoWnd()
 	if (m_wndVideo[0].GetSafeHwnd() == NULL || m_wndLocal.GetSafeHwnd() == NULL)
 		return;
 
-	VideoCanvas canvas;
 
-	canvas.renderMode = RENDER_MODE_FIT;
 
 	POSITION pos = m_listWndInfoHost.GetHeadPosition();
 	if (pos != NULL) {
-		AGVIDEO_WNDINFO& agvWndInfo = m_listWndInfoHost.GetNext(pos);
-		canvas.uid = agvWndInfo.nUID;
+		VideoCanvas canvas;
+		canvas.renderMode = RENDER_MODE_FIT;
+		AGVIDEO_WNDINFO& agvWndInfo = m_listWndInfoHost.GetAt(pos);
 
+		canvas.uid = agvWndInfo.nUID;
 		strcpy_s(canvas.channelId, 64, agvWndInfo.channelID);
 
 		canvas.view = m_wndVideo[0].GetSafeHwnd();
@@ -1241,17 +1241,20 @@ void CVideoDlg::RebindVideoWnd()
 	else
 		m_wndVideo[0].SetUID(0);
 
+	pos = m_listWndInfoDest.GetHeadPosition();
 	for (int nIndex = 1; nIndex < 4; nIndex++) {
 		if (pos != NULL) {
 			AGVIDEO_WNDINFO &agvWndInfo = m_listWndInfoDest.GetNext(pos);
-			canvas.uid = agvWndInfo.nUID;
+			VideoCanvas canvas;
+			canvas.renderMode = RENDER_MODE_FIT;
 
+			canvas.uid = agvWndInfo.nUID;
 			strcpy_s(canvas.channelId, 64, agvWndInfo.channelID);
 
 			canvas.view = m_wndVideo[nIndex].GetSafeHwnd();
 			agvWndInfo.nIndex = nIndex;
 
-			CAgoraObject::GetEngine()->setupRemoteVideo(canvas);
+			int ret = CAgoraObject::GetEngine()->setupRemoteVideo(canvas);
 			m_wndVideo[nIndex].SetUID(canvas.uid);
 			m_wndVideo[nIndex].SetVideoResolution(agvWndInfo.nWidth, agvWndInfo.nHeight);
 			m_wndVideo[nIndex].SetFrameRateInfo(agvWndInfo.nFramerate);
