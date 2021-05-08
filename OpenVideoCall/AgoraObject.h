@@ -140,6 +140,7 @@ private:
 	
 //	int			m_nCodecType;
 	Tokens m_token;
+	uid_t m_hostUID;
 public:
 	static CAgoraObject *GetAgoraObject(LPCTSTR lpVendorKey = NULL);
 	static void CloseAgoraObject();
