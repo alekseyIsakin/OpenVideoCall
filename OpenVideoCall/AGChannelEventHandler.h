@@ -140,6 +140,9 @@ public:
 		lpData->delay = stats.delay;
 		lpData->width = stats.width;
 		lpData->height = stats.height;
+		
+		strcpy_s(lpData->channelID, 64, rtcChannel->channelId());
+
 		lpData->rendererOutputFrameRate = stats.rendererOutputFrameRate;
 		lpData->receivedBitrate = stats.receivedBitrate;
 		lpData->decoderOutputFrameRate = stats.decoderOutputFrameRate;

@@ -770,34 +770,35 @@ LRESULT CVideoDlg::OnEIDUserJoined(WPARAM wParam, LPARAM lParam)
 	BOOL bFound = FALSE;
 	POSITION pos = m_listWndInfo.GetHeadPosition();
 
-	switch ((CHANNEL_TYPE)lParam)
+	while (pos != NULL) {
+		AGVIDEO_WNDINFO& agvWndInfo = m_listWndInfo.GetNext(pos);
+		if (agvWndInfo.nUID == lpData->uid) {
+			bFound = TRUE;
+			break;
+		}
+	}
+
+	if (!bFound) {
+		AGVIDEO_WNDINFO agvWndInfo;
+		memset(&agvWndInfo, 0, sizeof(AGVIDEO_WNDINFO));
+		agvWndInfo.nUID = lpData->uid;
+		strcpy_s(agvWndInfo.channelID, 64, lpData->channelID);
+		m_listWndInfo.AddTail(agvWndInfo);
+	}
+	delete lpData;
+	
+	/*switch ((CHANNEL_TYPE)lParam)
 	{
 	case CHANNEL_TYPE::CHANNEL_DEST:
-		break;
-	case CHANNEL_TYPE::CHANNEL_SRC:
 		CAgoraObject::GetAgoraObject()->SetHostUID(lpData->uid);
 
-		while (pos != NULL) {
-			AGVIDEO_WNDINFO& agvWndInfo = m_listWndInfo.GetNext(pos);
-			if (agvWndInfo.nUID == lpData->uid) {
-				bFound = TRUE;
-				break;
-			}
-		}
 
-		if (!bFound) {
-			AGVIDEO_WNDINFO agvWndInfo;
-			memset(&agvWndInfo, 0, sizeof(AGVIDEO_WNDINFO));
-			agvWndInfo.nUID = lpData->uid;
-			strcpy_s(agvWndInfo.channelID, 64, lpData->channelID);
-			m_listWndInfo.AddTail(agvWndInfo);
-		}
-
-		delete lpData;
+		break;
+	case CHANNEL_TYPE::CHANNEL_SRC:
 		break;
 	default:
 		break;
-	}
+	}*/
 
 	//RebindVideoWnd();
 
@@ -847,6 +848,7 @@ LRESULT CVideoDlg::OnRemoteVideoStat(WPARAM wParam, LPARAM lParam)
 		if (rWndInfo.nUID == lpData->uid) {
 			rWndInfo.nFramerate = lpData->rendererOutputFrameRate;
 			rWndInfo.nBitrate = lpData->receivedBitrate;
+			strcpy_s(rWndInfo.channelID, 64, lpData->channelID);
 			rWndInfo.nWidth = lpData->width;
 			rWndInfo.nHeight = lpData->height;
 			m_wndVideo[rWndInfo.nIndex].SetFrameRateInfo(rWndInfo.nFramerate);

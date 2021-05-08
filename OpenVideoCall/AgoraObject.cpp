@@ -281,7 +281,6 @@ BOOL CAgoraObject::JoinChannel(LPCTSTR lpChannelName, UINT nUID, LPCSTR lpChanne
 BOOL CAgoraObject::LeaveCahnnel()
 {
 	int nRet = m_lpAgoraEngine->leaveChannel();
-
 	return nRet == 0 ? TRUE : FALSE;
 }
 
@@ -329,7 +328,7 @@ BOOL CAgoraObject::JoinChannelDest(LPCTSTR lpChannelName, LPCSTR token, UINT nUI
 	options.autoSubscribeAudio = 0;
 	options.autoSubscribeVideo = 0;
 	
-	m_ChannelSrcEventHandler.SetChannelType(CHANNEL_TYPE::CHANNEL_DEST);
+	m_ChannelDestEventHandler.SetChannelType(CHANNEL_TYPE::CHANNEL_DEST);
 	m_channelDest->setClientRole(CLIENT_ROLE_BROADCASTER);
 	m_channelDest->setChannelEventHandler(&m_ChannelDestEventHandler);
 	m_channelDest->joinChannel(token, info, nUID, options);

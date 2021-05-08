@@ -187,6 +187,8 @@ typedef struct _AGE_REMOTE_VIDEO_STAT
 	int decoderOutputFrameRate;
 	int rendererOutputFrameRate;
 
+	char channelID[64];
+
 } AGE_REMOTE_VIDEO_STAT, *PAGE_REMOTE_VIDEO_STAT, *LPAGE_REMOTE_VIDEO_STAT;
 
 #define EID_REMOTE_VIDEO_STAT				0x00000017
