@@ -39,7 +39,9 @@ public:
 	void ShowControlButton(BOOL bShow = TRUE);
 
 	void UpdateDestCBox(Tokens token, int curSel);
-
+	void UpdateRelayCBox(Tokens token, int curSel);
+protected:
+	int CollectSelInd();
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
 	virtual BOOL OnInitDialog();
@@ -121,7 +123,8 @@ protected:
 	void AdjustSizeVideo4(int cx, int cy);
 	void AdjustSizeVideoMulti(int cx, int cy);
 
-	void OnCbnSelchangeCmbLang();
+	void OnCbnSelchangeCmbDest();
+	void OnCbnSelchangeCmb();
 private:
 	CBrush			m_brHead;
 

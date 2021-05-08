@@ -718,6 +718,7 @@ BOOL CAgoraObject::SendChatMessage(int nStreamID, LPCTSTR lpChatMessage)
     int nUTF8Len = ::MultiByteToWideChar(CP_UTF8, lpChatMessage, nMessageLen, szUTF8, 256);
 #endif
 
+	CString s(m_channelTransl->channelId());
     int nRet = m_channelTransl->sendStreamMessage(nStreamID, szUTF8, nUTF8Len);
 
     return nRet == 0 ? TRUE : FALSE;

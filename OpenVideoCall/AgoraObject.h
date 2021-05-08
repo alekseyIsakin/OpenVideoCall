@@ -132,6 +132,7 @@ public:
 	void SetHostUID(uid_t uid);
 
 	void TogglePublishChannel(CHANNEL_TYPE channel);
+
 protected:
 	CAgoraObject(void);
 

@@ -310,8 +310,11 @@ LRESULT COpenVideoCallDlg::OnNextPage(WPARAM wParam, LPARAM lParam)
 
 LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 {
-	IRtcEngine		*lpRtcEngine = CAgoraObject::GetEngine();
-	CAgoraObject	*lpAgoraObject = CAgoraObject::GetAgoraObject();
+	IRtcEngine		*lpRtcEngine	= CAgoraObject::GetEngine();
+	CAgoraObject	*lpAgoraObject	= CAgoraObject::GetAgoraObject();
+	int				indDest			= lParam % 1000; // lParam % 1000 - index select item in RelayComboBox
+	int				indRelay		= lParam / 1000; // lParam / 1000 - index select item in DestComboBox
+
     lpAgoraObject->SetDefaultParameters();
 
 	//10482357
@@ -325,10 +328,12 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 		return -1;
 
 	lpAgoraObject->SetComplexToken(netToken);
-	m_dlgVideo.UpdateDestCBox(netToken, 0);
 	m_dlgVideo.MoveWindow(0, 0, 960, 720, 1);
 	m_dlgVideo.ShowWindow(SW_SHOW);
 	m_dlgVideo.CenterWindow();
+
+	m_dlgVideo.UpdateDestCBox (netToken, indDest);
+	m_dlgVideo.UpdateRelayCBox(netToken, indRelay);
 
 	VideoCanvas vc;
 
@@ -360,15 +365,18 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 
 	int ret = 0;
 
-	langHolder Host		= *(netToken.GetTargetLngBgnItr());
-	langHolder LangDest = *(netToken.GetTargetLngBgnItr()+1);
-	langHolder HostRelay= *(netToken.GetRelayLngBgnItr());
+	langHolder Host		= *(netToken.GetTargetLngBgnItr() + indRelay);		// Source stream
+	langHolder LangDest = *(netToken.GetTargetLngBgnItr() + indDest);		// Destination stream
+	langHolder LangRelay= *(netToken.GetRelayLngBgnItr()  + indDest);		// Translators stream
 
-	ret = lpAgoraObject->JoinChannelTransl(CString(HostRelay.langFull.c_str()), HostRelay.token.c_str(), 0);
+	ret = lpAgoraObject->JoinChannelTransl(CString(LangRelay.langFull.c_str()), LangRelay.token.c_str(), 0);
 	ret = lpAgoraObject->JoinChannelDest(CString(LangDest.langFull.c_str()), LangDest.token.c_str(), 0 );
 	ret = lpAgoraObject->JoinChannelSrc(CString(Host.langFull.c_str()), Host.token.c_str(), 0);
-
-	lpAgoraObject->TogglePublishChannel(CHANNEL_TYPE::CHANNEL_DEST);
+	
+	lpAgoraObject->TogglePublishChannel(indDest == indRelay ?
+		CHANNEL_TYPE::CHANNEL_TRANSL :
+		CHANNEL_TYPE::CHANNEL_DEST  
+	);
 	lpAgoraObject->SetMsgHandlerWnd(m_dlgVideo.GetSafeHwnd());
 
 	return 0;
@@ -383,7 +391,7 @@ LRESULT COpenVideoCallDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 	lpAgoraObject->LeaveTranslChannel();
 	lpAgoraObject->LeaveCahnnel();
 
-	lpAgoraObject->GetEngine()->stopPreview();
+	//lpAgoraObject->GetEngine()->stopPreview();
     
 	m_dlgEnterChannel.CleanEncryptionSecret();
 	

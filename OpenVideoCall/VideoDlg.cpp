@@ -96,15 +96,19 @@ BEGIN_MESSAGE_MAP(CVideoDlg, CDialogEx)
 //	ON_BN_CLICKED(ID_WHITEBOARD_HOSTMODE, &CVideoDlg::OnBnClickedHostMode)
 //	ON_BN_CLICKED(ID_WHITEBOARD_GUESTMODE, &CVideoDlg::OnBnClickedGuestMode)
 
-	ON_CBN_SELCHANGE(IDC_CBXROLE_VIDEO, &CVideoDlg::OnCbnSelchangeCmbLang)
+	ON_CBN_SELCHANGE(IDC_CBXRDEST_VIDEO, &CVideoDlg::OnCbnSelchangeCmb)
+	ON_CBN_SELCHANGE(IDC_CBXRELAY_VIDEO, &CVideoDlg::OnCbnSelchangeCmb)
 
 	ON_WM_SHOWWINDOW()
     ON_WM_MOVE()
 END_MESSAGE_MAP()
 
-void CVideoDlg::OnCbnSelchangeCmbLang() 
+void CVideoDlg::OnCbnSelchangeCmb()
 {
+	int curSel = CollectSelInd();
 
+	OnBnClickedBtnclose();
+	GetParent()->SendMessage(WM_JOINCHANNEL, 0, curSel);
 }
 // CVideoDlg
 
@@ -113,10 +117,10 @@ void CVideoDlg::UpdateDestCBox(Tokens token, int curSel)
 	int nIndex = 0;
 	m_cmbDest.ResetContent();
 
-	m_cmbDest.InsertString(nIndex, _T("Off"));
-	nIndex++;
+	//m_cmbDest.InsertString(nIndex, _T("Off"));
+	//nIndex++;
 
-	for (auto langIt = token.GetTargetLngBgnItr()+1; langIt != token.GetTargetLngEndItr(); langIt++) {
+	for (auto langIt = token.GetTargetLngBgnItr(); langIt != token.GetTargetLngEndItr()-1; langIt++) {
 
 		CString str((*langIt).langShort.c_str());
 		m_cmbDest.InsertString(nIndex, str);
@@ -125,6 +129,24 @@ void CVideoDlg::UpdateDestCBox(Tokens token, int curSel)
 	m_cmbDest.SetCurSel(curSel);
 }
 
+void CVideoDlg::UpdateRelayCBox(Tokens token, int curSel)
+{
+	int nIndex = 0;
+	m_cmbRelay.ResetContent();
+
+	for (auto langIt = token.GetTargetLngBgnItr(); langIt != token.GetTargetLngEndItr(); langIt++) {
+
+		CString str((*langIt).langShort.c_str());
+		m_cmbRelay.InsertString(nIndex, str);
+		nIndex++;
+	}
+	m_cmbRelay.SetCurSel(curSel);
+}
+int CVideoDlg::CollectSelInd()
+{
+	return  m_cmbDest.GetCurSel() + 
+			m_cmbRelay.GetCurSel() * 1000;
+}
 void CVideoDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CDialogEx::OnSize(nType, cx, cy);
@@ -226,9 +248,11 @@ void CVideoDlg::AdjustButtonsNormal(int cx, int cy)
 	if (m_btnShow.GetSafeHwnd() != NULL)
 		m_btnShow.MoveWindow(cx - 72, cy - 48, 48, 48, TRUE);
 
-
 	if (m_cmbDest.GetSafeHwnd() != NULL)
-		m_cmbDest.MoveWindow(cx / 2 + 125, cy - 50, 120, 42, TRUE);;
+		m_cmbDest.MoveWindow(cx / 2 + 170, cy - 50, 60, 42, TRUE);
+
+	if (m_cmbRelay.GetSafeHwnd() != NULL)
+		m_cmbRelay.MoveWindow(cx / 2 - 425, cy - 50, 60, 42, TRUE);;
 }
 
 void CVideoDlg::AdjustSizeVideo1(int cx, int cy)
@@ -1048,6 +1072,7 @@ void CVideoDlg::InitCtrls()
     m_btnMore.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNMORE_VIDEO);
 
 	m_cmbDest.Create(WS_VISIBLE | WS_CHILD | CBS_AUTOHSCROLL | CBS_DROPDOWNLIST, CRect(0, 0, 1, 1), this, IDC_CBXRDEST_VIDEO);
+	m_cmbRelay.Create(WS_VISIBLE | WS_CHILD | CBS_AUTOHSCROLL | CBS_DROPDOWNLIST, CRect(0, 0, 1, 1), this, IDC_CBXRELAY_VIDEO);
 
 	m_btnShow.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNSCR_VIDEO);
 	
@@ -1074,6 +1099,7 @@ void CVideoDlg::InitCtrls()
     m_btnEndCall.MoveWindow(rcClient.Width() - 120, rcClient.Height() - 84, 48, 48, TRUE);
 
 	m_cmbDest.MoveWindow(rcClient.Width() - 80, rcClient.Height() - 84, 300, 48, TRUE);
+	m_cmbRelay.MoveWindow(rcClient.Width() - 80, rcClient.Height() - 84, 300, 48, TRUE);
 
 	m_wndVideo[0].MoveWindow(0, 24, rcClient.Width(), rcClient.Height() - 96, TRUE);
 
