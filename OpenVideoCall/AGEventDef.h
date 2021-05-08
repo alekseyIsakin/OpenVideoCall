@@ -7,7 +7,7 @@
 typedef struct _AGE_JOINCHANNEL_SUCCESS
 {
 	char	*channel;
-	uid_t	uid;
+	int		uid;
 	int		elapsed;
 
 } AGE_JOINCHANNEL_SUCCESS, *PAGE_JOINCHANNEL_SUCCESS, *LPAGE_JOINCHANNEL_SUCCESS;
@@ -28,7 +28,7 @@ typedef struct _AGE_ERROR
 #define EID_ERROR						0x00000003
 
 typedef struct _AGE_AUDIO_QUALITY {
-	uid_t			uid;
+	int				uid;
 	int				quality;
 	unsigned short	delay;
 	unsigned short	lost;
@@ -39,7 +39,7 @@ typedef struct _AGE_AUDIO_QUALITY {
 
 typedef struct _AGE_AUDIO_TRANSPORT_QUALITY
 {
-	uid_t			uid; 
+	int				uid;
 	unsigned short	delay;
 	unsigned short	lost;
 
@@ -113,7 +113,7 @@ typedef struct _AGE_FIRST_LOCAL_VIDEO_FRAME
 
 typedef struct _AGE_FIRST_REMOTE_VIDEO_DECODED
 {
-	uid_t	uid;
+	int		uid;
 	int		width;
 	int		height;
 	int		elapsed;
@@ -129,7 +129,7 @@ typedef AGE_FIRST_REMOTE_VIDEO_DECODED AGE_FIRST_REMOTE_VIDEO_FRAME, *PAGE_FIRST
 
 typedef struct _AGE_USER_JOINED
 {
-	uid_t	uid;
+	int	uid;
 	int		elapsed;
 
 	char channelID[64];
@@ -140,7 +140,7 @@ typedef struct _AGE_USER_JOINED
 
 typedef struct _AGE_USER_OFFLINE
 {
-	uid_t	uid;
+	int	uid;
 	USER_OFFLINE_REASON_TYPE		reason;
 
 } AGE_USER_OFFLINE, *PAGE_USER_OFFLINE, *LPAGE_USER_OFFLINE;
@@ -149,7 +149,7 @@ typedef struct _AGE_USER_OFFLINE
 
 typedef struct _AGE_USER_MUTE_AUDIO
 {
-	uid_t uid;
+	int uid;
 	bool  muted;
 
 } AGE_USER_MUTE_AUDIO, *PAGE_USER_MUTE_AUDIO, *LPAGE_USER_MUTE_AUDIO;
@@ -179,7 +179,7 @@ typedef struct _AGE_LOCAL_VIDEO_STAT
 
 typedef struct _AGE_REMOTE_VIDEO_STAT
 {
-	uid_t uid;
+	int uid;
 	int delay;
 	int width;
 	int height;
@@ -197,7 +197,7 @@ typedef struct _AGE_REMOTE_VIDEO_STAT
 #define EID_VENDOR_MESSAGE					0x0000001A
 typedef struct _AGE_VENDOR_MESSAGE
 {
-	uid_t uid;
+	int uid;
 	char* data;
 	size_t length;
 
@@ -238,7 +238,7 @@ typedef struct _AGE_APICALL_EXECUTED
 
 typedef struct _AGE_STREAM_MESSAGE
 {
-    uid_t       uid;
+	int       uid;
     int         streamId;
     char        *data;
     size_t      length;

@@ -384,11 +384,13 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 LRESULT COpenVideoCallDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 {
 	CAgoraObject	*lpAgoraObject = CAgoraObject::GetAgoraObject();
+	lpAgoraObject->GetEngine()->stopPreview();
 
-	lpAgoraObject->LeaveCahnnel();
 	lpAgoraObject->LeaveSrcChannel();
 	lpAgoraObject->LeaveDestChannel();
-    m_dlgEnterChannel.CleanEncryptionSecret();
+	lpAgoraObject->LeaveCahnnel();
+    
+	m_dlgEnterChannel.CleanEncryptionSecret();
 	
 	return 0;
 }

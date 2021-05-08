@@ -772,6 +772,8 @@ LRESULT CVideoDlg::OnEIDUserJoined(WPARAM wParam, LPARAM lParam)
 
 	switch ((CHANNEL_TYPE)lParam)
 	{
+	case CHANNEL_TYPE::CHANNEL_DEST:
+		break;
 	case CHANNEL_TYPE::CHANNEL_SRC:
 		CAgoraObject::GetAgoraObject()->SetHostUID(lpData->uid);
 
@@ -793,13 +795,11 @@ LRESULT CVideoDlg::OnEIDUserJoined(WPARAM wParam, LPARAM lParam)
 
 		delete lpData;
 		break;
-	case CHANNEL_TYPE::CHANNEL_DEST:
-		break;
 	default:
 		break;
 	}
 
-		RebindVideoWnd();
+	//RebindVideoWnd();
 
 	return 0;
 }

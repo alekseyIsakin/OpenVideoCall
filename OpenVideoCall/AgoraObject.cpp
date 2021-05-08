@@ -280,7 +280,6 @@ BOOL CAgoraObject::JoinChannel(LPCTSTR lpChannelName, UINT nUID, LPCSTR lpChanne
 
 BOOL CAgoraObject::LeaveCahnnel()
 {
-	m_lpAgoraEngine->stopPreview();
 	int nRet = m_lpAgoraEngine->leaveChannel();
 
 	return nRet == 0 ? TRUE : FALSE;
