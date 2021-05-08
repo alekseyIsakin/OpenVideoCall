@@ -386,6 +386,8 @@ void CAGVideoWnd::OnVideoMuteClick() //Webcam mute
 	if (bHidden == FALSE)
 	{
 		::SendMessage(GetParent()->GetSafeHwnd(), WM_VIDEOMUTECLIENT, (WPARAM)this, (LPARAM)m_nUID);
+		Sleep(1); //Waits for video stream to end
+		SetBackImage(IDB_BACKGROUND_VIDEO, 96, 96, RGB(0x44, 0x44, 0x44));
 		bHidden = TRUE;
 	}
 	else
@@ -405,11 +407,9 @@ void CAGVideoWnd::InitCtrls()
 	m_btnShowVid.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTN_VIDEO);
 
 	m_btnEnableAudio.MoveWindow(rcClient.Width() - 48, rcClient.Height() - 84, 48, 48, FALSE);
-	//m_btnEnableAudio.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x00, 0x00, 0x00));
 	m_btnEnableAudio.SetBackImage(IDB_BTNMAUDIO_VIDEO, RGB(0x00, 0x00, 0x00));
 
 	m_btnShowVid.MoveWindow(rcClient.Width() - 105, rcClient.Height() - 84, 48, 48, FALSE);
-	//m_btnShowVid.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x00, 0x00, 0x00));
 	m_btnShowVid.SetBackImage(IDB_BTNVIDEO_VIDEO, RGB(0x00, 0x00, 0x00));
 
 	m_btnShowVid.ShowWindow(1);

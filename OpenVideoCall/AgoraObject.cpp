@@ -748,7 +748,7 @@ void CAgoraObject::MuteClient(LPARAM id, int mute) //Searches id and mutes clien
 {
 	RtcEngineParameters rep(this->GetEngine());
 
-	rep.muteRemoteAudioStream(this->GetUID(this->SearchUID(id)), mute);
+	rep.muteRemoteAudioStream(id, mute);
 }
 
 void CAgoraObject::MuteClient(int id, int mute) //Mutes provided client by its id

@@ -279,8 +279,9 @@ LRESULT CVideoDlg::HideClient(WPARAM wParam, LPARAM lParam) //Hides user's webca
 	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
 
 	RtcEngineParameters rep(*lpAgora->GetEngine());
+	
+	rep.muteRemoteVideoStream(lParam, 1);
 
-	rep.muteRemoteVideoStream(lpAgora->GetUID(lpAgora->SearchUID(lParam)), 1);
 	return 0;
 }
 
@@ -290,7 +291,8 @@ LRESULT CVideoDlg::UnHideClient(WPARAM wParam, LPARAM lParam) //Shows user's web
 
 	RtcEngineParameters rep(*lpAgora->GetEngine());
 
-	rep.muteRemoteVideoStream(lpAgora->GetUID(lpAgora->SearchUID(lParam)), 0);
+	rep.muteRemoteVideoStream(lParam, 0);
+
 	return 0;
 }
 
@@ -1021,7 +1023,6 @@ void CVideoDlg::ShowVideo1()
 	}
 
 	m_nScreenMode = SCREEN_VIDEO1;
-
 	ShowButtonsNormal();
 }
 
@@ -1039,7 +1040,6 @@ void CVideoDlg::ShowVideo4()
 	m_wndVideo[1].MoveWindow(m_rcVideoArea.Width() / 2, m_rcVideoArea.top, m_rcVideoArea.Width() / 2, m_rcVideoArea.Height() / 2, FALSE);
 	m_wndVideo[2].MoveWindow(0, m_rcVideoArea.top + m_rcVideoArea.Height() / 2, m_rcVideoArea.Width() / 2, m_rcVideoArea.Height() / 2, FALSE);
 	m_wndVideo[3].MoveWindow(m_rcVideoArea.Width() / 2, m_rcVideoArea.top + m_rcVideoArea.Height() / 2, m_rcVideoArea.Width() / 2, m_rcVideoArea.Height() / 2, FALSE);
-	m_wndVideo[0].SetBigShowFlag(TRUE);
 
 	CRect	rcLocal;
 	int		nRemoteCount = m_listWndInfo.GetCount();
