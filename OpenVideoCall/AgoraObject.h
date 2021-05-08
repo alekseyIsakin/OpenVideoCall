@@ -68,9 +68,11 @@ public:
 
 	BOOL JoinChannelSrc(LPCTSTR channel, LPCSTR token, UINT nUID, LPCSTR info = "");
 	BOOL JoinChannelDest(LPCTSTR channel, LPCSTR token, UINT nUID, LPCSTR info = "");
+	BOOL JoinChannelTransl(LPCTSTR channel, LPCSTR token, UINT nUID, LPCSTR info = "");
 
 	BOOL LeaveDestChannel();
 	BOOL LeaveSrcChannel();
+	BOOL LeaveTranslChannel();
 
 	CString GetChanelName();
 	CString GetCallID();
@@ -125,6 +127,9 @@ public:
 
 	Tokens GetComplexToken();
 	void SetComplexToken(Tokens token);
+
+	uid_t GetHostUID();
+	void SetHostUID(uid_t uid);
 protected:
 	CAgoraObject(void);
 
@@ -134,11 +139,13 @@ private:
 	static	IRtcEngine	    *m_lpAgoraEngine;
 	static	CString			m_strVendorKey;
 
-	IChannel* m_channel_src;
-	IChannel* m_channel_dest;
+	IChannel* m_channelSrc;
+	IChannel* m_channelDest;
+	IChannel* m_channelTransl;
 	
 	AGChannelEventHandler m_ChannelSrcEventHandler;
 	AGChannelEventHandler m_ChannelDestEventHandler;
+	AGChannelEventHandler m_ChannelTranslEventHandler;
 
 	UINT		m_nSelfUID;
 	CString		m_strChannelName;
@@ -152,6 +159,7 @@ private:
 
 //	int			m_nCodecType;
 	Tokens m_token;
+	uid_t m_hostUID;
 public:
 	static CAgoraObject *GetAgoraObject(LPCTSTR lpVendorKey = NULL);
 	static void CloseAgoraObject();

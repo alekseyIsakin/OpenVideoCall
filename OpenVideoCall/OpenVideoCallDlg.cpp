@@ -51,6 +51,7 @@ BEGIN_MESSAGE_MAP(COpenVideoCallDlg, CDialogEx)
 	
 	ON_BN_CLICKED(IDC_BTNMIN, &COpenVideoCallDlg::OnBnClickedBtnmin)
 	ON_BN_CLICKED(IDC_BTNCLOSE, &COpenVideoCallDlg::OnBnClickedBtnclose)
+	ON_BN_CLICKED(IDC_BTNCLOSE, &COpenVideoCallDlg::OnBnClickedBtnclose)
 
     ON_MESSAGE(WM_MSGID(EID_LASTMILE_QUALITY), &COpenVideoCallDlg::OnLastmileQuality)
 
@@ -357,19 +358,23 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 	lpRtcEngine->setChannelProfile(CHANNEL_PROFILE_LIVE_BROADCASTING);
 	lpRtcEngine->setClientRole(CLIENT_ROLE_BROADCASTER);
 
+	int ret = 0;
+
 	//lpAgoraObject->JoinChannel(
-	//	CString((*(netToken.GetTargetLngBgnItr()+1)).langFull.c_str()), 0,
+	//	CString((*(netToken.GetTargetLngBgnItr() + 1)).langFull.c_str()), 0,
 	//	(*(netToken.GetTargetLngBgnItr() + 1)).token.c_str()
 	//);
 
-	lpAgoraObject->JoinChannelSrc(
+
+	ret = lpAgoraObject->JoinChannelSrc(
 		CString((*(netToken.GetTargetLngBgnItr())).langFull.c_str()),
 		(*(netToken.GetTargetLngBgnItr())).token.c_str(), 0
 	);
-	//lpAgoraObject->JoinChannelDest(
-	//	CString((*(netToken.GetTargetLngBgnItr()+1)).langFull.c_str()),
-	//	(*(netToken.GetTargetLngBgnItr()+1)).token.c_str(), 0
-	//);
+
+	ret = lpAgoraObject->JoinChannelDest(
+		CString((*(netToken.GetTargetLngBgnItr()+1)).langFull.c_str()),
+		(*(netToken.GetTargetLngBgnItr()+1)).token.c_str(), 0
+	);
 
 	lpAgoraObject->SetMsgHandlerWnd(m_dlgVideo.GetSafeHwnd());
 

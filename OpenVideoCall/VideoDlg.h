@@ -169,6 +169,8 @@ private:	// data
 		int		nFramerate;
 		int		nCodec;
 
+		char channelID[64];
+
 	} AGVIDEO_WNDINFO, *PAGVIDEO_WNDINFO, *LPAGVIDEO_WNDINFO;
 
 	CList<AGVIDEO_WNDINFO>	m_listWndInfo;

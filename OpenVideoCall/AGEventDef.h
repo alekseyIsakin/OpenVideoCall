@@ -117,6 +117,7 @@ typedef struct _AGE_FIRST_REMOTE_VIDEO_DECODED
 	int		width;
 	int		height;
 	int		elapsed;
+	char	channelID[64];
 
 } AGE_FIRST_REMOTE_VIDEO_DECODED, *PAGE_FIRST_REMOTE_VIDEO_DECODED, *LPAGE_FIRST_REMOTE_VIDEO_DECODED;
 
@@ -130,6 +131,8 @@ typedef struct _AGE_USER_JOINED
 {
 	uid_t	uid;
 	int		elapsed;
+
+	char channelID[64];
 
 } AGE_USER_JOINED, *PAGE_USER_JOINED, *LPAGE_USER_JOINED;
 

@@ -696,8 +696,13 @@ void CVideoDlg::OnBnClickedBtnaudio()
 LRESULT CVideoDlg::OnEIDJoinChannelSuccess(WPARAM wParam, LPARAM lParam)
 {
 	LPAGE_JOINCHANNEL_SUCCESS lpData = (LPAGE_JOINCHANNEL_SUCCESS)wParam;
-	m_dlgChat.UpdateMessageStream();
-	m_listWndInfo.RemoveAll();
+
+	if ((CHANNEL_TYPE)lParam == CHANNEL_TYPE::CHANNEL_SRC) 
+	{
+		m_dlgChat.UpdateMessageStream();
+		m_listWndInfo.RemoveAll();
+	}
+
 
 	delete lpData;
 	return 0;
@@ -706,8 +711,11 @@ LRESULT CVideoDlg::OnEIDJoinChannelSuccess(WPARAM wParam, LPARAM lParam)
 LRESULT CVideoDlg::OnEIDReJoinChannelSuccess(WPARAM wParam, LPARAM lParam)
 {
 	LPAGE_REJOINCHANNEL_SUCCESS lpData = (LPAGE_REJOINCHANNEL_SUCCESS)wParam;
-
-	m_listWndInfo.RemoveAll();
+	
+	if ((CHANNEL_TYPE)lParam == CHANNEL_TYPE::CHANNEL_SRC)
+	{
+		m_listWndInfo.RemoveAll();
+	}
 	delete lpData;
 
 	return 0;
@@ -743,9 +751,9 @@ LRESULT CVideoDlg::OnEIDFirstRemoteFrameDecoded(WPARAM wParam, LPARAM lParam)
 		AGVIDEO_WNDINFO agvWndInfo;
 		memset(&agvWndInfo, 0, sizeof(AGVIDEO_WNDINFO));
 		agvWndInfo.nUID = lpData->uid;
-		agvWndInfo.nWidth = lpData->width;
-		agvWndInfo.nHeight = lpData->height;
-
+		//agvWndInfo.nWidth = lpData->width;
+		//agvWndInfo.nHeight = lpData->height;
+		strcpy_s(agvWndInfo.channelID, 64, lpData->channelID);
 		m_listWndInfo.AddTail(agvWndInfo);
 	}
 
@@ -760,37 +768,45 @@ LRESULT CVideoDlg::OnEIDUserJoined(WPARAM wParam, LPARAM lParam)
 {
 	LPAGE_USER_JOINED lpData = (LPAGE_USER_JOINED)wParam;
 	BOOL bFound = FALSE;
-
 	POSITION pos = m_listWndInfo.GetHeadPosition();
-	while (pos != NULL) {
-		AGVIDEO_WNDINFO& agvWndInfo = m_listWndInfo.GetNext(pos);
-		if (agvWndInfo.nUID == lpData->uid) {
-			bFound = TRUE;
-			break;
+
+	switch ((CHANNEL_TYPE)lParam)
+	{
+	case CHANNEL_TYPE::CHANNEL_SRC:
+		CAgoraObject::GetAgoraObject()->SetHostUID(lpData->uid);
+
+		while (pos != NULL) {
+			AGVIDEO_WNDINFO& agvWndInfo = m_listWndInfo.GetNext(pos);
+			if (agvWndInfo.nUID == lpData->uid) {
+				bFound = TRUE;
+				break;
+			}
 		}
+
+		if (!bFound) {
+			AGVIDEO_WNDINFO agvWndInfo;
+			memset(&agvWndInfo, 0, sizeof(AGVIDEO_WNDINFO));
+			agvWndInfo.nUID = lpData->uid;
+			strcpy_s(agvWndInfo.channelID, 64, lpData->channelID);
+			m_listWndInfo.AddTail(agvWndInfo);
+		}
+
+		delete lpData;
+		break;
+	case CHANNEL_TYPE::CHANNEL_DEST:
+		break;
+	default:
+		break;
 	}
 
-	if (!bFound) {
-		AGVIDEO_WNDINFO agvWndInfo;
-		memset(&agvWndInfo, 0, sizeof(AGVIDEO_WNDINFO));
-		agvWndInfo.nUID = lpData->uid;
-		m_listWndInfo.AddTail(agvWndInfo);
-	}
+		RebindVideoWnd();
 
-	delete lpData;
-	//RebindVideoWnd();
 	return 0;
-
- //   CString str;
- //   LPAGE_USER_JOINED lpData = (LPAGE_USER_JOINED)wParam;
-
- //   str.Format(_T("%d joined the channel"), lpData->uid);
- //   MessageBox(str);
-	//return 0;
 }
 
 LRESULT CVideoDlg::OnEIDUserOffline(WPARAM wParam, LPARAM lParam)
 {
+
 	LPAGE_USER_OFFLINE lpData = (LPAGE_USER_OFFLINE)wParam;
 
 	POSITION pos = m_listWndInfo.GetHeadPosition();
@@ -1126,6 +1142,9 @@ void CVideoDlg::RebindVideoWnd()
 		if (pos != NULL) {
 			AGVIDEO_WNDINFO &agvWndInfo = m_listWndInfo.GetNext(pos);
 			canvas.uid = agvWndInfo.nUID;
+
+			strcpy_s(canvas.channelId, 64, agvWndInfo.channelID);
+
 			canvas.view = m_wndVideo[nIndex].GetSafeHwnd();
 			agvWndInfo.nIndex = nIndex;
 
