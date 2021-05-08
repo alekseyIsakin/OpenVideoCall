@@ -159,4 +159,5 @@ public:
 	void MuteClient(LPARAM id, int mute);
 	void MuteClient(int id, int mute);
 	void MuteSelf(int mute);
+	void ClearUID();
 };

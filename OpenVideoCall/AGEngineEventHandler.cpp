@@ -112,6 +112,8 @@ void CAGEngineEventHandler::onLeaveChannel(const RtcStats& stat)
 
 	memcpy(&lpData->rtcStat, &stat, sizeof(RtcStats));
 
+	CAgoraObject::GetAgoraObject()->ClearUID();
+
 	if(m_hMainWnd != NULL)
 		::PostMessage(m_hMainWnd, WM_MSGID(EID_LEAVE_CHANNEL), (WPARAM)lpData, 0);
 }

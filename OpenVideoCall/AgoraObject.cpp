@@ -762,6 +762,11 @@ void CAgoraObject::MuteSelf(int mute) //Mutes local audio
 	rep.muteLocalAudioStream(mute);
 }
 
+void CAgoraObject::ClearUID()
+{
+	CollectorUID.clear();
+}
+
 uid_t CAgoraObject::GetHostUID()
 {
 	return m_hostUID;
