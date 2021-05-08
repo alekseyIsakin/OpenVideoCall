@@ -325,8 +325,8 @@ BOOL CAgoraObject::JoinChannelDest(LPCTSTR lpChannelName, LPCSTR token, UINT nUI
 	m_channelDest = static_cast<IRtcEngine2*>(CAgoraObject::GetEngine())->createChannel(szChannelName);
 
 	ChannelMediaOptions options;
-	options.autoSubscribeAudio = 0;
-	options.autoSubscribeVideo = 0;
+	options.autoSubscribeAudio = 1;
+	options.autoSubscribeVideo = 1;
 	
 	m_ChannelDestEventHandler.SetChannelType(CHANNEL_TYPE::CHANNEL_DEST);
 	m_channelDest->setClientRole(CLIENT_ROLE_BROADCASTER);

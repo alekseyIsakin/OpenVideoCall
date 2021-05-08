@@ -207,7 +207,7 @@ void CVideoDlg::AdjustButtonsNormal(int cx, int cy)
 
 void CVideoDlg::AdjustSizeVideo1(int cx, int cy)
 {
-	if (m_listWndInfo.GetCount() == 0)
+	if (ListWindowGetTotalCount() == 0)
 		m_wndLocal.MoveWindow(&m_rcVideoArea, FALSE);
 	else {
 		m_wndVideo[0].MoveWindow(&m_rcVideoArea, FALSE);
@@ -222,7 +222,7 @@ void CVideoDlg::AdjustSizeVideo4(int cx, int cy)
 	m_wndVideo[2].MoveWindow(0, m_rcVideoArea.top + m_rcVideoArea.Height() / 2, m_rcVideoArea.Width() / 2, m_rcVideoArea.Height() / 2, FALSE);
 	m_wndVideo[3].MoveWindow(m_rcVideoArea.Width() / 2, m_rcVideoArea.top + m_rcVideoArea.Height() / 2, m_rcVideoArea.Width() / 2, m_rcVideoArea.Height() / 2, FALSE);
 
-	if (m_listWndInfo.GetCount() == 2)
+	if (ListWindowGetTotalCount() == 2)
 		m_wndLocal.MoveWindow(0, m_rcVideoArea.top + m_rcVideoArea.Height() / 2, m_rcVideoArea.Width() / 2, m_rcVideoArea.Height() / 2, FALSE);
 	else
 		m_wndLocal.MoveWindow(m_rcVideoArea.Width() / 2, m_rcVideoArea.top + m_rcVideoArea.Height() / 2, m_rcVideoArea.Width() / 2, m_rcVideoArea.Height() / 2, FALSE);
@@ -249,6 +249,102 @@ void CVideoDlg::AdjustSizeVideoMulti(int cx, int cy)
 			nLocalIndex++;
 		}
 	}
+}
+
+POSITION CVideoDlg::ListWindowGetHeadPos(CHANNEL_TYPE channel)
+{
+	switch (channel)
+	{
+	case (CHANNEL_TYPE::CHANNEL_SRC):
+		return m_listWndInfoHost.GetHeadPosition();
+	case (CHANNEL_TYPE::CHANNEL_DEST):
+		return  m_listWndInfoDest.GetHeadPosition();
+	}
+}
+
+CVideoDlg::AGVIDEO_WNDINFO CVideoDlg::ListWindowGetNextPos(CHANNEL_TYPE channel, POSITION& pos)
+{
+	switch (channel)
+	{
+	case (CHANNEL_TYPE::CHANNEL_SRC):
+		return m_listWndInfoHost.GetNext(pos);
+	case (CHANNEL_TYPE::CHANNEL_DEST):
+		return m_listWndInfoDest.GetNext(pos);
+	}
+}
+
+CVideoDlg::AGVIDEO_WNDINFO CVideoDlg::ListWindowGetAt(CHANNEL_TYPE channel, POSITION pos)
+{
+	switch (channel)
+	{
+	case (CHANNEL_TYPE::CHANNEL_SRC):
+		return m_listWndInfoHost.GetAt(pos);
+	case (CHANNEL_TYPE::CHANNEL_DEST):
+		return m_listWndInfoDest.GetAt(pos);
+	}
+}
+
+void CVideoDlg::ListWindowRemoveAt(CHANNEL_TYPE channel, POSITION pos)
+{
+	switch (channel)
+	{
+	case (CHANNEL_TYPE::CHANNEL_SRC):
+		m_listWndInfoHost.RemoveAt(pos);
+		break;
+	case (CHANNEL_TYPE::CHANNEL_DEST):
+		m_listWndInfoDest.RemoveAt(pos);
+		break;
+	}
+}
+
+void CVideoDlg::ListWindowAddTail(CHANNEL_TYPE channel, AGVIDEO_WNDINFO wnd)
+{
+	switch (channel)
+	{
+	case (CHANNEL_TYPE::CHANNEL_SRC):
+		m_listWndInfoHost.AddTail(wnd);
+		break;
+	case (CHANNEL_TYPE::CHANNEL_DEST):
+		m_listWndInfoDest.AddTail(wnd);
+		break;
+	}
+}
+
+void CVideoDlg::ListWindowRemoveAll(CHANNEL_TYPE channel)
+{
+	switch (channel)
+	{
+	case (CHANNEL_TYPE::CHANNEL_SRC):
+		m_listWndInfoHost.RemoveAll();
+		break;
+	case (CHANNEL_TYPE::CHANNEL_DEST):
+		m_listWndInfoDest.RemoveAll();
+		break;
+	}
+}
+
+void CVideoDlg::ListWindowRemoveAll()
+{
+	m_listWndInfoHost.RemoveAll();
+	m_listWndInfoDest.RemoveAll();
+}
+
+UINT CVideoDlg::ListWindowGetCount(CHANNEL_TYPE channel)
+{
+	switch (channel)
+	{
+	case (CHANNEL_TYPE::CHANNEL_SRC):
+		return m_listWndInfoHost.GetCount();
+		break;
+	case (CHANNEL_TYPE::CHANNEL_DEST):
+		return m_listWndInfoDest.GetCount();
+	}
+}
+
+UINT CVideoDlg::ListWindowGetTotalCount()
+{
+	return	m_listWndInfoHost.GetCount() +
+			m_listWndInfoDest.GetCount();
 }
 
 
@@ -351,7 +447,7 @@ void CVideoDlg::OnBnClickedBtnclose()
 {
 	GetParent()->SendMessage(WM_LEAVECHANNEL, 0, 0);
 
-	m_listWndInfo.RemoveAll();
+	ListWindowRemoveAll();
     m_dlgChat.ShowWindow(SW_HIDE);
     m_dlgDevice.ShowWindow(SW_HIDE);
 
@@ -696,13 +792,9 @@ void CVideoDlg::OnBnClickedBtnaudio()
 LRESULT CVideoDlg::OnEIDJoinChannelSuccess(WPARAM wParam, LPARAM lParam)
 {
 	LPAGE_JOINCHANNEL_SUCCESS lpData = (LPAGE_JOINCHANNEL_SUCCESS)wParam;
+	m_dlgChat.UpdateMessageStream();
 
-	if ((CHANNEL_TYPE)lParam == CHANNEL_TYPE::CHANNEL_SRC) 
-	{
-		m_dlgChat.UpdateMessageStream();
-		m_listWndInfo.RemoveAll();
-	}
-
+	ListWindowRemoveAll((CHANNEL_TYPE)lParam);
 
 	delete lpData;
 	return 0;
@@ -711,11 +803,9 @@ LRESULT CVideoDlg::OnEIDJoinChannelSuccess(WPARAM wParam, LPARAM lParam)
 LRESULT CVideoDlg::OnEIDReJoinChannelSuccess(WPARAM wParam, LPARAM lParam)
 {
 	LPAGE_REJOINCHANNEL_SUCCESS lpData = (LPAGE_REJOINCHANNEL_SUCCESS)wParam;
+	m_dlgChat.UpdateMessageStream();
+	ListWindowRemoveAll((CHANNEL_TYPE)lParam);
 	
-	if ((CHANNEL_TYPE)lParam == CHANNEL_TYPE::CHANNEL_SRC)
-	{
-		m_listWndInfo.RemoveAll();
-	}
 	delete lpData;
 
 	return 0;
@@ -725,7 +815,7 @@ LRESULT CVideoDlg::OnEIDFirstLocalFrame(WPARAM wParam, LPARAM lParam)
 {
 	LPAGE_FIRST_LOCAL_VIDEO_FRAME lpData = (LPAGE_FIRST_LOCAL_VIDEO_FRAME)wParam;
 
-	if (m_listWndInfo.GetCount() == 0)
+	if (ListWindowGetCount((CHANNEL_TYPE)lParam) == 0)
 		ShowMulti();
 
 	delete lpData;
@@ -736,11 +826,12 @@ LRESULT CVideoDlg::OnEIDFirstLocalFrame(WPARAM wParam, LPARAM lParam)
 LRESULT CVideoDlg::OnEIDFirstRemoteFrameDecoded(WPARAM wParam, LPARAM lParam)
 {
 	LPAGE_FIRST_REMOTE_VIDEO_DECODED lpData = (LPAGE_FIRST_REMOTE_VIDEO_DECODED)wParam;
+	CHANNEL_TYPE chT = (CHANNEL_TYPE)lParam;
 	BOOL bFound = FALSE;
+	POSITION pos = ListWindowGetHeadPos(chT);
 
-	POSITION pos = m_listWndInfo.GetHeadPosition();
 	while (pos != NULL) {
-		AGVIDEO_WNDINFO &agvWndInfo = m_listWndInfo.GetNext(pos);
+		AGVIDEO_WNDINFO &agvWndInfo = ListWindowGetNextPos(chT, pos);
 		if (agvWndInfo.nUID == lpData->uid) {
 			bFound = TRUE;
 			break;
@@ -754,7 +845,7 @@ LRESULT CVideoDlg::OnEIDFirstRemoteFrameDecoded(WPARAM wParam, LPARAM lParam)
 		//agvWndInfo.nWidth = lpData->width;
 		//agvWndInfo.nHeight = lpData->height;
 		strcpy_s(agvWndInfo.channelID, 64, lpData->channelID);
-		m_listWndInfo.AddTail(agvWndInfo);
+		ListWindowAddTail(chT, agvWndInfo);
 	}
 
 	RebindVideoWnd();
@@ -768,31 +859,31 @@ LRESULT CVideoDlg::OnEIDUserJoined(WPARAM wParam, LPARAM lParam)
 {
 	LPAGE_USER_JOINED lpData = (LPAGE_USER_JOINED)wParam;
 	BOOL bFound = FALSE;
-	POSITION pos = m_listWndInfo.GetHeadPosition();
+	CHANNEL_TYPE chT = (CHANNEL_TYPE)lParam;
+	POSITION pos = ListWindowGetHeadPos(chT);
+
 
 	while (pos != NULL) {
-		AGVIDEO_WNDINFO& agvWndInfo = m_listWndInfo.GetNext(pos);
+		AGVIDEO_WNDINFO& agvWndInfo = ListWindowGetNextPos(chT, pos);
 		if (agvWndInfo.nUID == lpData->uid) {
 			bFound = TRUE;
 			break;
 		}
 	}
-
+			AGVIDEO_WNDINFO& agvWndInfo = m_listWndInfo.GetNext(pos);
 	if (!bFound) {
 		AGVIDEO_WNDINFO agvWndInfo;
 		memset(&agvWndInfo, 0, sizeof(AGVIDEO_WNDINFO));
 		agvWndInfo.nUID = lpData->uid;
 		strcpy_s(agvWndInfo.channelID, 64, lpData->channelID);
-		m_listWndInfo.AddTail(agvWndInfo);
+		ListWindowAddTail(chT, agvWndInfo);
 	}
 	delete lpData;
-	
-	/*switch ((CHANNEL_TYPE)lParam)
-	{
-	case CHANNEL_TYPE::CHANNEL_DEST:
-		CAgoraObject::GetAgoraObject()->SetHostUID(lpData->uid);
-
-
+		delete lpData;
+		break;
+	default:
+		break;
+	}
 		break;
 	case CHANNEL_TYPE::CHANNEL_SRC:
 		break;
@@ -800,7 +891,7 @@ LRESULT CVideoDlg::OnEIDUserJoined(WPARAM wParam, LPARAM lParam)
 		break;
 	}*/
 
-	//RebindVideoWnd();
+	RebindVideoWnd();
 
 	return 0;
 }
@@ -809,16 +900,17 @@ LRESULT CVideoDlg::OnEIDUserOffline(WPARAM wParam, LPARAM lParam)
 {
 
 	LPAGE_USER_OFFLINE lpData = (LPAGE_USER_OFFLINE)wParam;
+	CHANNEL_TYPE chT = (CHANNEL_TYPE)lParam;
 
-	POSITION pos = m_listWndInfo.GetHeadPosition();
+	POSITION pos = ListWindowGetHeadPos(chT);
 	while (pos != NULL){
-		if (m_listWndInfo.GetAt(pos).nUID == lpData->uid) {
-			m_listWndInfo.RemoveAt(pos);
+		if (ListWindowGetAt(chT, pos).nUID == lpData->uid) {
+			ListWindowRemoveAt(chT, pos);
 			RebindVideoWnd();
 			break;
 		}
 
-		m_listWndInfo.GetNext(pos);
+		ListWindowGetNextPos(chT, pos);
 	}
 
 	delete lpData;
@@ -839,11 +931,12 @@ LRESULT CVideoDlg::OnEIDVideoDeviceChanged(WPARAM wParam, LPARAM lParam)
 LRESULT CVideoDlg::OnRemoteVideoStat(WPARAM wParam, LPARAM lParam)
 {
 	LPAGE_REMOTE_VIDEO_STAT lpData = (LPAGE_REMOTE_VIDEO_STAT)wParam;
+	CHANNEL_TYPE chT = (CHANNEL_TYPE)lParam;
 
-	POSITION posNext = m_listWndInfo.GetHeadPosition();
+	POSITION posNext = ListWindowGetHeadPos(chT);
 
 	while (posNext != NULL) {
-		AGVIDEO_WNDINFO &rWndInfo = m_listWndInfo.GetNext(posNext);
+		AGVIDEO_WNDINFO &rWndInfo = ListWindowGetNextPos(chT, posNext);
 
 		if (rWndInfo.nUID == lpData->uid) {
 			rWndInfo.nFramerate = lpData->rendererOutputFrameRate;
@@ -1000,7 +1093,7 @@ void CVideoDlg::ShowVideo1()
 		m_wndVideo[nIndex].SetBigShowFlag(FALSE);
 	}
 
-	if (m_listWndInfo.GetCount() == 0) {
+	if (ListWindowGetTotalCount() == 0) {
 		m_wndLocal.MoveWindow(&m_rcVideoArea, FALSE);
 		m_wndLocal.SetParent(this);
 		m_wndLocal.SetBigShowFlag(TRUE);
@@ -1039,7 +1132,7 @@ void CVideoDlg::ShowVideo4()
 	m_wndVideo[3].MoveWindow(m_rcVideoArea.Width() / 2, m_rcVideoArea.top + m_rcVideoArea.Height() / 2, m_rcVideoArea.Width() / 2, m_rcVideoArea.Height() / 2, FALSE);
 
 	CRect	rcLocal;
-	int		nRemoteCount = m_listWndInfo.GetCount();
+	int		nRemoteCount = ListWindowGetTotalCount();
 	
 	if (nRemoteCount == 2)
 		m_wndLocal.MoveWindow(0, m_rcVideoArea.top + m_rcVideoArea.Height() / 2, m_rcVideoArea.Width() / 2, m_rcVideoArea.Height() / 2, FALSE);
@@ -1135,22 +1228,43 @@ void CVideoDlg::RebindVideoWnd()
 	if (m_wndVideo[0].GetSafeHwnd() == NULL || m_wndLocal.GetSafeHwnd() == NULL)
 		return;
 
-	VideoCanvas canvas;
 
-	canvas.renderMode = RENDER_MODE_FIT;
 
-	POSITION pos = m_listWndInfo.GetHeadPosition();
-	for (int nIndex = 0; nIndex < 4; nIndex++) {
+	POSITION pos = m_listWndInfoHost.GetHeadPosition();
+	if (pos != NULL) {
+		VideoCanvas canvas;
+		canvas.renderMode = RENDER_MODE_FIT;
+		AGVIDEO_WNDINFO& agvWndInfo = m_listWndInfoHost.GetAt(pos);
+
+		canvas.uid = agvWndInfo.nUID;
+		strcpy_s(canvas.channelId, 64, agvWndInfo.channelID);
+
+		canvas.view = m_wndVideo[0].GetSafeHwnd();
+		agvWndInfo.nIndex = 0;
+
+		CAgoraObject::GetEngine()->setupRemoteVideo(canvas);
+		m_wndVideo[0].SetUID(canvas.uid);
+		m_wndVideo[0].SetVideoResolution(agvWndInfo.nWidth, agvWndInfo.nHeight);
+		m_wndVideo[0].SetFrameRateInfo(agvWndInfo.nFramerate);
+		m_wndVideo[0].SetBitrateInfo(agvWndInfo.nBitrate);
+	}
+	else
+		m_wndVideo[0].SetUID(0);
+
+	pos = m_listWndInfoDest.GetHeadPosition();
+	for (int nIndex = 1; nIndex < 4; nIndex++) {
 		if (pos != NULL) {
-			AGVIDEO_WNDINFO &agvWndInfo = m_listWndInfo.GetNext(pos);
-			canvas.uid = agvWndInfo.nUID;
+			AGVIDEO_WNDINFO &agvWndInfo = m_listWndInfoDest.GetNext(pos);
+			VideoCanvas canvas;
+			canvas.renderMode = RENDER_MODE_FIT;
 
+			canvas.uid = agvWndInfo.nUID;
 			strcpy_s(canvas.channelId, 64, agvWndInfo.channelID);
 
 			canvas.view = m_wndVideo[nIndex].GetSafeHwnd();
 			agvWndInfo.nIndex = nIndex;
 
-			CAgoraObject::GetEngine()->setupRemoteVideo(canvas);
+			int ret = CAgoraObject::GetEngine()->setupRemoteVideo(canvas);
 			m_wndVideo[nIndex].SetUID(canvas.uid);
 			m_wndVideo[nIndex].SetVideoResolution(agvWndInfo.nWidth, agvWndInfo.nHeight);
 			m_wndVideo[nIndex].SetFrameRateInfo(agvWndInfo.nFramerate);
@@ -1161,9 +1275,9 @@ void CVideoDlg::RebindVideoWnd()
 	}
 
 	if (m_nScreenMode != SCREEN_VIDEOMULTI) {
-		if (m_listWndInfo.GetCount() <= 1)
+		if (ListWindowGetTotalCount() <= 1)
 			ShowVideo1();
-		else if (m_listWndInfo.GetCount() > 1 && m_listWndInfo.GetCount() < 4)
+		else if (ListWindowGetTotalCount() > 1 && ListWindowGetTotalCount() < 4)
 			ShowVideo4();
 		else
 			ShowMulti();
@@ -1192,9 +1306,9 @@ BOOL CVideoDlg::PreTranslateMessage(MSG* pMsg)
 LRESULT CVideoDlg::OnShowModeChanged(WPARAM wParam, LPARAM lParam)
 {
 	if (m_nScreenMode == SCREEN_VIDEOMULTI) {
-		if (m_listWndInfo.GetCount() <= 1)
+		if (ListWindowGetTotalCount() <= 1)
 			ShowVideo1();
-		else if (m_listWndInfo.GetCount() > 1 && m_listWndInfo.GetCount() < 4)
+		else if (ListWindowGetTotalCount() > 1 && ListWindowGetTotalCount() < 4)
 			ShowVideo4();
 	}
 	else {

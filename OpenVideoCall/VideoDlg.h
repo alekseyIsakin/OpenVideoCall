@@ -173,10 +173,25 @@ private:	// data
 
 	} AGVIDEO_WNDINFO, *PAGVIDEO_WNDINFO, *LPAGVIDEO_WNDINFO;
 
-	CList<AGVIDEO_WNDINFO>	m_listWndInfo;
+	CList<AGVIDEO_WNDINFO>	m_listWndInfoHost;
+	CList<AGVIDEO_WNDINFO>	m_listWndInfoDest;
 
 	BOOL			m_bRecording;
 	BOOL			m_bFullScreen;
     BOOL            m_bFilter;
     BOOL            m_bShowInfo;
+
+	POSITION		ListWindowGetHeadPos(CHANNEL_TYPE channel);
+	AGVIDEO_WNDINFO ListWindowGetNextPos(CHANNEL_TYPE channel, POSITION&pos);
+	
+	AGVIDEO_WNDINFO ListWindowGetAt(CHANNEL_TYPE channel, POSITION pos);
+	void			ListWindowRemoveAt(CHANNEL_TYPE channel, POSITION pos);
+	void			ListWindowAddTail(CHANNEL_TYPE channel, AGVIDEO_WNDINFO wnd);
+	
+	UINT			ListWindowGetCount(CHANNEL_TYPE channel);
+	UINT			ListWindowGetTotalCount();
+
+	void ListWindowRemoveAll(CHANNEL_TYPE channel);
+	void ListWindowRemoveAll();
+
 };

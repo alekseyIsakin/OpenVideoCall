@@ -107,7 +107,7 @@ public:
 		lpData->reason = reason;
 
 		if (m_hMsgHanlder != NULL)
-			::PostMessage(m_hMsgHanlder, WM_MSGID(EID_USER_OFFLINE), (WPARAM)lpData, 0);
+			::PostMessage(m_hMsgHanlder, WM_MSGID(EID_USER_OFFLINE), (WPARAM)lpData, (LPARAM)m_channelType);
 	}
 
 	virtual void onConnectionLost(IChannel* rtcChannel) {
