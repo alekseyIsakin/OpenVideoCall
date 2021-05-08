@@ -721,20 +721,16 @@ int CAgoraObject::SearchUID(uid_t uid) //Searches specific UID
 			return index;
 		index++;
 	}
-	return index;
+	return -1;
 }
 
 void CAgoraObject::DelUID(uid_t uid)
 {
-	int vectorSize = CollectorUID.size();
-
-	for (int i = 0; i < vectorSize; ++i)
+	try
 	{
-		if (CollectorUID.at(i) == uid)
-		{
-			CollectorUID.erase(CollectorUID.begin() + i);
-		}
+		CollectorUID.erase(CollectorUID.begin() + SearchUID(uid));
 	}
+	catch (...) { }
 }
 
 void CAgoraObject::MuteAllAudio(int mute) //Mutes all clients

@@ -3,6 +3,7 @@
 
 #define WM_SHOWMODECHANGED	WM_USER+300
 #define WM_SHOWBIG			WM_USER+301
+#define WM_RESIZED			WM_USER+302
 
 class CAGInfoWnd : public CWnd
 {
@@ -82,6 +83,7 @@ protected:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnMuteClick();
 	afx_msg void OnVideoMuteClick();
+	afx_msg LRESULT OnResize(WPARAM wParam, LPARAM lParam);
 
 	DECLARE_MESSAGE_MAP()
 
