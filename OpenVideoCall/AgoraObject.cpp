@@ -728,9 +728,9 @@ void CAgoraObject::DelUID(uid_t uid)
 {
 	int vectorSize = CollectorUID.size();
 
-	for (int i = 0; i <= vectorSize; ++i)
+	for (int i = 0; i < vectorSize; ++i)
 	{
-		if (CollectorUID[i] == uid)
+		if (CollectorUID.at(i) == uid)
 		{
 			CollectorUID.erase(CollectorUID.begin() + i);
 		}

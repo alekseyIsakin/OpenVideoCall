@@ -1030,28 +1030,46 @@ void CVideoDlg::ShowVideo4()
 {
 	m_wndLocal.ShowWindow(SW_HIDE);
 	m_wndLocal.SetBigShowFlag(FALSE);
+	m_wndLocal.ShowWindow(TRUE);
+	m_wndLocal.SetBigShowFlag(FALSE);
 	for (int nIndex = 0; nIndex < 4; nIndex++) {
-		m_wndVideo[nIndex].ShowWindow(SW_SHOW);
+		m_wndVideo[nIndex].ShowWindow(SW_HIDE);
 		m_wndVideo[nIndex].SetBigShowFlag(FALSE);
-		m_wndVideo[nIndex].SetParent(this);
 	}
 
-	m_wndVideo[0].MoveWindow(0, m_rcVideoArea.top, m_rcVideoArea.Width() / 2, m_rcVideoArea.Height() / 2, FALSE);
-	m_wndVideo[1].MoveWindow(m_rcVideoArea.Width() / 2, m_rcVideoArea.top, m_rcVideoArea.Width() / 2, m_rcVideoArea.Height() / 2, FALSE);
-	m_wndVideo[2].MoveWindow(0, m_rcVideoArea.top + m_rcVideoArea.Height() / 2, m_rcVideoArea.Width() / 2, m_rcVideoArea.Height() / 2, FALSE);
-	m_wndVideo[3].MoveWindow(m_rcVideoArea.Width() / 2, m_rcVideoArea.top + m_rcVideoArea.Height() / 2, m_rcVideoArea.Width() / 2, m_rcVideoArea.Height() / 2, FALSE);
+	/*m_lpBigShowed = (CAGVideoWnd*)&m_wndVideo[0];
+	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
+	int id = 0;
+	for (int i = 0; i < 4; i++)
+	{
+		if (m_wndVideo[i].GetUID() == (UINT)(lpAgora->GetHostUID()))
+			id = i;
+	}*/
+	(&m_wndVideo[0])->ShowWindow(SW_SHOW);
+	(&m_wndVideo[0])->MoveWindow(&m_rcVideoArea, TRUE);
+	(&m_wndVideo[0])->SetParent(this);
+	(&m_wndVideo[0])->SetBigShowFlag(TRUE);
 
-	CRect	rcLocal;
-	int		nRemoteCount = m_listWndInfo.GetCount();
-	
-	if (nRemoteCount == 2)
-		m_wndLocal.MoveWindow(0, m_rcVideoArea.top + m_rcVideoArea.Height() / 2, m_rcVideoArea.Width() / 2, m_rcVideoArea.Height() / 2, FALSE);
-	else
-		m_wndLocal.MoveWindow(m_rcVideoArea.Width() / 2, m_rcVideoArea.top + m_rcVideoArea.Height() / 2, m_rcVideoArea.Width() / 2, m_rcVideoArea.Height() / 2, FALSE);
+	int nLocalIndex = 0;
+	for (int nIndex = 0; nIndex < 4; nIndex++) {
+		int nXPos = (m_rcVideoArea.Width() / 2) - 302 + (204 * nLocalIndex);
+		int nYPos = m_rcVideoArea.top + 400;
 
-	m_wndVideo[nRemoteCount].ShowWindow(SW_HIDE);
-	m_wndLocal.SetParent(this);
-	m_wndLocal.ShowWindow(SW_SHOW);
+		if (!m_wndVideo[nIndex].IsBigShow()) {
+			if (m_wndVideo[nIndex].GetUID() != 0) {
+				m_wndVideo[nIndex].MoveWindow(nXPos, nYPos, 192, 144, TRUE);
+				m_wndVideo[nIndex].ShowWindow(SW_SHOW);
+				m_wndVideo[nIndex].SetParent((&m_wndVideo[0]));
+				nLocalIndex++;
+			}
+		}
+		else {
+			m_wndLocal.MoveWindow(nXPos, nYPos, 192, 144, TRUE);
+			m_wndLocal.ShowWindow(SW_SHOW);
+			m_wndLocal.SetParent((&m_wndVideo[0]));
+			nLocalIndex++;
+		}
+	}
 
 	m_nScreenMode = SCREEN_VIDEO4;
 
@@ -1069,9 +1087,10 @@ void CVideoDlg::ShowMulti()
 		m_wndVideo[nIndex].ShowWindow(SW_HIDE);
 		m_wndVideo[nIndex].SetBigShowFlag(FALSE);
 	}
-	if (m_lpBigShowed == NULL)
-		m_lpBigShowed = &m_wndVideo[0];
+	//if (m_lpBigShowed == NULL)
+	//	m_lpBigShowed = &m_wndVideo[0];
 
+	m_lpBigShowed = (CAGVideoWnd*)&m_wndVideo[CAgoraObject::GetAgoraObject()->SearchUID(CAgoraObject::GetAgoraObject()->GetHostUID())];
 	m_lpBigShowed->ShowWindow(SW_SHOW);
 	m_lpBigShowed->MoveWindow(&m_rcVideoArea, TRUE);
 	m_lpBigShowed->SetParent(this);
