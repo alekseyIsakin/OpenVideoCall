@@ -727,20 +727,18 @@ int CAgoraObject::SearchUID(uid_t uid) //Searches specific UID
 
 void CAgoraObject::DelUID(uid_t uid)
 {
-	int vectorSize = CollectorUID.size();
-
-	for (int i = 0; i <= vectorSize; ++i)
+	try
 	{
-		if (CollectorUID[i] == uid)
-		{
-			CollectorUID.erase(CollectorUID.begin() + i);
-		}
+		CollectorUID.erase(CollectorUID.begin() + SearchUID(uid));
 	}
+	catch (...) {}
 }
+
 
 void CAgoraObject::MuteAllAudio(int mute)
 {
 	RtcEngineParameters rep(this->GetEngine());
+
 	rep.muteAllRemoteAudioStreams(mute);
 }
 
@@ -757,7 +755,6 @@ void CAgoraObject::MuteClient(int id, int mute)
 
 	rep.muteRemoteAudioStream(this->GetUID(id), mute);
 }
-
 
 void CAgoraObject::MuteSelf(int mute)
 {
@@ -787,4 +784,9 @@ int CAgoraObject::SwitchMute()
 int CAgoraObject::GetIsMuted()
 {
 	return IsMuted;
+}
+
+void CAgoraObject::ClearUID()
+{
+	CollectorUID.clear();
 }

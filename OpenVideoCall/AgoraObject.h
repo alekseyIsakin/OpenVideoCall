@@ -162,4 +162,5 @@ public:
 	void MuteSelf(int mute);
 	int SwitchMute();
 	int GetIsMuted();
+	void ClearUID();
 };

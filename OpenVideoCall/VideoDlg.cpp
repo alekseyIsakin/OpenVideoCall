@@ -45,6 +45,10 @@ BEGIN_MESSAGE_MAP(CVideoDlg, CDialogEx)
 	ON_WM_MOUSEMOVE()
 	ON_WM_PAINT()
 	ON_WM_NCHITTEST()
+	//ON_WM_LBUTTONDOWN(IDB_BTNMCOUGH_VIDEO, &CVideoDlg::OnLButtonDown)
+	ON_WM_LBUTTONDOWN()
+	//ON_WM_LBUTTONUP(IDB_BTNMCOUGH_VIDEO, &CVideoDlg::OnLButtonUp)
+	ON_WM_LBUTTONUP()
 
 	ON_MESSAGE(WM_SHOWMODECHANGED, &CVideoDlg::OnShowModeChanged)
 	ON_MESSAGE(WM_AUDIOMUTECLIENT, &CVideoDlg::MuteClient)
@@ -83,7 +87,7 @@ BEGIN_MESSAGE_MAP(CVideoDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTNMODE_VIDEO, &CVideoDlg::OnBnClickedBtnmode)
 	ON_BN_CLICKED(IDC_BTNAUDIO_VIDEO, &CVideoDlg::OnBnClickedBtnaudio)
 
-	ON_BN_CLICKED(IDB_BTNMCOUGH_VIDEO, &CVideoDlg::OnBnClickedBtncough)					//ìîæåò áûòü áàã
+	ON_BN_CLICKED(IDB_BTNMCOUGH_VIDEO, &CVideoDlg::OnBnClickedBtncough)
 
     ON_BN_CLICKED(ID_IDR_VIDEOINFO, &CVideoDlg::OnBnClickedBtntip)
     ON_BN_CLICKED(ID_IDR_DEVICE, &CVideoDlg::OnBnClickedBtnsetup)
@@ -756,22 +760,49 @@ void CVideoDlg::OnBnClickedBtnaudio()
 	//}
 }
 
+
 void CVideoDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	CWnd::OnLButtonDown(nFlags, point);
+	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
+	lpAgora->MuteSelf(1);
+	//CVideoDlg, CDialogEx
+	// TODO:  ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌÐò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+	
+}
+
+
+void CVideoDlg::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
+	lpAgora->MuteSelf(0);
+	//m_dlgCapSet.MoveWindow(m_rcRegion.left + 10, m_rcRegion.top + 40, 440, 80);
+	//m_dlgCapSet.ShowWindow(SW_SHOW);
+
+	//if (m_rcRegion.right == m_rcRegion.left
+	//	|| m_rcRegion.bottom == m_rcRegion.top) {
+	//	return;
+	//}
+	//m_dlgCapSet.SetCaptureRect(&m_rcRegion);
 }
 
 void CVideoDlg::OnBnClickedBtncough()
 {
 	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
-
+	
 	if (lpAgora->IsLocalAudioMuted() == 0)
 	{
-		
-		lpAgora->MuteSelf(1);
-		m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
-
-		
+		if (mStatus == FALSE)
+		{
+			lpAgora->MuteSelf(1);
+			//m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+			mStatus = TRUE;
+		}
+		else
+		{
+			lpAgora->MuteSelf(0);
+			//m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+			mStatus = FALSE;
+		}
 	}
 }
 

@@ -38,6 +38,8 @@ public:
 
 	void ShowControlButton(BOOL bShow = TRUE);
 
+	
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
 	virtual BOOL OnInitDialog();
@@ -69,6 +71,7 @@ protected:
 	
 	afx_msg void OnBnClickedBtncough();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 
     afx_msg void OnBnClickedBtntip();
     afx_msg void OnBnClickedBtnsetup();
@@ -140,6 +143,11 @@ private:
 	CAGButton		m_btnEndCall;
 	CAGButton		m_btnScrCap;
     CAGButton       m_btnMore;
+
+	BOOL			mStatus;
+	BOOL			m_bMouseLDown;
+	CPoint			m_ptStart;
+	//CPoint			m_ptEnd;
 
 	CAGButton		m_btnCough;
 

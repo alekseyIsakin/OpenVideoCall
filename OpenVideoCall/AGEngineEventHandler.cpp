@@ -113,7 +113,7 @@ void CAGEngineEventHandler::onAudioVolumeIndication(const AudioVolumeInfo* speak
 void CAGEngineEventHandler::onLeaveChannel(const RtcStats& stat)
 {
 	LPAGE_LEAVE_CHANNEL lpData = new AGE_LEAVE_CHANNEL;
-
+	CAgoraObject::GetAgoraObject()->ClearUID();
 	memcpy(&lpData->rtcStat, &stat, sizeof(RtcStats));
 
 	if(m_hMainWnd != NULL)
