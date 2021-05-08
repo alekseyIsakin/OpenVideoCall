@@ -788,7 +788,9 @@ void CVideoDlg::OnLButtonUp(UINT nFlags, CPoint point)
 void CVideoDlg::OnBnClickedBtncough()
 {
 	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
-	
+
+	//MuteAllAudio
+
 	if (lpAgora->IsLocalAudioMuted() == 0)
 	{
 		if (mStatus == FALSE)
@@ -804,6 +806,7 @@ void CVideoDlg::OnBnClickedBtncough()
 			mStatus = FALSE;
 		}
 	}
+	
 }
 
 
