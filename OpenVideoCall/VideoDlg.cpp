@@ -1039,6 +1039,7 @@ void CVideoDlg::ShowVideo4()
 	m_wndVideo[1].MoveWindow(m_rcVideoArea.Width() / 2, m_rcVideoArea.top, m_rcVideoArea.Width() / 2, m_rcVideoArea.Height() / 2, FALSE);
 	m_wndVideo[2].MoveWindow(0, m_rcVideoArea.top + m_rcVideoArea.Height() / 2, m_rcVideoArea.Width() / 2, m_rcVideoArea.Height() / 2, FALSE);
 	m_wndVideo[3].MoveWindow(m_rcVideoArea.Width() / 2, m_rcVideoArea.top + m_rcVideoArea.Height() / 2, m_rcVideoArea.Width() / 2, m_rcVideoArea.Height() / 2, FALSE);
+	m_wndVideo[0].SetBigShowFlag(TRUE);
 
 	CRect	rcLocal;
 	int		nRemoteCount = m_listWndInfo.GetCount();
@@ -1068,7 +1069,6 @@ void CVideoDlg::ShowMulti()
 		m_wndVideo[nIndex].ShowWindow(SW_HIDE);
 		m_wndVideo[nIndex].SetBigShowFlag(FALSE);
 	}
-	
 	if (m_lpBigShowed == NULL)
 		m_lpBigShowed = &m_wndVideo[0];
 

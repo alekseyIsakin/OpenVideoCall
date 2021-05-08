@@ -708,7 +708,8 @@ void CAgoraObject::AddUID(uid_t uid)
 
 uid_t CAgoraObject::GetUID(int ind)
 {
-	return CollectorUID.at(ind);
+	if (CollectorUID.size() > 0)
+		return CollectorUID.at(ind);
 }
 
 int CAgoraObject::SearchUID(uid_t uid) //Searches specific UID

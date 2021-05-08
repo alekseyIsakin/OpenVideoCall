@@ -257,14 +257,8 @@ void CAGVideoWnd::OnRButtonDown(UINT nFlags, CPoint point)
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
 	//::SendMessage(GetParent()->GetSafeHwnd(), WM_SHOWMODECHANGED, (WPARAM)this, (LPARAM)m_nUID);
 
-	if (!ctr_Created) { InitCtrls(); ctr_Created = TRUE; }
-	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
-	if (lpAgora->SearchUID(m_nUID) != 0)
-	{
-		CtrlMode = !CtrlMode;
-		m_btnShowVid.ShowWindow(CtrlMode);
-		m_btnEnableAudio.ShowWindow(CtrlMode);
-	}
+	if (!ctr_Created && m_nUID != 0) { InitCtrls(); ctr_Created = TRUE; }
+	else if (ctr_Created) { CtrlMode = !CtrlMode; m_btnShowVid.ShowWindow(CtrlMode); m_btnEnableAudio.ShowWindow(CtrlMode); }
 	CWnd::OnRButtonDown(nFlags, point);
 }
 
@@ -403,24 +397,21 @@ void CAGVideoWnd::OnVideoMuteClick() //Webcam mute
 
 void CAGVideoWnd::InitCtrls()
 {
-	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
-	if (lpAgora->SearchUID(m_nUID) != 0)
-	{
-		CRect		rcClient;
-		GetClientRect(&rcClient);
+	CRect		rcClient;
+	GetClientRect(&rcClient);
 
-		m_btnEnableAudio.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTN_AUDIO);
-		m_btnShowVid.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTN_VIDEO);
 
-		m_btnEnableAudio.MoveWindow(rcClient.Width() - 72, rcClient.Height() - 84, 48, 48, TRUE);
-		m_btnEnableAudio.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
-		m_btnEnableAudio.EnableFrameEffect(FALSE);
-		m_btnEnableAudio.SetBackImage(IDB_BTNFULLSCR_VIDEO, RGB(0x26, 0x26, 0x26));
-		m_btnShowVid.MoveWindow(rcClient.Width() - 472, rcClient.Height() - 84, 48, 48, TRUE);
-		m_btnShowVid.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
-		m_btnShowVid.EnableFrameEffect(FALSE);
-		m_btnShowVid.SetBackImage(IDB_BTNFULLSCR_VIDEO, RGB(0x26, 0x26, 0x26));
-		m_btnShowVid.ShowWindow(0);
-		m_btnEnableAudio.ShowWindow(0);
-	}
+	m_btnEnableAudio.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTN_AUDIO);
+	m_btnShowVid.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTN_VIDEO);
+
+	m_btnEnableAudio.MoveWindow(rcClient.Width() - 48, rcClient.Height() - 84, 48, 48, FALSE);
+	//m_btnEnableAudio.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x00, 0x00, 0x00));
+	m_btnEnableAudio.SetBackImage(IDB_BTNMAUDIO_VIDEO, RGB(0x00, 0x00, 0x00));
+
+	m_btnShowVid.MoveWindow(rcClient.Width() - 105, rcClient.Height() - 84, 48, 48, FALSE);
+	//m_btnShowVid.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x00, 0x00, 0x00));
+	m_btnShowVid.SetBackImage(IDB_BTNVIDEO_VIDEO, RGB(0x00, 0x00, 0x00));
+
+	m_btnShowVid.ShowWindow(1);
+	m_btnEnableAudio.ShowWindow(1);
 }
