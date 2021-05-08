@@ -103,8 +103,11 @@ public:
 	virtual void onUserOffline(IChannel* rtcChannel, uid_t uid, USER_OFFLINE_REASON_TYPE reason) {
 		LPAGE_USER_OFFLINE lpData = new AGE_USER_OFFLINE;
 
-		lpData->uid = uid;
-		lpData->reason = reason;
+		lpData->uid		= uid;
+		lpData->reason	= reason;
+
+		CString s(rtcChannel->channelId());
+		strcpy_s(lpData->channelID, 64, rtcChannel->channelId());
 
 		if (m_hMsgHanlder != NULL)
 			::PostMessage(m_hMsgHanlder, WM_MSGID(EID_USER_OFFLINE), (WPARAM)lpData, (LPARAM)m_channelType);
@@ -112,11 +115,6 @@ public:
 
 	virtual void onConnectionLost(IChannel* rtcChannel) {
 	}
-
-	virtual void onFirstRemoteVideoFrame(uid_t uid, int width, int height, int elapsed)
-	{
-	}
-
 
 	virtual void onRequestToken(IChannel* rtcChannel) {
 	}
@@ -177,8 +175,6 @@ public:
 			LPAGE_FIRST_REMOTE_VIDEO_DECODED lpData = new AGE_FIRST_REMOTE_VIDEO_DECODED;
 
 			lpData->uid = uid;
-			lpData->width = 192;
-			lpData->height = 108;
 			lpData->elapsed = elapsed;
 			strcpy_s(lpData->channelID, 64, rtcChannel->channelId());
 

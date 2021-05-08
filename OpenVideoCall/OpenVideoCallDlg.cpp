@@ -325,7 +325,7 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 		return -1;
 
 	lpAgoraObject->SetComplexToken(netToken);
-
+	m_dlgVideo.UpdateDestCBox(netToken, 0);
 	m_dlgVideo.MoveWindow(0, 0, 960, 720, 1);
 	m_dlgVideo.ShowWindow(SW_SHOW);
 	m_dlgVideo.CenterWindow();
@@ -349,7 +349,7 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
     config.dimensions.height = resolution.cy;
     lpRtcEngine->setVideoEncoderConfiguration(config);
 
-	m_dlgVideo.SetWindowText(strChannelName);
+	m_dlgVideo.SetWindowText(_T("Transliter-3000"));
 	lpRtcEngine->setupLocalVideo(vc);
 	lpRtcEngine->startPreview();
 
@@ -360,22 +360,15 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 
 	int ret = 0;
 
-	//lpAgoraObject->JoinChannel(
-	//	CString((*(netToken.GetTargetLngBgnItr() + 1)).langFull.c_str()), 0,
-	//	(*(netToken.GetTargetLngBgnItr() + 1)).token.c_str()
-	//);
+	langHolder Host		= *(netToken.GetTargetLngBgnItr());
+	langHolder LangDest = *(netToken.GetTargetLngBgnItr()+1);
+	langHolder HostRelay= *(netToken.GetRelayLngBgnItr());
 
+	ret = lpAgoraObject->JoinChannelTransl(CString(HostRelay.langFull.c_str()), HostRelay.token.c_str(), 0);
+	ret = lpAgoraObject->JoinChannelDest(CString(LangDest.langFull.c_str()), LangDest.token.c_str(), 0 );
+	ret = lpAgoraObject->JoinChannelSrc(CString(Host.langFull.c_str()), Host.token.c_str(), 0);
 
-	ret = lpAgoraObject->JoinChannelSrc(
-		CString((*(netToken.GetTargetLngBgnItr())).langFull.c_str()),
-		(*(netToken.GetTargetLngBgnItr())).token.c_str(), 0
-	);
-
-	ret = lpAgoraObject->JoinChannelDest(
-		CString((*(netToken.GetTargetLngBgnItr()+1)).langFull.c_str()),
-		(*(netToken.GetTargetLngBgnItr()+1)).token.c_str(), 0
-	);
-
+	lpAgoraObject->TogglePublishChannel(CHANNEL_TYPE::CHANNEL_DEST);
 	lpAgoraObject->SetMsgHandlerWnd(m_dlgVideo.GetSafeHwnd());
 
 	return 0;
@@ -384,11 +377,13 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 LRESULT COpenVideoCallDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 {
 	CAgoraObject	*lpAgoraObject = CAgoraObject::GetAgoraObject();
-	lpAgoraObject->GetEngine()->stopPreview();
 
 	lpAgoraObject->LeaveSrcChannel();
 	lpAgoraObject->LeaveDestChannel();
+	lpAgoraObject->LeaveTranslChannel();
 	lpAgoraObject->LeaveCahnnel();
+
+	lpAgoraObject->GetEngine()->stopPreview();
     
 	m_dlgEnterChannel.CleanEncryptionSecret();
 	

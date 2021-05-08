@@ -38,6 +38,8 @@ public:
 
 	void ShowControlButton(BOOL bShow = TRUE);
 
+	void UpdateDestCBox(Tokens token, int curSel);
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
 	virtual BOOL OnInitDialog();
@@ -119,6 +121,7 @@ protected:
 	void AdjustSizeVideo4(int cx, int cy);
 	void AdjustSizeVideoMulti(int cx, int cy);
 
+	void OnCbnSelchangeCmbLang();
 private:
 	CBrush			m_brHead;
 
@@ -132,6 +135,9 @@ private:
 	CAGButton		m_btnEndCall;
 	CAGButton		m_btnScrCap;
     CAGButton       m_btnMore;
+
+	CComboBox		m_cmbDest;
+	CComboBox		m_cmbRelay;
 
 	CAGButton		m_btnShow;
 
