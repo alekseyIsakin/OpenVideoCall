@@ -152,6 +152,8 @@ void CAgoraObject::CloseAgoraObject()
 void CAgoraObject::SetMsgHandlerWnd(HWND hWnd)
 {
 	m_EngineEventHandler.SetMsgReceiver(hWnd);
+	m_ChannelDestEventHandler.setMsgHandler(hWnd);
+	m_ChannelSrcEventHandler.setMsgHandler(hWnd);
 }
 
 HWND CAgoraObject::GetMsgHandlerWnd()
@@ -278,12 +280,131 @@ BOOL CAgoraObject::JoinChannel(LPCTSTR lpChannelName, UINT nUID, LPCSTR lpChanne
 
 BOOL CAgoraObject::LeaveCahnnel()
 {
-	m_lpAgoraEngine->stopPreview();
 	int nRet = m_lpAgoraEngine->leaveChannel();
-
 	return nRet == 0 ? TRUE : FALSE;
 }
 
+BOOL CAgoraObject::JoinChannelSrc(LPCTSTR lpChannelName, LPCSTR token, UINT nUID, LPCSTR info)
+{
+	int ret = 0;
+	LeaveSrcChannel();
+
+#ifdef UNICODE
+	CHAR szChannelName[128];
+
+	::WideCharToMultiByte(CP_ACP, 0, lpChannelName, -1, szChannelName, 128, NULL, NULL);
+	m_channelSrc = static_cast<IRtcEngine2*>(CAgoraObject::GetEngine())->createChannel(szChannelName);
+	
+	m_ChannelSrcEventHandler.SetChannelType(CHANNEL_TYPE::CHANNEL_SRC);
+	m_channelSrc->setClientRole(CLIENT_ROLE_AUDIENCE);
+	m_channelSrc->setChannelEventHandler(&m_ChannelSrcEventHandler);
+
+	//m_channelSrc->createDataStream(&data, true, true);
+
+	ChannelMediaOptions options;
+	options.autoSubscribeAudio = 1;
+	options.autoSubscribeVideo = 1;
+	ret = m_channelSrc->joinChannel(token, info, nUID, options);
+
+
+#else
+#endif
+
+	return 0 == ret;
+}
+
+BOOL CAgoraObject::JoinChannelDest(LPCTSTR lpChannelName, LPCSTR token, UINT nUID, LPCSTR info)
+{
+	int ret = 0;
+	LeaveDestChannel();
+
+#ifdef UNICODE
+	CHAR szChannelName[128];
+
+	::WideCharToMultiByte(CP_ACP, 0, lpChannelName, -1, szChannelName, 128, NULL, NULL);
+	m_channelDest = static_cast<IRtcEngine2*>(CAgoraObject::GetEngine())->createChannel(szChannelName);
+
+	ChannelMediaOptions options;
+	options.autoSubscribeAudio = 1;
+	options.autoSubscribeVideo = 1;
+	
+	m_ChannelDestEventHandler.SetChannelType(CHANNEL_TYPE::CHANNEL_DEST);
+	m_channelDest->setClientRole(CLIENT_ROLE_BROADCASTER);
+	m_channelDest->setChannelEventHandler(&m_ChannelDestEventHandler);
+	m_channelDest->joinChannel(token, info, nUID, options);
+	ret = m_channelDest->publish();
+#else
+#endif
+
+	return ret;
+}
+
+BOOL CAgoraObject::JoinChannelTransl(LPCTSTR lpChannelName, LPCSTR token, UINT nUID, LPCSTR info)
+{
+	int ret = 0;
+	LeaveSrcChannel();
+
+#ifdef UNICODE
+	CHAR szChannelName[128];
+
+	::WideCharToMultiByte(CP_ACP, 0, lpChannelName, -1, szChannelName, 128, NULL, NULL);
+	m_channelSrc = static_cast<IRtcEngine2*>(CAgoraObject::GetEngine())->createChannel(szChannelName);
+
+	m_ChannelSrcEventHandler.SetChannelType(CHANNEL_TYPE::CHANNEL_SRC);
+	m_channelSrc->setClientRole(CLIENT_ROLE_BROADCASTER);
+	m_channelSrc->setChannelEventHandler(&m_ChannelSrcEventHandler);
+
+	int data;
+	m_channelSrc->createDataStream(&data, true, true);
+
+	ChannelMediaOptions options;
+	options.autoSubscribeAudio = 1;
+	options.autoSubscribeVideo = 1;
+	ret = m_channelSrc->joinChannel(token, info, nUID, options);
+
+
+#else
+#endif
+
+	return 0 == ret;
+}
+
+BOOL CAgoraObject::LeaveDestChannel() 
+{
+	int ret = -1;
+	if (m_channelDest != NULL)
+	{
+		m_channelDest->unpublish();
+		m_channelDest->leaveChannel();
+		ret = m_channelDest->release();
+		m_channelDest = NULL;
+	}
+	return 0 == ret;
+}
+BOOL CAgoraObject::LeaveSrcChannel()
+{
+	int ret = -1;
+	if (m_channelSrc != NULL)
+	{
+		m_channelSrc->leaveChannel();
+		ret = m_channelSrc->release();
+		m_channelSrc = NULL;
+	}
+	return 0 == ret;
+}
+
+BOOL CAgoraObject::LeaveTranslChannel() 
+{
+	int ret = -1;
+	if (m_channelDest != NULL)
+	{
+		m_channelDest->unpublish();
+		m_channelDest->leaveChannel();
+		ret = m_channelDest->release();
+		m_channelDest = NULL;
+	}
+	return 0 == ret;
+}
 CString CAgoraObject::GetChanelName()
 {
 	return m_strChannelName;
@@ -551,18 +672,20 @@ BOOL CAgoraObject::EnableLocalRender(BOOL bEnable)
 {
     int nRet = 0;
 
-/*    if (bEnable)
-        nRet = m_lpAgoraEngine->setParameters("{\"che.video.local.render\":true}");
-    else
-        nRet = m_lpAgoraEngine->setParameters("{\"che.video.local.render\":false}");
-*/
+    //if (bEnable)
+    //    nRet = m_lpAgoraEngine->setParameters("{\"che.video.local.render\":true}");
+    //else
+    //    nRet = m_lpAgoraEngine->setParameters("{\"che.video.local.render\":false}");
+
     return nRet == 0 ? TRUE : FALSE;
 }
 
 int CAgoraObject::CreateMessageStream()
 {
     int nDataStream = 0;
-    m_lpAgoraEngine->createDataStream(&nDataStream, true, true);
+
+	if (m_channelSrc != NULL)
+		m_channelSrc->createDataStream(&nDataStream, true, true);
 
     return nDataStream;
 }
@@ -581,7 +704,7 @@ BOOL CAgoraObject::SendChatMessage(int nStreamID, LPCTSTR lpChatMessage)
     int nUTF8Len = ::MultiByteToWideChar(CP_UTF8, lpChatMessage, nMessageLen, szUTF8, 256);
 #endif
 
-    int nRet = m_lpAgoraEngine->sendStreamMessage(nStreamID, szUTF8, nUTF8Len);
+    int nRet = m_channelSrc->sendStreamMessage(nStreamID, szUTF8, nUTF8Len);
 
     return nRet == 0 ? TRUE : FALSE;
 }

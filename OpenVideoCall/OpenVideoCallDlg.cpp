@@ -51,6 +51,7 @@ BEGIN_MESSAGE_MAP(COpenVideoCallDlg, CDialogEx)
 	
 	ON_BN_CLICKED(IDC_BTNMIN, &COpenVideoCallDlg::OnBnClickedBtnmin)
 	ON_BN_CLICKED(IDC_BTNCLOSE, &COpenVideoCallDlg::OnBnClickedBtnclose)
+	ON_BN_CLICKED(IDC_BTNCLOSE, &COpenVideoCallDlg::OnBnClickedBtnclose)
 
     ON_MESSAGE(WM_MSGID(EID_LASTMILE_QUALITY), &COpenVideoCallDlg::OnLastmileQuality)
 
@@ -313,13 +314,17 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 	CAgoraObject	*lpAgoraObject = CAgoraObject::GetAgoraObject();
     lpAgoraObject->SetDefaultParameters();
 
-	CString strChannelName = m_dlgEnterChannel.GetChannelName();
+	//10482357
+	//CString strChannelName = m_dlgEnterChannel.GetChannelName();
+	CString strChannelName = _T("10482357");
 
 	Tokens netToken;
 	netToken.GetCloudToken(strChannelName);
 
 	if (netToken.isEmptyToken())
 		return -1;
+
+	lpAgoraObject->SetComplexToken(netToken);
 
 	m_dlgVideo.MoveWindow(0, 0, 960, 720, 1);
 	m_dlgVideo.ShowWindow(SW_SHOW);
@@ -330,7 +335,7 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 	vc.uid = 0;
 	vc.view = m_dlgVideo.GetLocalVideoWnd();
 	vc.renderMode = RENDER_MODE_TYPE::RENDER_MODE_FIT;
-
+	
 	//cancel setVideoProfile bitrate since version 2.1.0
     m_nVideoSolution = m_dlgSetup.GetVideoSolution();
    // lpRtcEngine->setVideoProfile((VIDEO_PROFILE_TYPE)m_nVideoSolution, m_dlgSetup.IsWHSwap());
@@ -347,9 +352,29 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 	m_dlgVideo.SetWindowText(strChannelName);
 	lpRtcEngine->setupLocalVideo(vc);
 	lpRtcEngine->startPreview();
-    std::string token = lpAgoraObject->GetToken();
 
-	lpAgoraObject->JoinChannel(netToken.GetName(lParam), 0, netToken.GetToken(lParam).length() > 0 ? netToken.GetToken(lParam).c_str() : NULL);
+    netToken = lpAgoraObject->GetComplexToken();
+
+	lpRtcEngine->setChannelProfile(CHANNEL_PROFILE_LIVE_BROADCASTING);
+	lpRtcEngine->setClientRole(CLIENT_ROLE_BROADCASTER);
+
+	int ret = 0;
+
+	//lpAgoraObject->JoinChannel(
+	//	CString((*(netToken.GetTargetLngBgnItr() + 1)).langFull.c_str()), 0,
+	//	(*(netToken.GetTargetLngBgnItr() + 1)).token.c_str()
+	//);
+
+
+	ret = lpAgoraObject->JoinChannelSrc(
+		CString((*(netToken.GetTargetLngBgnItr())).langFull.c_str()),
+		(*(netToken.GetTargetLngBgnItr())).token.c_str(), 0
+	);
+
+	ret = lpAgoraObject->JoinChannelDest(
+		CString((*(netToken.GetTargetLngBgnItr()+1)).langFull.c_str()),
+		(*(netToken.GetTargetLngBgnItr()+1)).token.c_str(), 0
+	);
 
 	lpAgoraObject->SetMsgHandlerWnd(m_dlgVideo.GetSafeHwnd());
 
@@ -359,9 +384,13 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 LRESULT COpenVideoCallDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 {
 	CAgoraObject	*lpAgoraObject = CAgoraObject::GetAgoraObject();
+	lpAgoraObject->GetEngine()->stopPreview();
 
+	lpAgoraObject->LeaveSrcChannel();
+	lpAgoraObject->LeaveDestChannel();
 	lpAgoraObject->LeaveCahnnel();
-    m_dlgEnterChannel.CleanEncryptionSecret();
+    
+	m_dlgEnterChannel.CleanEncryptionSecret();
 	
 	return 0;
 }

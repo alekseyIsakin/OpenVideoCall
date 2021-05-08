@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "AGButton.h"
 #include "AGVideoWnd.h"
 #include "DeviceDlg.h"
@@ -6,24 +6,24 @@
 #include "AGDesktopCaptureDlg.h"
 #include "ChatDlg.h"
 
-// CVideoDlg ¶Ô»°¿ò
+// CVideoDlg ï¿½Ô»ï¿½ï¿½ï¿½
 
 class CVideoDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(CVideoDlg)
 
 public:
-	CVideoDlg(CWnd* pParent = NULL);   // ±ê×¼¹¹Ôìº¯Êý
+	CVideoDlg(CWnd* pParent = NULL);   // ï¿½ï¿½×¼ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½
 	virtual ~CVideoDlg();
 
-// ¶Ô»°¿òÊý¾Ý
+// ï¿½Ô»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	enum { IDD = IDD_VIDEO_DIALOG };
 
 	enum { 
-		SCREEN_VIDEO1 = 0,	// µ¥ÆÁ
-		SCREEN_VIDEO4,		// 4·ÖÆÁ
-		SCREEN_VIDEOMULTI,	// 1´ó4Ð¡
-//		SCREEN_WHITEBOARD	// °×°å
+		SCREEN_VIDEO1 = 0,	// ï¿½ï¿½ï¿½ï¿½
+		SCREEN_VIDEO4,		// 4ï¿½ï¿½ï¿½ï¿½
+		SCREEN_VIDEOMULTI,	// 1ï¿½ï¿½4Ð¡
+//		SCREEN_WHITEBOARD	// ï¿½×°ï¿½
 	};
 
 //	enum {
@@ -39,7 +39,7 @@ public:
 	void ShowControlButton(BOOL bShow = TRUE);
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§ï¿½ï¿½
 	virtual BOOL OnInitDialog();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
@@ -78,7 +78,7 @@ protected:
 
 	afx_msg void OnBnClickedHostMode();
 	afx_msg void OnBnClickedGuestMode();
-	// ÓÃÓÚ´¦ÀíÒýÇæµÄ»Øµ÷ÏûÏ¢
+	// ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»Øµï¿½ï¿½ï¿½Ï¢
 	afx_msg LRESULT OnEIDJoinChannelSuccess(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnEIDReJoinChannelSuccess(WPARAM wParam, LPARAM lParam);
 	
@@ -174,13 +174,29 @@ private:	// data
 		int		nFramerate;
 		int		nCodec;
 
+		char channelID[64];
+
 	} AGVIDEO_WNDINFO, *PAGVIDEO_WNDINFO, *LPAGVIDEO_WNDINFO;
 
-	CList<AGVIDEO_WNDINFO>	m_listWndInfo;
+	CList<AGVIDEO_WNDINFO>	m_listWndInfoHost;
+	CList<AGVIDEO_WNDINFO>	m_listWndInfoDest;
 
 	BOOL			m_bRecording;
 	BOOL			m_bFullScreen;
     BOOL            m_bFilter;
     BOOL            m_bShowInfo;
+
+	POSITION		ListWindowGetHeadPos(CHANNEL_TYPE channel);
+	AGVIDEO_WNDINFO ListWindowGetNextPos(CHANNEL_TYPE channel, POSITION&pos);
+	
+	AGVIDEO_WNDINFO ListWindowGetAt(CHANNEL_TYPE channel, POSITION pos);
+	void			ListWindowRemoveAt(CHANNEL_TYPE channel, POSITION pos);
+	void			ListWindowAddTail(CHANNEL_TYPE channel, AGVIDEO_WNDINFO wnd);
+	
+	UINT			ListWindowGetCount(CHANNEL_TYPE channel);
+	UINT			ListWindowGetTotalCount();
+
+	void ListWindowRemoveAll(CHANNEL_TYPE channel);
+	void ListWindowRemoveAll();
 
 };

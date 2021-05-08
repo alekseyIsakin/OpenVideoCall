@@ -1,7 +1,10 @@
 #pragma once
 
 #include <IAgoraRtcEngine.h>
+#include <IAgoraRtcChannel.h>
 #include "AGEngineEventHandler.h"
+#include "AGChannelEventHandler.h"
+
 #include <string>
 #include "Tokens.h"
 
@@ -32,7 +35,7 @@ using namespace agora::rtc;
     Leave this value empty if Security keys/Token is not enabled for your project
     APP_TOKEN "<YOUR TOKEN>"
 */
-#define APP_ID _T("31f0e571a89542b09049087e3283417f")
+#define APP_ID _T("8f5f3639ee4941238369d5ecbcecad14")
 #define APP_TOKEN ""
 
 class CAgoraObject
@@ -62,8 +65,17 @@ public:
 
 	BOOL SetLogFilePath(LPCTSTR lpLogPath = NULL);
 
-	BOOL JoinChannel(LPCTSTR lpChannelName, UINT nUID = 0,LPCSTR lpChannelToken = NULL);
+	BOOL JoinChannel(LPCTSTR lpChannelName, UINT nUID = 0, LPCSTR lpChannelToken = NULL);
 	BOOL LeaveCahnnel();
+
+	BOOL JoinChannelSrc(LPCTSTR channel, LPCSTR token, UINT nUID, LPCSTR info = "");
+	BOOL JoinChannelDest(LPCTSTR channel, LPCSTR token, UINT nUID, LPCSTR info = "");
+	BOOL JoinChannelTransl(LPCTSTR channel, LPCSTR token, UINT nUID, LPCSTR info = "");
+
+	BOOL LeaveDestChannel();
+	BOOL LeaveSrcChannel();
+	BOOL LeaveTranslChannel();
+
 	CString GetChanelName();
 	CString GetCallID();
 	CString GetVendorKey() { return m_strVendorKey; };
@@ -130,7 +142,15 @@ private:
 	static  CAgoraObject	*m_lpAgoraObject;
 	static	IRtcEngine	    *m_lpAgoraEngine;
 	static	CString			m_strVendorKey;
+
+	IChannel* m_channelSrc;
+	IChannel* m_channelDest;
+	IChannel* m_channelTransl;
 	
+	AGChannelEventHandler m_ChannelSrcEventHandler;
+	AGChannelEventHandler m_ChannelDestEventHandler;
+	AGChannelEventHandler m_ChannelTranslEventHandler;
+
 	UINT		m_nSelfUID;
 	CString		m_strChannelName;
 	BOOL		m_bVideoEnable;

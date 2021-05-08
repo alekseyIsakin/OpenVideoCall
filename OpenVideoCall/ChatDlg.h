@@ -17,11 +17,14 @@ public:
 
     void AddChatMessage(UINT nUID, LPCTSTR lpMessage);
     void ClearHistory();
+    void UpdateMessageStream();
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
     virtual BOOL OnInitDialog();
     virtual BOOL PreTranslateMessage(MSG* pMsg);
+
+
 
     afx_msg void OnPaint();
     afx_msg void OnSize(UINT nType, int cx, int cy);
