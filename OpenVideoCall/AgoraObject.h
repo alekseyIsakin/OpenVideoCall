@@ -117,6 +117,9 @@ public:
 
 	Tokens GetComplexToken();
 	void SetComplexToken(Tokens token);
+
+	uid_t GetHostUID();
+	void SetHostUID(uid_t uid);
 protected:
 	CAgoraObject(void);
 
