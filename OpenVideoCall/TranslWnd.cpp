@@ -42,16 +42,12 @@ void CAGBckWnd::OnPaint()
 {
 	CPaintDC dc(this);
 	CRect	rcClient;
-	CString strTip;
+	CPoint		ptDraw;
 
 	dc.SetBkMode(TRANSPARENT);
-	dc.SetTextColor(RGB(0xFF, 0xFF, 0xFF));
 
-	if (m_bShowTip) {
-		GetClientRect(&rcClient);
-		rcClient.top += 4;
-		dc.FillSolidRect(5, 5, 179, 111, RGB(0x00, 0x00, 0x00));
-	}
+	GetClientRect(&rcClient);
+	dc.FillSolidRect(5, 5, 179, 111, RGB(0x00, 0x00, 0x00));
 }
 
 BOOL CAGBckWnd::OnEraseBkgnd(CDC* pDC)
@@ -61,7 +57,7 @@ BOOL CAGBckWnd::OnEraseBkgnd(CDC* pDC)
 
 	GetClientRect(&rcClient);
 	pDC->FillRect(&rcClient, &m_brBack);
-
+	
 	return TRUE;
 }
 
@@ -126,11 +122,15 @@ void CAGBckWnd::InitCtrls()
 		m_btnEnableAudio.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTN_AUDIO);
 		m_btnShowVid.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTN_VIDEO);
 
-		m_btnEnableAudio.MoveWindow(rcClient.Width() - 60, rcClient.Height() - 60, 48, 48, FALSE);
-		m_btnEnableAudio.SetBackImage(IDB_BTNMAUDIO_VIDEO, RGB(0x00, 0x00, 0x00));
+		m_btnEnableAudio.MoveWindow(rcClient.Width() - 60, rcClient.Height() - 55, 48, 48, TRUE);
+		m_btnEnableAudio.SetBackImage(IDB_BITMAP3);
+		m_btnEnableAudio.SetBackColor(RGB(0x3F, 0x3F, 0x3F), RGB(0x3F, 0x3F, 0x3F), RGB(0x3F, 0x3F, 0x3F), RGB(0x3F, 0x3F, 0x3F));
+		m_btnEnableAudio.EnableFrameEffect(FALSE);
 
-		m_btnShowVid.MoveWindow(12, rcClient.Height() - 60, 48, 48, FALSE);
-		m_btnShowVid.SetBackImage(IDB_BTNVIDEO_VIDEO, RGB(0x00, 0x00, 0x00));
+		m_btnShowVid.MoveWindow(12, rcClient.Height() - 55, 48, 48, TRUE);
+		m_btnShowVid.SetBackImage(IDB_BITMAP4);
+		m_btnShowVid.SetBackColor(RGB(0x3F, 0x3F, 0x3F), RGB(0x3F, 0x3F, 0x3F) , RGB(0x3F, 0x3F, 0x3F), RGB(0x3F, 0x3F, 0x3F));
+		m_btnShowVid.EnableFrameEffect(FALSE);
 
 		m_btnShowVid.ShowWindow(1);
 		m_btnEnableAudio.ShowWindow(1);

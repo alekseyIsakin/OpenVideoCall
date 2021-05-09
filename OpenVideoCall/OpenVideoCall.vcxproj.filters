@@ -472,6 +472,12 @@
     <Image Include="res\OpenVideoCall.ico">
       <Filter>Resources</Filter>
     </Image>
+    <Image Include="res\bitmap3.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="res\bitmap4.bmp">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Media Include="res\ID_TEST_AUDIO.wav">
