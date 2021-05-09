@@ -47,10 +47,14 @@ BOOL CChatDlg::OnInitDialog()
 
     SetBackgroundColor(RGB(0, 0, 0));
     SetLayeredWindowAttributes(0, 130, LWA_ALPHA);
-    m_nStreamID = CAgoraObject::GetAgoraObject()->CreateMessageStream();
-
+    UpdateMessageStream();
     return TRUE;  // return TRUE unless you set the focus to a control
     // 异常:  OCX 属性页应返回 FALSE
+}
+
+void CChatDlg::UpdateMessageStream() 
+{
+    m_nStreamID = CAgoraObject::GetAgoraObject()->CreateMessageStream();
 }
 
 void CChatDlg::OnSize(UINT nType, int cx, int cy)
@@ -59,7 +63,7 @@ void CChatDlg::OnSize(UINT nType, int cx, int cy)
 
     // TODO:  在此处添加消息处理程序代码
     if (::IsWindow(m_edtChatBox.GetSafeHwnd()))
-        m_edtChatBox.MoveWindow(1, cy - 21, cx - 2, 20);
+        m_edtChatBox.MoveWindow(500, cy - 21, cx - 2, 20);
 }
 
 
@@ -99,7 +103,7 @@ void CChatDlg::OnPaint()
     
     while (pos != NULL) {
         CString str = m_strMsgList.GetNext(pos);
-        dc.TextOut(20, y, str);
+        dc.TextOut(10, y, str);
         y -= 20;
     }
 }
@@ -107,13 +111,13 @@ void CChatDlg::OnPaint()
 void CChatDlg::AddChatMessage(UINT nUID, LPCTSTR lpMessage)
 {
     CString str;
-
+    //CEnterChannelDlg::OnBnClickedBtnjoinChannel
     if (nUID != 0)
         str.Format(_T("%d: %s"), nUID, lpMessage);
     else
         str.Format(_T("me: %s"), lpMessage);
     
-    if (m_strMsgList.GetCount() >= 5)
+    if (m_strMsgList.GetCount() >= 6)
         m_strMsgList.RemoveTail();
 
     m_strMsgList.AddHead(str);

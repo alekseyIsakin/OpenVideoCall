@@ -230,6 +230,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AGButton.h" />
+    <ClInclude Include="AGChannelEventHandler.h" />
     <ClInclude Include="AGComboBox.h" />
     <ClInclude Include="AGConfig.h" />
     <ClInclude Include="AGDesktopCaptureDlg.h" />
@@ -267,6 +268,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AGButton.cpp" />
+    <ClCompile Include="AGChannelEventHandler.cpp" />
     <ClCompile Include="AGComboBox.cpp" />
     <ClCompile Include="AGConfig.cpp" />
     <ClCompile Include="AGDesktopCaptureDlg.cpp" />
@@ -315,6 +317,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="IDB_TIP_VIDEO.BMP" />
+    <Image Include="res\IDB_BTNMCOUGH_VIDEO.bmp" />
     <Image Include="res\OpenVideoCall.ico" />
     <Image Include="res\bitmap2.bmp" />
     <Image Include="res\IDB_BACKGROUND_VIDEO.bmp" />

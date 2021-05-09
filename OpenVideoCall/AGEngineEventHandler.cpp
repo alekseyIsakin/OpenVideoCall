@@ -1,14 +1,15 @@
 #include "StdAfx.h"
 #include "AGEngineEventHandler.h"
 #include "AGEventDef.h"
+#include <vector>
 
-CAGEngineEventHandler::CAGEngineEventHandler(void)
-{
-}
-
-CAGEngineEventHandler::~CAGEngineEventHandler(void)
-{
-}
+//CAGEngineEventHandler::CAGEngineEventHandler(void)
+//{
+//}
+//
+//CAGEngineEventHandler::~CAGEngineEventHandler(void)
+//{
+//}
 
 void CAGEngineEventHandler::SetMsgReceiver(HWND hWnd)
 {
@@ -108,7 +109,7 @@ void CAGEngineEventHandler::onAudioVolumeIndication(const AudioVolumeInfo* speak
 void CAGEngineEventHandler::onLeaveChannel(const RtcStats& stat)
 {
 	LPAGE_LEAVE_CHANNEL lpData = new AGE_LEAVE_CHANNEL;
-
+	CAgoraObject::GetAgoraObject()->ClearUID();
 	memcpy(&lpData->rtcStat, &stat, sizeof(RtcStats));
 
 	if(m_hMainWnd != NULL)
@@ -182,15 +183,15 @@ void CAGEngineEventHandler::onFirstLocalVideoFrame(int width, int height, int el
 
 void CAGEngineEventHandler::onFirstRemoteVideoDecoded(uid_t uid, int width, int height, int elapsed)
 {
-	LPAGE_FIRST_REMOTE_VIDEO_DECODED lpData = new AGE_FIRST_REMOTE_VIDEO_DECODED;
+		LPAGE_FIRST_REMOTE_VIDEO_DECODED lpData = new AGE_FIRST_REMOTE_VIDEO_DECODED;
 
-	lpData->uid = uid;
-	lpData->width = width;
-	lpData->height = height;
-	lpData->elapsed = elapsed;
+		lpData->uid = uid;
+		lpData->width = width;
+		lpData->height = height;
+		lpData->elapsed = elapsed;
 
-	if(m_hMainWnd != NULL)
-		::PostMessage(m_hMainWnd, WM_MSGID(EID_FIRST_REMOTE_VIDEO_DECODED), (WPARAM)lpData, 0);
+		if (m_hMainWnd != NULL)
+			::PostMessage(m_hMainWnd, WM_MSGID(EID_FIRST_REMOTE_VIDEO_DECODED), (WPARAM)lpData, 0);
 
 }
 
@@ -211,9 +212,11 @@ void CAGEngineEventHandler::onFirstRemoteVideoFrame(uid_t uid, int width, int he
 void CAGEngineEventHandler::onUserJoined(uid_t uid, int elapsed)
 {
 	LPAGE_USER_JOINED lpData = new AGE_USER_JOINED;
-
+	
 	lpData->uid = uid;
 	lpData->elapsed = elapsed;
+	
+	CAgoraObject::GetAgoraObject()->AddUID(uid);
 
 	if(m_hMainWnd != NULL)
 		::PostMessage(m_hMainWnd, WM_MSGID(EID_USER_JOINED), (WPARAM)lpData, 0);
@@ -225,6 +228,8 @@ void CAGEngineEventHandler::onUserOffline(uid_t uid, USER_OFFLINE_REASON_TYPE re
 
 	lpData->uid = uid;
 	lpData->reason = reason;
+
+	CAgoraObject::GetAgoraObject()->DelUID(uid);
 
 	if(m_hMainWnd != NULL)
 		::PostMessage(m_hMainWnd, WM_MSGID(EID_USER_OFFLINE), (WPARAM)lpData, 0);

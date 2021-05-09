@@ -7,6 +7,11 @@
 #include "ChatDlg.h"
 
 // CVideoDlg 对话框
+enum class CHANNEL_CHANGE {
+	CHANNEL_CHANGE_RELAY,
+	CHANNEL_PUBLISH,
+	CHANNEL_UNPUBLISH
+};
 
 class CVideoDlg : public CDialogEx
 {
@@ -38,6 +43,14 @@ public:
 
 	void ShowControlButton(BOOL bShow = TRUE);
 
+	void UpdateDestCBox(Tokens token, int curSel);
+	void UpdateRelayCBox(Tokens token, int curSel);
+
+	void EnableCBox(BOOL state);
+protected:
+	int CollectSelInd();
+	
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 	virtual BOOL OnInitDialog();
@@ -61,12 +74,16 @@ protected:
 
     afx_msg void OnBnClickedBtnmessage();
     afx_msg void OnBnClickedBtnmode();
-	afx_msg void OnBnClickedBtnaudio();
+	afx_msg void OnBnClickedBtnaudio();							//important audio
 	afx_msg void OnBnClickedBtnScreenCapture();
 	afx_msg void OnBnCliekedBtnWhiteBoard();
 	afx_msg void OnBnCliekedBtnCloseWhiteBoard();
     afx_msg void OnBnClickedBtnMore();
 	
+	afx_msg void OnBnClickedBtncough();
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+
     afx_msg void OnBnClickedBtntip();
     afx_msg void OnBnClickedBtnsetup();
     afx_msg void OnBnClickedBtnfilter();
@@ -96,6 +113,11 @@ protected:
 	
     afx_msg LRESULT OnStreamMessage(WPARAM wParam, LPARAM lParam);
 
+	afx_msg LRESULT MuteClient(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT UnMuteClient(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT HideClient(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT UnHideClient(WPARAM wParam, LPARAM lParam);
+
 	DECLARE_MESSAGE_MAP()
 
 protected:
@@ -119,6 +141,10 @@ protected:
 	void AdjustSizeVideo4(int cx, int cy);
 	void AdjustSizeVideoMulti(int cx, int cy);
 
+	void OnCbnSelchangeCmb();
+	void OnBtnClickPublish();
+
+	void pass() { ; }			// nothing
 private:
 	CBrush			m_brHead;
 
@@ -128,10 +154,21 @@ private:
 
     CAGButton       m_btnMessage;
 	CAGButton		m_btnMode;
-	CAGButton		m_btnAudio;
+	CAGButton		m_btnAudio;						//important audio
 	CAGButton		m_btnEndCall;
 	CAGButton		m_btnScrCap;
     CAGButton       m_btnMore;
+
+	CComboBox		m_cmbDest;
+	CComboBox		m_cmbRelay;
+	CAGButton		m_btnPublish;
+
+	BOOL			mStatus;
+	BOOL			m_bMouseLDown;
+	CPoint			m_ptStart;
+	//CPoint			m_ptEnd;
+
+	CAGButton		m_btnCough;
 
 	CAGButton		m_btnShow;
 
@@ -169,12 +206,29 @@ private:	// data
 		int		nFramerate;
 		int		nCodec;
 
+		char channelID[64];
+
 	} AGVIDEO_WNDINFO, *PAGVIDEO_WNDINFO, *LPAGVIDEO_WNDINFO;
 
-	CList<AGVIDEO_WNDINFO>	m_listWndInfo;
+	CList<AGVIDEO_WNDINFO>	m_listWndInfoHost;
+	CList<AGVIDEO_WNDINFO>	m_listWndInfoDest;
 
 	BOOL			m_bRecording;
 	BOOL			m_bFullScreen;
     BOOL            m_bFilter;
     BOOL            m_bShowInfo;
+
+	POSITION		ListWindowGetHeadPos(CHANNEL_TYPE channel);
+	AGVIDEO_WNDINFO ListWindowGetNextPos(CHANNEL_TYPE channel, POSITION&pos);
+	
+	AGVIDEO_WNDINFO ListWindowGetAt(CHANNEL_TYPE channel, POSITION pos);
+	void			ListWindowRemoveAt(CHANNEL_TYPE channel, POSITION pos);
+	void			ListWindowAddTail(CHANNEL_TYPE channel, AGVIDEO_WNDINFO wnd);
+	
+	UINT			ListWindowGetCount(CHANNEL_TYPE channel);
+	UINT			ListWindowGetTotalCount();
+
+	void ListWindowRemoveAll(CHANNEL_TYPE channel);
+	void ListWindowRemoveAll();
+
 };

@@ -7,6 +7,9 @@
 
 IMPLEMENT_DYNAMIC(CAGInfoWnd, CWnd)
 
+#define IDC_BTN_AUDIO	138
+#define IDC_BTN_VIDEO	139
+
 CAGInfoWnd::CAGInfoWnd()
 : m_bShowTip(TRUE)
 , m_nWidth(0)
@@ -130,6 +133,8 @@ BEGIN_MESSAGE_MAP(CAGVideoWnd, CWnd)
 	ON_WM_SIZE()
 	ON_WM_LBUTTONDBLCLK()
     ON_WM_PAINT()
+	ON_BN_CLICKED(IDC_BTN_AUDIO, &CAGVideoWnd::OnMuteClick)
+	ON_BN_CLICKED(IDC_BTN_VIDEO, &CAGVideoWnd::OnVideoMuteClick)
 END_MESSAGE_MAP()
 
 
@@ -158,7 +163,7 @@ BOOL CAGVideoWnd::OnEraseBkgnd(CDC* pDC)
 	return TRUE;
 }
 
-void CAGVideoWnd::SetUID(UINT nUID)
+void CAGVideoWnd::SetUID(int nUID)
 {
 	m_nUID = nUID;
 
@@ -166,11 +171,22 @@ void CAGVideoWnd::SetUID(UINT nUID)
 		m_wndInfo.ShowWindow(SW_HIDE);
 	else
 		m_wndInfo.ShowWindow(SW_SHOW);
+
 }
 
-UINT CAGVideoWnd::GetUID()
+void CAGVideoWnd::SetChID(LPCSTR chr)
+{
+	strcpy_s(m_channelID, 64, chr);
+}
+
+int CAGVideoWnd::GetUID()
 {
 	return m_nUID;
+}
+
+LPCSTR CAGVideoWnd::GetChID()
+{
+	return LPCSTR(m_channelID);
 }
 
 BOOL CAGVideoWnd::IsWndFree()
@@ -249,8 +265,16 @@ void CAGVideoWnd::OnLButtonDown(UINT nFlags, CPoint point)
 void CAGVideoWnd::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	::SendMessage(GetParent()->GetSafeHwnd(), WM_SHOWMODECHANGED, (WPARAM)this, (LPARAM)m_nUID);
+	//::SendMessage(GetParent()->GetSafeHwnd(), WM_SHOWMODECHANGED, (WPARAM)this, (LPARAM)m_nUID);
 
+	if (!ctr_Created) { InitCtrls(); ctr_Created = TRUE; }
+	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
+	if (lpAgora->SearchUID(m_nUID) != 0)
+	{
+		CtrlMode = !CtrlMode;
+		m_btnShowVid.ShowWindow(CtrlMode);
+		m_btnEnableAudio.ShowWindow(CtrlMode);
+	}
 	CWnd::OnRButtonDown(nFlags, point);
 }
 
@@ -259,10 +283,8 @@ int CAGVideoWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
-
 	// TODO:  在此添加您专用的创建代码
 	m_wndInfo.Create(NULL, NULL, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, CRect(0, 0, 192, 28), this, IDC_STATIC);
-
 	return 0;
 }
 
@@ -272,7 +294,10 @@ void CAGVideoWnd::ShowVideoInfo(BOOL bShow)
 	m_bShowVideoInfo = bShow;
 
 	m_wndInfo.ShowTips(bShow);
+
 	Invalidate(TRUE);
+
+
 
 /*	if (!bShow) {
 		CRect rcTip;
@@ -321,8 +346,7 @@ void CAGVideoWnd::OnSize(UINT nType, int cx, int cy)
 void CAGVideoWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	::SendMessage(GetParent()->GetSafeHwnd(), WM_SHOWMODECHANGED, (WPARAM)this, (LPARAM)m_nUID);
-
+	//::SendMessage(GetParent()->GetSafeHwnd(), WM_SHOWMODECHANGED, (WPARAM)this, (LPARAM)m_nUID);
 	CWnd::OnLButtonDblClk(nFlags, point);
 }
 
@@ -333,10 +357,13 @@ void CAGVideoWnd::OnPaint()
     // TODO:  在此处添加消息处理程序代码
     // 不为绘图消息调用 CWnd::OnPaint()
 
+
+
     if (m_bBackground) {
         CRect		rcClient;
         CPoint		ptDraw;
         IMAGEINFO	imgInfo;
+
 
         GetClientRect(&rcClient);
 
@@ -354,4 +381,56 @@ void CAGVideoWnd::OnPaint()
     }
     else
         return CWnd::OnPaint();
+}
+
+void CAGVideoWnd::OnMuteClick() //Mic mute
+{
+	if (bMuted == FALSE)
+	{
+		::SendMessage(GetParent()->GetSafeHwnd(), WM_AUDIOMUTECLIENT, (WPARAM)this, (LPARAM)m_nUID);
+		bMuted = TRUE;
+	}
+	else
+	{
+		::SendMessage(GetParent()->GetSafeHwnd(), WM_AUDIOUNMUTECLIENT, (WPARAM)this, (LPARAM)m_nUID);
+		bMuted = FALSE;
+	}
+}
+
+void CAGVideoWnd::OnVideoMuteClick() //Webcam mute
+{
+	if (bHidden == FALSE)
+	{
+		::SendMessage(GetParent()->GetSafeHwnd(), WM_VIDEOMUTECLIENT, (WPARAM)this, (LPARAM)m_nUID);
+		bHidden = TRUE;
+	}
+	else
+	{
+		::SendMessage(GetParent()->GetSafeHwnd(), WM_VIDEOUNMUTECLIENT, (WPARAM)this, (LPARAM)m_nUID);
+		bHidden = FALSE;
+	}
+}
+
+void CAGVideoWnd::InitCtrls()
+{
+	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
+	if (lpAgora->SearchUID(m_nUID) != 0)
+	{
+		CRect		rcClient;
+		GetClientRect(&rcClient);
+
+		m_btnEnableAudio.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTN_AUDIO);
+		m_btnShowVid.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTN_VIDEO);
+
+		m_btnEnableAudio.MoveWindow(rcClient.Width() - 72, rcClient.Height() - 84, 48, 48, TRUE);
+		m_btnEnableAudio.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
+		m_btnEnableAudio.EnableFrameEffect(FALSE);
+		m_btnEnableAudio.SetBackImage(IDB_BTNFULLSCR_VIDEO, RGB(0x26, 0x26, 0x26));
+		m_btnShowVid.MoveWindow(rcClient.Width() - 472, rcClient.Height() - 84, 48, 48, TRUE);
+		m_btnShowVid.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
+		m_btnShowVid.EnableFrameEffect(FALSE);
+		m_btnShowVid.SetBackImage(IDB_BTNFULLSCR_VIDEO, RGB(0x26, 0x26, 0x26));
+		m_btnShowVid.ShowWindow(0);
+		m_btnEnableAudio.ShowWindow(0);
+	}
 }

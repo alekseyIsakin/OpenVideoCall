@@ -1,4 +1,5 @@
 #pragma once
+#include "AGButton.h"
 
 #define WM_SHOWMODECHANGED	WM_USER+300
 #define WM_SHOWBIG			WM_USER+301
@@ -44,9 +45,12 @@ public:
 	CAGVideoWnd();
 	virtual ~CAGVideoWnd();
 
-	void SetUID(UINT dwUID);
+	void SetUID(int nUID);
+	void SetChID(LPCSTR chr);
 	
-	UINT GetUID();
+	int GetUID();
+	LPCSTR GetChID();
+
 	BOOL IsWndFree();
 
 	void SetFaceColor(COLORREF crBackColor);
@@ -70,6 +74,8 @@ public:
 	void SetBigShowFlag(BOOL bBigShow);
 	BOOL IsBigShow() { return m_bBigShow; };
 
+	void InitCtrls();
+
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
@@ -77,6 +83,8 @@ protected:
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnMuteClick();
+	afx_msg void OnVideoMuteClick();
 
 	DECLARE_MESSAGE_MAP()
 
@@ -88,6 +96,8 @@ private:
 
 private:
 	UINT		m_nUID;
+	char		m_channelID[64];
+
 
 	UINT		m_nWidth;
 	UINT		m_nHeight;
@@ -97,6 +107,13 @@ private:
 	BOOL		m_bBigShow;
 
     BOOL        m_bBackground;
+
+	CAGButton		m_btnEnableAudio;
+	CAGButton		m_btnShowVid;
+	BOOL ctr_Created;
+	BOOL bMuted;
+	BOOL bHidden;
+	BOOL CtrlMode;
 public:
     afx_msg void OnPaint();
 };

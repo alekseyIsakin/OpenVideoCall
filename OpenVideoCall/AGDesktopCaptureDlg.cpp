@@ -160,7 +160,6 @@ void CAGDesktopCaptureDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	m_bMouseLDown = TRUE;
 	m_ptStart = point;
 
-
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
 

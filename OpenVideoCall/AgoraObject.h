@@ -1,11 +1,17 @@
 #pragma once
 
 #include <IAgoraRtcEngine.h>
+#include <IAgoraRtcChannel.h>
 #include "AGEngineEventHandler.h"
+#include "AGChannelEventHandler.h"
+
 #include <string>
+#include "Tokens.h"
+
 #define AVC_VER _T("V1.12.0, Build234, 08/14/2017, SDK1.12 .0")
 
 using namespace agora::rtc;
+
 
 // ������λ
 #define AG_ENGFLAG_ENNETTEST	0x00000001
@@ -29,7 +35,7 @@ using namespace agora::rtc;
     Leave this value empty if Security keys/Token is not enabled for your project
     APP_TOKEN "<YOUR TOKEN>"
 */
-#define APP_ID _T("31f0e571a89542b09049087e3283417f")
+#define APP_ID _T("8f5f3639ee4941238369d5ecbcecad14")
 #define APP_TOKEN ""
 
 class CAgoraObject
@@ -59,8 +65,19 @@ public:
 
 	BOOL SetLogFilePath(LPCTSTR lpLogPath = NULL);
 
-	BOOL JoinChannel(LPCTSTR lpChannelName, UINT nUID = 0,LPCSTR lpChannelToken = NULL);
+	BOOL JoinChannel(LPCTSTR lpChannelName, UINT nUID = 0, LPCSTR lpChannelToken = NULL);
 	BOOL LeaveCahnnel();
+
+	BOOL JoinChannelSrc(LPCTSTR channel, LPCSTR token, UINT nUID, LPCSTR info = "");
+	BOOL JoinChannelDest(LPCTSTR channel, LPCSTR token, UINT nUID, LPCSTR info = "");
+	BOOL JoinChannelTransl(LPCTSTR channel, LPCSTR token, UINT nUID, LPCSTR info = "");
+
+	BOOL LeaveDestChannel();
+	BOOL LeaveSrcChannel();
+	BOOL LeaveTranslChannel();
+
+	BOOL IsPublish() { return m_channelDestPublish; }
+
 	CString GetChanelName();
 	CString GetCallID();
 	CString GetVendorKey() { return m_strVendorKey; };
@@ -109,16 +126,46 @@ public:
 	static BOOL EnableWhiteboardFeq(BOOL bEnable);
 
     void SetDefaultParameters();
-    std::string GetToken();
+
+	std::string GetToken();
+
+	Tokens GetComplexToken();
+	void SetComplexToken(Tokens token);
+
+	uid_t GetHostUID();
+	void SetHostUID(uid_t uid);
+
+	int TogglePublishChannel(CHANNEL_TYPE channel);
+
+
+	
 protected:
 	CAgoraObject(void);
 
+	std::vector<int> CollectorUID;
+
 private:
+
 	DWORD	m_dwEngineFlag;
 	static  CAgoraObject	*m_lpAgoraObject;
 	static	IRtcEngine	    *m_lpAgoraEngine;
 	static	CString			m_strVendorKey;
+
+	IChannel* m_channelSrc;
+	IChannel* m_channelDest;
+	IChannel* m_channelTransl;
 	
+	AGChannelEventHandler m_channelSrcEventHandler;
+	AGChannelEventHandler m_channelDestEventHandler;
+	AGChannelEventHandler m_channelTranslEventHandler;
+	
+	BOOL		m_channelSrcJoin		= false;
+	BOOL		m_channelDestJoin		= false;
+	BOOL		m_channelTranslJoin		= false;
+
+	BOOL		m_channelDestPublish	= false;
+	BOOL		m_channelTranslPublish	= false;
+
 	UINT		m_nSelfUID;
 	CString		m_strChannelName;
 	BOOL		m_bVideoEnable;
@@ -128,12 +175,29 @@ private:
 	BOOL		m_bEchoTest;
 
 	BOOL		m_bScreenCapture;
-
+	
 //	int			m_nCodecType;
+	Tokens m_token;
+	uid_t m_hostUID;
 
+	bool IsMuted;
 public:
 	static CAgoraObject *GetAgoraObject(LPCTSTR lpVendorKey = NULL);
 	static void CloseAgoraObject();
 
 	static CAGEngineEventHandler m_EngineEventHandler;
+
+	//std::vector<int> CollectAllUID();
+	int GetUID(int utd);
+	void AddUID(uid_t uid);
+	void DelUID(uid_t uid);
+	int SearchUID(uid_t uid); //Important
+	void MuteAllAudio(int mute);
+	void MuteClient(LPARAM id, int mute);
+	void MuteClient(int id, int mute);
+	void MuteSelf(int mute);
+	int SwitchMute();
+	int GetIsMuted();
+	void ClearUID();
+	IChannel* GetChanelTranslator();
 };
