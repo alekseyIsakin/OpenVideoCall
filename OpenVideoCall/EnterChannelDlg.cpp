@@ -194,7 +194,7 @@ void CEnterChannelDlg::OnBnClickedBtnjoinChannel()
 	CString nickName;
 	m_ctrEncKey.GetWindowText(nickName);
 
-	CAgoraObject::GetAgoraObject()->MuteSelf(1);
+	//CAgoraObject::GetAgoraObject()->MuteSelf(1);
 //	CString str = CAgoraObject::GetAgoraObject()->GetCallID();
 	//CString strKey;
 	//m_ctrEncKey.GetWindowText(strKey);

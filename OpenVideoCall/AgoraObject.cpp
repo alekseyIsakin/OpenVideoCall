@@ -934,13 +934,13 @@ int CAgoraObject::SwitchMute()
 	if (IsMuted == 1)
 	{
 		IsMuted = 0;
-		MuteAllAudio(0);
+		MuteAllAudio(1);
 		MuteSelf(1);
 	}
 	else
 	{
 		IsMuted = 1;
-		MuteAllAudio(1);
+		MuteAllAudio(0);
 		MuteSelf(0);
 	}
 

@@ -207,8 +207,8 @@ private:	// data
 
 	} AGVIDEO_WNDINFO, *PAGVIDEO_WNDINFO, *LPAGVIDEO_WNDINFO;
 
-	CList<AGVIDEO_WNDINFO>	m_listWndInfoHost;
-	CList<AGVIDEO_WNDINFO>	m_listWndInfoDest;
+	CList<AGVIDEO_WNDINFO>	m_listWndInfoHost;			//хост
+	CList<AGVIDEO_WNDINFO>	m_listWndInfoDest;			//переводчики
 
 	BOOL			m_bRecording;
 	BOOL			m_bFullScreen;

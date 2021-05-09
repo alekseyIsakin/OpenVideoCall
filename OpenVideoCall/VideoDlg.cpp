@@ -920,14 +920,14 @@ void CVideoDlg::OnBnClickedBtnaudio()
 
 	lpAgora->SwitchMute();
 
-	//if (lpAgora->IsLocalAudioMuted()) {
-	//	lpAgora->MuteLocalAudio(FALSE);
-	//	m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
-	//}
-	//else {
-	//	lpAgora->MuteLocalAudio(TRUE);
-	//	m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
-	//}
+	if (lpAgora->GetIsMuted()) {
+		//lpAgora->MuteLocalAudio(FALSE);
+		m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+	}
+	else {
+		//lpAgora->MuteLocalAudio(TRUE);
+		m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
+	}
 }
 
 
@@ -958,7 +958,7 @@ void CVideoDlg::OnLButtonUp(UINT nFlags, CPoint point)
 void CVideoDlg::OnBnClickedBtncough()
 {
 	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
-
+	
 	int muteStatus = lpAgora->GetIsMuted();
 
 	if (muteStatus == 1)
