@@ -36,7 +36,6 @@ END_MESSAGE_MAP()
 void CAGBckWnd::SetUID(int nUID)
 {
 	m_nUID = nUID;
-	if (!ctr_Created && CAgoraObject::GetAgoraObject()->GetHostUID() != m_nUID && m_nUID != 0) { InitCtrls(); ctr_Created = TRUE; }
 }
 
 void CAGBckWnd::OnPaint()
@@ -49,11 +48,9 @@ void CAGBckWnd::OnPaint()
 	dc.SetTextColor(RGB(0xFF, 0xFF, 0xFF));
 
 	if (m_bShowTip) {
-		// 640x480,15fps,400k
 		GetClientRect(&rcClient);
 		rcClient.top += 4;
-		//strTip.Format(_T("%dx%d, %dfps, %dK"), m_nWidth, m_nHeight, m_nFps, m_nBitrate);
-		dc.DrawText(strTip, &rcClient, DT_VCENTER | DT_CENTER);
+		dc.FillSolidRect(16, 16, 159, 96, RGB(0x00, 0x00, 0x00));
 	}
 }
 
@@ -158,4 +155,9 @@ BOOL CAGBckWnd::SetBackImage(UINT nID, UINT nWidth, UINT nHeight, COLORREF crMas
 	Invalidate(TRUE);
 
 	return TRUE;
+}
+
+BOOL CAGBckWnd::GetIsHidden()
+{
+	return bMuted;
 }

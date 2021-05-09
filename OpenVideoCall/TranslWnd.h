@@ -9,13 +9,10 @@ public:
 	CAGBckWnd();
 	virtual ~CAGBckWnd();
 
-	void ShowTips(BOOL bShow = TRUE);
-	void SetVideoResolution(int nWidth, int nHeight);
-	void SetFrameRateInfo(int nFPS);
-	void SetBitrateInfo(int nBitrate);
 	void InitCtrls();
 	void SetUID(int nUID);
 	BOOL SetBackImage(UINT nID, UINT nWidth, UINT nHeight, COLORREF crMask);
+	BOOL GetIsHidden();
 
 protected:
 	afx_msg void OnPaint();

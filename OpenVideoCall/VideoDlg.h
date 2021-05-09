@@ -7,7 +7,7 @@
 #include "ChatDlg.h"
 #include "TranslWnd.h"
 
-// CVideoDlg ¶Ф»°їт
+
 enum class CHANNEL_CHANGE {
 	CHANNEL_CHANGE_RELAY,
 	CHANNEL_PUBLISH
@@ -199,7 +199,6 @@ private:	// data
 
 	CList<AGVIDEO_WNDINFO>	m_listWndInfoHost;
 	CList<AGVIDEO_WNDINFO>	m_listWndInfoDest;
-	CList<AGVIDEO_WNDINFO> m_listMuted;
 
 	BOOL			m_bRecording;
 	BOOL			m_bFullScreen;

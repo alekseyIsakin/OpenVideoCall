@@ -232,4 +232,7 @@ public:
 		CONNECTION_CHANGED_REASON_TYPE reason) {
 
 	}
+
+	//virtual int muteRemoteAudioStream(uid_t userId, bool mute);
+	//virtual int muteAllRemoteAudioStreams(bool mute);
 };

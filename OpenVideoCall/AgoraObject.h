@@ -182,14 +182,11 @@ public:
 
 	static CAGEngineEventHandler m_EngineEventHandler;
 
-	std::vector<int> CollectAllUID();
-	uid_t GetUID(int utd);
-	void AddUID(uid_t uid);
-	void DelUID(uid_t uid);
 	int SearchUID(uid_t uid); //Important
 	void MuteAllAudio(int mute);
 	void MuteClient(LPARAM id, int mute);
 	void MuteClient(int id, int mute);
 	void MuteSelf(int mute);
 	void ClearUID();
+	IChannel* GetChannelTranslator();
 };

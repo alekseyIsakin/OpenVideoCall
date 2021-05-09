@@ -313,8 +313,12 @@ void CAGVideoWnd::SetBigShowFlag(BOOL bBigShow)
 
 		m_wndInfo.MoveWindow(x, y, 192, 24);
 	}
-};
+}
 
+BOOL CAGVideoWnd::GetIsHidden()
+{
+	return bMuted;
+}
 
 void CAGVideoWnd::OnSize(UINT nType, int cx, int cy)
 {
@@ -375,4 +379,13 @@ void CAGVideoWnd::OnPaint()
 void CAGVideoWnd::HideWnd(bool hide)
 {
 	this->ShowWindow(hide);
+	bHidden = !hide;
+}
+
+void CAGVideoWnd::IsHidden()
+{
+	if (bHidden)
+		this->ShowWindow(0);
+	else
+		this->ShowWindow(1);
 }

@@ -427,7 +427,6 @@ LRESULT CVideoDlg::MuteClient(WPARAM wParam, LPARAM lParam) //Mutes specific use
 {
 	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
 
-	RtcEngineParameters rep(*lpAgora->GetEngine());
 	lpAgora->MuteClient(lParam, 1);
 
 	return 0;
@@ -437,7 +436,6 @@ LRESULT CVideoDlg::UnMuteClient(WPARAM wParam, LPARAM lParam) //UnMutes specific
 {
 	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
 
-	RtcEngineParameters rep(*lpAgora->GetEngine());
 	lpAgora->MuteClient(lParam, 0);
 
 	return 0;
@@ -446,11 +444,6 @@ LRESULT CVideoDlg::UnMuteClient(WPARAM wParam, LPARAM lParam) //UnMutes specific
 
 LRESULT CVideoDlg::HideClient(WPARAM wParam, LPARAM lParam) //Hides user's webcam
 {
-	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
-
-	RtcEngineParameters rep(*lpAgora->GetEngine());
-
-	rep.muteRemoteVideoStream(lParam, 1);
 	UpdateVideoWnd(lParam, 0);
 
 	return 0;
@@ -458,11 +451,6 @@ LRESULT CVideoDlg::HideClient(WPARAM wParam, LPARAM lParam) //Hides user's webca
 
 LRESULT CVideoDlg::UnHideClient(WPARAM wParam, LPARAM lParam) //Shows user's webcam
 {
-	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
-
-	RtcEngineParameters rep(*lpAgora->GetEngine());
-
-	rep.muteRemoteVideoStream(lParam, 0);
 	UpdateVideoWnd(lParam, 1);
 
 	return 0;
@@ -980,8 +968,10 @@ LRESULT CVideoDlg::OnEIDFirstRemoteFrameDecoded(WPARAM wParam, LPARAM lParam)
 
 LRESULT CVideoDlg::OnEIDUserJoined(WPARAM wParam, LPARAM lParam)
 {
-    CString str;
-    LPAGE_USER_JOINED lpData = (LPAGE_USER_JOINED)wParam;
+	LPAGE_USER_JOINED lpData = (LPAGE_USER_JOINED)wParam;
+	BOOL bFound = FALSE;
+	CHANNEL_TYPE chT = (CHANNEL_TYPE)lParam;
+	POSITION pos = ListWindowGetHeadPos(chT);
 
 	if (chT == CHANNEL_TYPE::CHANNEL_DEST) return 0;
 
@@ -1272,16 +1262,14 @@ void CVideoDlg::ShowVideo4()
 				m_wndTransl[nIndex].MoveWindow(nXPos, nYPos, 191, 200, TRUE);
 				m_wndTransl[nIndex].ShowWindow(SW_SHOW);
 				m_wndVideo[nIndex].MoveWindow(nXPos + 16, nYPos + 16, 159, 120, TRUE);
-				m_wndVideo[nIndex].ShowWindow(SW_SHOW);
 				m_wndTransl[nIndex].SetUID(m_wndVideo[nIndex].GetUID());
+				m_wndVideo[nIndex].IsHidden();
 			}
 		}
 	}
-	m_wndTransl[host].ShowWindow(SW_HIDE);
 	m_nScreenMode = SCREEN_VIDEO4;
 
 	ShowButtonsNormal();
-	
 }
 
 void CVideoDlg::ShowMulti()
@@ -1315,8 +1303,8 @@ void CVideoDlg::ShowMulti()
 				m_wndTransl[nIndex].MoveWindow(nXPos, nYPos, 191, 200, TRUE);
 				m_wndTransl[nIndex].ShowWindow(SW_SHOW);
 				m_wndVideo[nIndex].MoveWindow(nXPos + 16, nYPos + 16, 159, 120, TRUE);
-				m_wndVideo[nIndex].ShowWindow(SW_SHOW);
 				m_wndTransl[nIndex].SetUID(m_wndVideo[nIndex].GetUID());
+				m_wndVideo[nIndex].IsHidden();
 			}
 		}
 	}
@@ -1414,6 +1402,7 @@ void CVideoDlg::RebindVideoWnd()
 	}
 	else
 		ShowMulti();
+
 }
 
 void CVideoDlg::UpdateVideoWnd(uid_t uid, bool mute)

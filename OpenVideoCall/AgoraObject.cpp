@@ -828,57 +828,19 @@ void CAgoraObject::SetComplexToken(Tokens token)
 	m_token = token;
 }
 
-void CAgoraObject::AddUID(uid_t uid)
-{
-	CollectorUID.push_back(uid);
-}
-
-uid_t CAgoraObject::GetUID(int ind)
-{
-	if (CollectorUID.size() > 0)
-		return CollectorUID.at(ind);
-}
-
-int CAgoraObject::SearchUID(uid_t uid) //Searches specific UID
-{
-	int index = 0;
-	for each (uid_t id in CollectorUID)
-	{
-		if (id == uid)
-			return index;
-		index++;
-	}
-	return -1;
-}
-
-void CAgoraObject::DelUID(uid_t uid)
-{
-	try
-	{
-		CollectorUID.erase(CollectorUID.begin() + SearchUID(uid));
-	}
-	catch (...) { }
-}
-
 void CAgoraObject::MuteAllAudio(int mute) //Mutes all clients
 {
-	RtcEngineParameters rep(this->GetEngine());
-
-	rep.muteAllRemoteAudioStreams(mute);
+	GetChannelTranslator()->muteAllRemoteAudioStreams(mute);
 }
 
 void CAgoraObject::MuteClient(LPARAM id, int mute) //Searches id and mutes client
 {
-	RtcEngineParameters rep(this->GetEngine());
-
-	rep.muteRemoteAudioStream(id, mute);
+	GetChannelTranslator()->muteRemoteAudioStream(id, mute);
 }
 
 void CAgoraObject::MuteClient(int id, int mute) //Mutes provided client by its id
 {
-	RtcEngineParameters rep(this->GetEngine());
-
-	rep.muteRemoteAudioStream(this->GetUID(id), mute);
+	GetChannelTranslator()->muteRemoteAudioStream(id, mute);
 }
 
 
@@ -892,6 +854,11 @@ void CAgoraObject::MuteSelf(int mute) //Mutes local audio
 void CAgoraObject::ClearUID()
 {
 	CollectorUID.clear();
+}
+
+IChannel* CAgoraObject::GetChannelTranslator()
+{
+	return m_channelTransl;
 }
 
 uid_t CAgoraObject::GetHostUID()
