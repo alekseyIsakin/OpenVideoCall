@@ -8,7 +8,7 @@
 std::vector<langHolder> Tokens::setLang(nlohmann::json langsJson)
 {
 	std::vector<langHolder> langs;
-
+	langHolder host;
 	for (auto val = langsJson.begin(); val != langsJson.end(); val++)
 	{
 		std::string langNm, langToken;
@@ -26,14 +26,14 @@ std::vector<langHolder> Tokens::setLang(nlohmann::json langsJson)
 		if (langNm == "HOST")
 		{
 			lh.langShort = "Floor";
-			langs.insert(langs.begin(), lh);
+			host = lh;
 		}
 		else
 		{
 			langs.push_back(lh);
 		}
-
 	}
+	langs.push_back(host);
 	return langs;
 }
 
