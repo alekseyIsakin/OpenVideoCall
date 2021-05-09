@@ -45,9 +45,12 @@ public:
 	CAGVideoWnd();
 	virtual ~CAGVideoWnd();
 
-	void SetUID(UINT dwUID);
+	void SetUID(int nUID);
+	void SetChID(LPCSTR chr);
 	
-	UINT GetUID();
+	int GetUID();
+	LPCSTR GetChID();
+
 	BOOL IsWndFree();
 
 	void SetFaceColor(COLORREF crBackColor);
@@ -93,6 +96,8 @@ private:
 
 private:
 	UINT		m_nUID;
+	char		m_channelID[64];
+
 
 	UINT		m_nWidth;
 	UINT		m_nHeight;

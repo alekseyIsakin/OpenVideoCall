@@ -7,6 +7,10 @@
 #include "ChatDlg.h"
 
 // CVideoDlg ¶Ô»°¿ò
+enum class CHANNEL_CHANGE {
+	CHANNEL_CHANGE_RELAY,
+	CHANNEL_PUBLISH
+};
 
 class CVideoDlg : public CDialogEx
 {
@@ -38,6 +42,10 @@ public:
 
 	void ShowControlButton(BOOL bShow = TRUE);
 
+	void UpdateDestCBox(Tokens token, int curSel);
+	void UpdateRelayCBox(Tokens token, int curSel);
+protected:
+	int CollectSelInd();
 	
 
 protected:
@@ -130,6 +138,10 @@ protected:
 	void AdjustSizeVideo4(int cx, int cy);
 	void AdjustSizeVideoMulti(int cx, int cy);
 
+	void OnCbnSelchangeCmb();
+	void OnBtnClickPublish();
+
+	void pass() { ; }			// nothing
 private:
 	CBrush			m_brHead;
 
@@ -143,6 +155,10 @@ private:
 	CAGButton		m_btnEndCall;
 	CAGButton		m_btnScrCap;
     CAGButton       m_btnMore;
+
+	CComboBox		m_cmbDest;
+	CComboBox		m_cmbRelay;
+	CAGButton		m_btnPublish;
 
 	BOOL			mStatus;
 	BOOL			m_bMouseLDown;
@@ -187,13 +203,29 @@ private:	// data
 		int		nFramerate;
 		int		nCodec;
 
+		char channelID[64];
+
 	} AGVIDEO_WNDINFO, *PAGVIDEO_WNDINFO, *LPAGVIDEO_WNDINFO;
 
-	CList<AGVIDEO_WNDINFO>	m_listWndInfo;
+	CList<AGVIDEO_WNDINFO>	m_listWndInfoHost;
+	CList<AGVIDEO_WNDINFO>	m_listWndInfoDest;
 
 	BOOL			m_bRecording;
 	BOOL			m_bFullScreen;
     BOOL            m_bFilter;
     BOOL            m_bShowInfo;
+
+	POSITION		ListWindowGetHeadPos(CHANNEL_TYPE channel);
+	AGVIDEO_WNDINFO ListWindowGetNextPos(CHANNEL_TYPE channel, POSITION&pos);
+	
+	AGVIDEO_WNDINFO ListWindowGetAt(CHANNEL_TYPE channel, POSITION pos);
+	void			ListWindowRemoveAt(CHANNEL_TYPE channel, POSITION pos);
+	void			ListWindowAddTail(CHANNEL_TYPE channel, AGVIDEO_WNDINFO wnd);
+	
+	UINT			ListWindowGetCount(CHANNEL_TYPE channel);
+	UINT			ListWindowGetTotalCount();
+
+	void ListWindowRemoveAll(CHANNEL_TYPE channel);
+	void ListWindowRemoveAll();
 
 };

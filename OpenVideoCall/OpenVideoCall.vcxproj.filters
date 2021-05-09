@@ -148,6 +148,9 @@
     <ClInclude Include="Tokens.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="AGChannelEventHandler.h">
+      <Filter>AgoraObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -251,6 +254,9 @@
     </ClCompile>
     <ClCompile Include="Tokens.cpp">
       <Filter>Headers</Filter>
+    </ClCompile>
+    <ClCompile Include="AGChannelEventHandler.cpp">
+      <Filter>AgoraObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

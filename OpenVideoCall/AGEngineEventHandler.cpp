@@ -3,13 +3,13 @@
 #include "AGEventDef.h"
 #include <vector>
 
-CAGEngineEventHandler::CAGEngineEventHandler(void)
-{
-}
-
-CAGEngineEventHandler::~CAGEngineEventHandler(void)
-{
-}
+//CAGEngineEventHandler::CAGEngineEventHandler(void)
+//{
+//}
+//
+//CAGEngineEventHandler::~CAGEngineEventHandler(void)
+//{
+//}
 
 void CAGEngineEventHandler::SetMsgReceiver(HWND hWnd)
 {
@@ -187,15 +187,15 @@ void CAGEngineEventHandler::onFirstLocalVideoFrame(int width, int height, int el
 
 void CAGEngineEventHandler::onFirstRemoteVideoDecoded(uid_t uid, int width, int height, int elapsed)
 {
-	LPAGE_FIRST_REMOTE_VIDEO_DECODED lpData = new AGE_FIRST_REMOTE_VIDEO_DECODED;
+		LPAGE_FIRST_REMOTE_VIDEO_DECODED lpData = new AGE_FIRST_REMOTE_VIDEO_DECODED;
 
-	lpData->uid = uid;
-	lpData->width = width;
-	lpData->height = height;
-	lpData->elapsed = elapsed;
+		lpData->uid = uid;
+		lpData->width = width;
+		lpData->height = height;
+		lpData->elapsed = elapsed;
 
-	if(m_hMainWnd != NULL)
-		::PostMessage(m_hMainWnd, WM_MSGID(EID_FIRST_REMOTE_VIDEO_DECODED), (WPARAM)lpData, 0);
+		if (m_hMainWnd != NULL)
+			::PostMessage(m_hMainWnd, WM_MSGID(EID_FIRST_REMOTE_VIDEO_DECODED), (WPARAM)lpData, 0);
 
 }
 

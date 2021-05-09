@@ -6,8 +6,8 @@ class CAGEngineEventHandler :
 	public IRtcEngineEventHandler
 {
 public:
-	CAGEngineEventHandler(void) ;
-	~CAGEngineEventHandler(void) ;
+	//CAGEngineEventHandler(void) ;
+	//~CAGEngineEventHandler(void) ;
 
 	void SetMsgReceiver(HWND hWnd = NULL) ;
 	HWND GetMsgReceiver() {return m_hMainWnd;};
@@ -45,7 +45,6 @@ public:
 	virtual void onConnectionInterrupted() override;
 
 	virtual void onUserEnableVideo(uid_t uid, bool enabled) override;
-
 private:
 	HWND		m_hMainWnd;
 };
