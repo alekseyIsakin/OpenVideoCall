@@ -62,13 +62,15 @@ BEGIN_MESSAGE_MAP(CVideoDlg, CDialogEx)
 
 	ON_MESSAGE(WM_MSGID(EID_FIRST_REMOTE_VIDEO_DECODED), &CVideoDlg::OnEIDFirstRemoteFrameDecoded)
 	ON_MESSAGE(WM_MSGID(EID_USER_OFFLINE), &CVideoDlg::OnEIDUserOffline)
-	
+	ON_MESSAGE(WM_MSGID(EID_USER_JOINED), &CVideoDlg::OnEIDUserJoined)
+
+
 	ON_MESSAGE(WM_MSGID(EID_REMOTE_VIDEO_STAT), &CVideoDlg::OnRemoteVideoStat)
 
 	ON_MESSAGE(WM_MSGID(EID_START_RCDSRV), &CVideoDlg::OnStartRecordingService)
 	ON_MESSAGE(WM_MSGID(EID_STOP_RCDSRV), &CVideoDlg::OnStopRecordingService)
 
-    ON_MESSAGE(WM_MSGID(EID_STREAM_MESSAGE), &CVideoDlg::OnStreamMessage)
+	ON_MESSAGE(WM_MSGID(EID_STREAM_MESSAGE), &CVideoDlg::OnStreamMessage)
 
 
 	ON_BN_CLICKED(IDC_BTNMIN_VIDEO, &CVideoDlg::OnBnClickedBtnmin)
@@ -76,35 +78,87 @@ BEGIN_MESSAGE_MAP(CVideoDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTNRSTO_VIDEO, &CVideoDlg::OnBnClickedBtnrest)
 	ON_BN_CLICKED(IDC_BTNENDCALL_VIDEO, &CVideoDlg::OnBnClickedBtnclose)
 
-    ON_BN_CLICKED(IDC_BTNMESSAGE_VIDEO, &CVideoDlg::OnBnClickedBtnmessage)
+	ON_BN_CLICKED(IDC_BTNMESSAGE_VIDEO, &CVideoDlg::OnBnClickedBtnmessage)
 
 	ON_BN_CLICKED(IDC_BTNSCRCAP_VIDEO, &CVideoDlg::OnBnClickedBtnScreenCapture)
-    ON_BN_CLICKED(IDC_BTNMORE_VIDEO, &CVideoDlg::OnBnClickedBtnMore)
+	ON_BN_CLICKED(IDC_BTNMORE_VIDEO, &CVideoDlg::OnBnClickedBtnMore)
 	ON_BN_CLICKED(IDC_BTNMODE_VIDEO, &CVideoDlg::OnBnClickedBtnmode)
 	ON_BN_CLICKED(IDC_BTNAUDIO_VIDEO, &CVideoDlg::OnBnClickedBtnaudio)
 
-    ON_BN_CLICKED(ID_IDR_VIDEOINFO, &CVideoDlg::OnBnClickedBtntip)
-    ON_BN_CLICKED(ID_IDR_DEVICE, &CVideoDlg::OnBnClickedBtnsetup)
-    ON_BN_CLICKED(ID_IDR_FILTER, &CVideoDlg::OnBnClickedBtnfilter)
+	ON_BN_CLICKED(ID_IDR_VIDEOINFO, &CVideoDlg::OnBnClickedBtntip)
+	ON_BN_CLICKED(ID_IDR_DEVICE, &CVideoDlg::OnBnClickedBtnsetup)
+	ON_BN_CLICKED(ID_IDR_FILTER, &CVideoDlg::OnBnClickedBtnfilter)
 
-//	ON_BN_CLICKED(IDC_BTNWHITEBOARD_VIDEO, &CVideoDlg::OnBnCliekedBtnWhiteBoard)
-//	ON_BN_CLICKED(IDC_BTNCLOSEWB_VIDEO, &CVideoDlg::OnBnCliekedBtnCloseWhiteBoard)
+	//	ON_BN_CLICKED(IDC_BTNWHITEBOARD_VIDEO, &CVideoDlg::OnBnCliekedBtnWhiteBoard)
+	//	ON_BN_CLICKED(IDC_BTNCLOSEWB_VIDEO, &CVideoDlg::OnBnCliekedBtnCloseWhiteBoard)
 
 	ON_BN_CLICKED(IDC_BTNSCR_VIDEO, &CVideoDlg::OnBnClickedBtnfullscr)
-	
+
 	ON_BN_CLICKED(ID_SCRSHARE_DESKTOPSHARE, &CVideoDlg::OnBnClickedScreenshare)
 	ON_BN_CLICKED(ID_SCRSHARE_WINDOWSHARE, &CVideoDlg::OnBnClickedWindowshare)
 
-//	ON_BN_CLICKED(ID_WHITEBOARD_HOSTMODE, &CVideoDlg::OnBnClickedHostMode)
-//	ON_BN_CLICKED(ID_WHITEBOARD_GUESTMODE, &CVideoDlg::OnBnClickedGuestMode)
+	//	ON_BN_CLICKED(ID_WHITEBOARD_HOSTMODE, &CVideoDlg::OnBnClickedHostMode)
+	//	ON_BN_CLICKED(ID_WHITEBOARD_GUESTMODE, &CVideoDlg::OnBnClickedGuestMode)
+
+	ON_CBN_SELCHANGE(IDC_CBXRELAY_VIDEO, &CVideoDlg::OnCbnSelchangeCmb)
+	ON_BN_CLICKED(IDC_BTNPUBLISH_VIDEO, &CVideoDlg::OnBtnClickPublish)
+
 	ON_WM_SHOWWINDOW()
     ON_WM_MOVE()
 END_MESSAGE_MAP()
 
+void CVideoDlg::OnCbnSelchangeCmb()
+{
+	int curSel = CollectSelInd();
 
+	OnBnClickedBtnclose();
+	GetParent()->SendMessage(WM_JOINCHANNEL, (WPARAM)CHANNEL_CHANGE::CHANNEL_CHANGE_RELAY, curSel);
+}
+
+void CVideoDlg::OnBtnClickPublish()
+{
+	int curSel = CollectSelInd();
+
+	OnBnClickedBtnclose();
+	GetParent()->SendMessage(WM_JOINCHANNEL, (WPARAM)CHANNEL_CHANGE::CHANNEL_PUBLISH, curSel);
+}
 // CVideoDlg
 
+void CVideoDlg::UpdateDestCBox(Tokens token, int curSel)
+{
+	int nIndex = 0;
+	m_cmbDest.ResetContent();
 
+	//m_cmbDest.InsertString(nIndex, _T("Off"));
+	//nIndex++;
+
+	for (auto langIt = token.GetTargetLngBgnItr(); langIt != token.GetTargetLngEndItr()-1; langIt++) {
+
+		CString str((*langIt).langShort.c_str());
+		m_cmbDest.InsertString(nIndex, str);
+		nIndex++;
+	}
+	m_cmbDest.SetCurSel(curSel);
+}
+
+void CVideoDlg::UpdateRelayCBox(Tokens token, int curSel)
+{
+	int nIndex = 0;
+	m_cmbRelay.ResetContent();
+
+	for (auto langIt = token.GetTargetLngBgnItr(); langIt != token.GetTargetLngEndItr(); langIt++) {
+
+		CString str((*langIt).langShort.c_str());
+		m_cmbRelay.InsertString(nIndex, str);
+		nIndex++;
+	}
+	m_cmbRelay.SetCurSel(curSel);
+}
+int CVideoDlg::CollectSelInd()
+{
+	return  m_cmbDest.GetCurSel() + 
+			m_cmbRelay.GetCurSel() * 1000;
+}
 void CVideoDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CDialogEx::OnSize(nType, cx, cy);
@@ -201,10 +255,19 @@ void CVideoDlg::AdjustButtonsNormal(int cx, int cy)
 	if (m_btnScrCap.GetSafeHwnd() != NULL)
 		m_btnScrCap.MoveWindow(cx / 2 + 72, cy - 60, 48, 48, TRUE);
     if (m_btnMore.GetSafeHwnd() != NULL)
-        m_btnMore.MoveWindow(cx / 2 + 264, cy - 60, 48, 48, TRUE);
-
+        m_btnMore.MoveWindow(cx / 2 + 300, cy - 60, 48, 48, TRUE);
+	
 	if (m_btnShow.GetSafeHwnd() != NULL)
 		m_btnShow.MoveWindow(cx - 72, cy - 48, 48, 48, TRUE);
+
+	if (m_cmbRelay.GetSafeHwnd() != NULL)
+		m_cmbRelay.MoveWindow(cx / 2 - 425, cy - 48, 60, 42, TRUE);;
+	if (m_cmbDest.GetSafeHwnd() != NULL)
+		m_cmbDest.MoveWindow(cx / 2 + 140, cy - 48, 60, 42, TRUE);
+
+	if (m_btnPublish.GetSafeHwnd() != NULL)
+		m_btnPublish.MoveWindow(cx / 2 + 210, cy - 60, 48, 48, TRUE);
+
 }
 
 void CVideoDlg::AdjustSizeVideo1(int cx, int cy)
@@ -261,6 +324,7 @@ POSITION CVideoDlg::ListWindowGetHeadPos(CHANNEL_TYPE channel)
 	{
 	case (CHANNEL_TYPE::CHANNEL_SRC):
 		return m_listWndInfoHost.GetHeadPosition();
+	case (CHANNEL_TYPE::CHANNEL_TRANSL):
 	case (CHANNEL_TYPE::CHANNEL_DEST):
 		return  m_listWndInfoDest.GetHeadPosition();
 	}
@@ -272,6 +336,7 @@ CVideoDlg::AGVIDEO_WNDINFO CVideoDlg::ListWindowGetNextPos(CHANNEL_TYPE channel,
 	{
 	case (CHANNEL_TYPE::CHANNEL_SRC):
 		return m_listWndInfoHost.GetNext(pos);
+	case (CHANNEL_TYPE::CHANNEL_TRANSL):
 	case (CHANNEL_TYPE::CHANNEL_DEST):
 		return m_listWndInfoDest.GetNext(pos);
 	}
@@ -283,6 +348,7 @@ CVideoDlg::AGVIDEO_WNDINFO CVideoDlg::ListWindowGetAt(CHANNEL_TYPE channel, POSI
 	{
 	case (CHANNEL_TYPE::CHANNEL_SRC):
 		return m_listWndInfoHost.GetAt(pos);
+	case (CHANNEL_TYPE::CHANNEL_TRANSL):
 	case (CHANNEL_TYPE::CHANNEL_DEST):
 		return m_listWndInfoDest.GetAt(pos);
 	}
@@ -295,6 +361,7 @@ void CVideoDlg::ListWindowRemoveAt(CHANNEL_TYPE channel, POSITION pos)
 	case (CHANNEL_TYPE::CHANNEL_SRC):
 		m_listWndInfoHost.RemoveAt(pos);
 		break;
+	case (CHANNEL_TYPE::CHANNEL_TRANSL):
 	case (CHANNEL_TYPE::CHANNEL_DEST):
 		m_listWndInfoDest.RemoveAt(pos);
 		break;
@@ -308,6 +375,7 @@ void CVideoDlg::ListWindowAddTail(CHANNEL_TYPE channel, AGVIDEO_WNDINFO wnd)
 	case (CHANNEL_TYPE::CHANNEL_SRC):
 		m_listWndInfoHost.AddTail(wnd);
 		break;
+	case (CHANNEL_TYPE::CHANNEL_TRANSL):
 	case (CHANNEL_TYPE::CHANNEL_DEST):
 		m_listWndInfoDest.AddTail(wnd);
 		break;
@@ -321,6 +389,7 @@ void CVideoDlg::ListWindowRemoveAll(CHANNEL_TYPE channel)
 	case (CHANNEL_TYPE::CHANNEL_SRC):
 		m_listWndInfoHost.RemoveAll();
 		break;
+	case (CHANNEL_TYPE::CHANNEL_TRANSL):
 	case (CHANNEL_TYPE::CHANNEL_DEST):
 		m_listWndInfoDest.RemoveAll();
 		break;
@@ -340,6 +409,7 @@ UINT CVideoDlg::ListWindowGetCount(CHANNEL_TYPE channel)
 	case (CHANNEL_TYPE::CHANNEL_SRC):
 		return m_listWndInfoHost.GetCount();
 		break;
+	case (CHANNEL_TYPE::CHANNEL_TRANSL):
 	case (CHANNEL_TYPE::CHANNEL_DEST):
 		return m_listWndInfoDest.GetCount();
 	}
@@ -598,7 +668,7 @@ void CVideoDlg::OnBnClickedBtnfullscr()
 	m_btnEndCall.ShowWindow(nShowMode);
 	m_btnScrCap.ShowWindow(nShowMode);
     m_btnMore.ShowWindow(nShowMode);
-	
+	m_btnPublish.ShowWindow(nShowMode);
 	m_btnShow.ShowWindow(nShowMode);
 
 	switch (m_nScreenMode)
@@ -650,6 +720,7 @@ void CVideoDlg::ShowControlButton(BOOL bShow)
 	m_btnAudio.ShowWindow(nShowMode);
 	m_btnShow.ShowWindow(nShowMode);
 	m_btnEndCall.ShowWindow(nShowMode);
+	m_btnPublish.ShowWindow(nShowMode);
 }
 
 void CVideoDlg::OnBnClickedBtntip()
@@ -912,8 +983,29 @@ LRESULT CVideoDlg::OnEIDUserJoined(WPARAM wParam, LPARAM lParam)
     CString str;
     LPAGE_USER_JOINED lpData = (LPAGE_USER_JOINED)wParam;
 
-    str.Format(_T("%d joined the channel"), lpData->uid);
-    MessageBox(str);
+	if (chT == CHANNEL_TYPE::CHANNEL_DEST) return 0;
+
+	while (pos != NULL) {
+		AGVIDEO_WNDINFO& agvWndInfo = ListWindowGetNextPos(chT, pos);
+		if (agvWndInfo.nUID == lpData->uid) {
+			bFound = TRUE;
+			break;
+		}
+	}
+
+	if (!bFound) {
+		AGVIDEO_WNDINFO agvWndInfo;
+		memset(&agvWndInfo, 0, sizeof(AGVIDEO_WNDINFO));
+		agvWndInfo.nUID = lpData->uid;
+		strcpy_s(agvWndInfo.channelID, 64, lpData->channelID);
+		ListWindowAddTail(chT, agvWndInfo);
+	}
+
+	delete lpData;
+
+
+	RebindVideoWnd();
+
 	return 0;
 }
 
@@ -929,7 +1021,6 @@ LRESULT CVideoDlg::OnEIDUserOffline(WPARAM wParam, LPARAM lParam)
 			RebindVideoWnd();
 			break;
 		}
-
 		ListWindowGetNextPos(chT, pos);
 	}
 
@@ -1041,7 +1132,12 @@ void CVideoDlg::InitCtrls()
 	m_btnAudio.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNAUDIO_VIDEO);
 	m_btnEndCall.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNENDCALL_VIDEO);
 	m_btnScrCap.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNSCRCAP_VIDEO);
-    m_btnMore.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNMORE_VIDEO);
+    m_btnMore.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNMORE_VIDEO); 
+
+	m_btnPublish.Create(NULL, WS_VISIBLE | WS_CHILD | BS_ICON, CRect(0, 0, 1, 1), this, IDC_BTNPUBLISH_VIDEO);
+
+	m_cmbDest.Create(WS_VISIBLE | WS_CHILD | CBS_AUTOHSCROLL | CBS_DROPDOWNLIST, CRect(0, 0, 1, 1), this, IDC_CBXRDEST_VIDEO);
+	m_cmbRelay.Create(WS_VISIBLE | WS_CHILD | CBS_AUTOHSCROLL | CBS_DROPDOWNLIST, CRect(0, 0, 1, 1), this, IDC_CBXRELAY_VIDEO);
 
 	m_btnShow.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNSCR_VIDEO);
 	
@@ -1068,7 +1164,11 @@ void CVideoDlg::InitCtrls()
     m_btnShow.MoveWindow(rcClient.Width() - 72, rcClient.Height() - 84, 48, 48, TRUE);
     m_btnMore.MoveWindow(rcClient.Width() / 2 + 264, rcClient.Height() - 84, 48, 48, TRUE);
     m_btnEndCall.MoveWindow(rcClient.Width() - 120, rcClient.Height() - 84, 48, 48, TRUE);
-    
+
+	m_btnPublish.MoveWindow(rcClient.Width() - 80, rcClient.Height() - 84, 300, 48, TRUE);
+	m_cmbDest.MoveWindow(rcClient.Width() - 80, rcClient.Height() - 84, 300, 48, TRUE);
+	m_cmbRelay.MoveWindow(rcClient.Width() - 80, rcClient.Height() - 84, 300, 48, TRUE);
+
 	m_wndVideo[0].MoveWindow(0, 24, rcClient.Width(), rcClient.Height() - 96, TRUE);
 
 	m_btnMin.SetBackImage(IDB_BTNMIN, RGB(0xFF, 0x00, 0xFF));
@@ -1082,6 +1182,10 @@ void CVideoDlg::InitCtrls()
     m_btnMessage.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
     m_btnMessage.EnableFrameEffect(FALSE);
     m_btnMessage.SetBackImage(IDB_BTNMSG_VIDEO, RGB(0x26, 0x26, 0x26));
+
+	m_btnPublish.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
+	m_btnPublish.EnableFrameEffect(FALSE);
+	m_btnPublish.SetBackImage(IDB_BTNMSG_VIDEO, RGB(0x26, 0x26, 0x26));
 
 	m_btnMode.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
 	m_btnMode.EnableFrameEffect(FALSE);
@@ -1102,6 +1206,8 @@ void CVideoDlg::InitCtrls()
     m_btnMore.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
     m_btnMore.EnableFrameEffect(FALSE);
     m_btnMore.SetBackImage(IDB_BTNMORE_VIDEO, RGB(0x26, 0x26, 0x26));
+
+	m_btnPublish.SetWindowTextW(_T("Publish"));
 }
 
 void CVideoDlg::ShowVideo1()

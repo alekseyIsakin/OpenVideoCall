@@ -129,10 +129,10 @@ typedef AGE_FIRST_REMOTE_VIDEO_DECODED AGE_FIRST_REMOTE_VIDEO_FRAME, *PAGE_FIRST
 
 typedef struct _AGE_USER_JOINED
 {
-	int	uid;
+	int		uid;
 	int		elapsed;
 
-	char channelID[64];
+	char	channelID[64];
 
 } AGE_USER_JOINED, *PAGE_USER_JOINED, *LPAGE_USER_JOINED;
 
@@ -140,7 +140,9 @@ typedef struct _AGE_USER_JOINED
 
 typedef struct _AGE_USER_OFFLINE
 {
-	int	uid;
+	int		uid;
+	char	channelID[64];
+	
 	USER_OFFLINE_REASON_TYPE		reason;
 
 } AGE_USER_OFFLINE, *PAGE_USER_OFFLINE, *LPAGE_USER_OFFLINE;

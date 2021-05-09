@@ -7,7 +7,11 @@
 #include "ChatDlg.h"
 #include "TranslWnd.h"
 
-// CVideoDlg �Ի���
+// CVideoDlg ¶Ф»°їт
+enum class CHANNEL_CHANGE {
+	CHANNEL_CHANGE_RELAY,
+	CHANNEL_PUBLISH
+};
 
 class CVideoDlg : public CDialogEx
 {
@@ -40,6 +44,10 @@ public:
 
 	void ShowControlButton(BOOL bShow = TRUE);
 
+	void UpdateDestCBox(Tokens token, int curSel);
+	void UpdateRelayCBox(Tokens token, int curSel);
+protected:
+	int CollectSelInd();
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV ֧��
 	virtual BOOL OnInitDialog();
@@ -126,6 +134,10 @@ protected:
 	void AdjustSizeVideo4(int cx, int cy);
 	void AdjustSizeVideoMulti(int cx, int cy);
 
+	void OnCbnSelchangeCmb();
+	void OnBtnClickPublish();
+
+	void pass() { ; }			// nothing
 private:
 	CBrush			m_brHead;
 
@@ -139,6 +151,10 @@ private:
 	CAGButton		m_btnEndCall;
 	CAGButton		m_btnScrCap;
     CAGButton       m_btnMore;
+
+	CComboBox		m_cmbDest;
+	CComboBox		m_cmbRelay;
+	CAGButton		m_btnPublish;
 
 	CAGButton		m_btnShow;
 

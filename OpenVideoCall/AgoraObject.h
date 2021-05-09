@@ -76,6 +76,8 @@ public:
 	BOOL LeaveSrcChannel();
 	BOOL LeaveTranslChannel();
 
+	BOOL IsPublish() { return m_channelDestPublish; }
+
 	CString GetChanelName();
 	CString GetCallID();
 	CString GetVendorKey() { return m_strVendorKey; };
@@ -132,6 +134,9 @@ public:
 
 	uid_t GetHostUID();
 	void SetHostUID(uid_t uid);
+
+	int TogglePublishChannel(CHANNEL_TYPE channel);
+
 protected:
 	CAgoraObject(void);
 
@@ -147,9 +152,16 @@ private:
 	IChannel* m_channelDest;
 	IChannel* m_channelTransl;
 	
-	AGChannelEventHandler m_ChannelSrcEventHandler;
-	AGChannelEventHandler m_ChannelDestEventHandler;
-	AGChannelEventHandler m_ChannelTranslEventHandler;
+	AGChannelEventHandler m_channelSrcEventHandler;
+	AGChannelEventHandler m_channelDestEventHandler;
+	AGChannelEventHandler m_channelTranslEventHandler;
+	
+	BOOL		m_channelSrcJoin		= false;
+	BOOL		m_channelDestJoin		= false;
+	BOOL		m_channelTranslJoin		= false;
+
+	BOOL		m_channelDestPublish	= false;
+	BOOL		m_channelTranslPublish	= false;
 
 	UINT		m_nSelfUID;
 	CString		m_strChannelName;
