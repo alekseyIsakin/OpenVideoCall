@@ -35,6 +35,8 @@ public:
 
 	virtual void onJoinChannelSuccess(IChannel* rtcChannel, uid_t uid, int elapsed) {
 
+		
+
 		LPAGE_JOINCHANNEL_SUCCESS lpData = new AGE_JOINCHANNEL_SUCCESS;
 
 		int nChannelLen = strlen(rtcChannel->channelId()) + 1;
@@ -50,6 +52,9 @@ public:
 		}
 
 	virtual void onRejoinChannelSuccess(IChannel* rtcChannel, uid_t uid, int elapsed) {
+
+		
+
 		LPAGE_JOINCHANNEL_SUCCESS lpData = new AGE_JOINCHANNEL_SUCCESS;
 
 		int nChannelLen = strlen(rtcChannel->channelId()) + 1;

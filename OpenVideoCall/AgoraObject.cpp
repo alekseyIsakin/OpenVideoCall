@@ -839,7 +839,7 @@ void CAgoraObject::SetHostUID(uid_t uid)
 }
 
 
-int CAgoraObject::TogglePublishChannel(CHANNEL_TYPE channel) 
+int CAgoraObject::TogglePublishChannel(CHANNEL_TYPE channel)
 {
 	int ret = -1;
 
@@ -849,10 +849,10 @@ int CAgoraObject::TogglePublishChannel(CHANNEL_TYPE channel)
 		m_channelTranslPublish = 0;
 	}
 
-	if (m_channelDestPublish)	
+	if (m_channelDestPublish)
 	{
 		ret = m_channelDest->unpublish();
-		m_channelDestPublish = 0; 
+		m_channelDestPublish = 0;
 	}
 	ret = -1;
 	switch (channel)
@@ -863,7 +863,7 @@ int CAgoraObject::TogglePublishChannel(CHANNEL_TYPE channel)
 		break;
 	case CHANNEL_TYPE::CHANNEL_DEST:
 		if (m_channelDest != NULL && m_channelDestJoin)		ret = m_channelDest->publish();
-		m_channelDestPublish =	(0 == ret);
+		m_channelDestPublish = (0 == ret);
 		break;
 	case CHANNEL_TYPE::CHANNEL_SRC:
 		break;
@@ -872,12 +872,14 @@ int CAgoraObject::TogglePublishChannel(CHANNEL_TYPE channel)
 	}
 
 	return 0 == ret;
+}
+
 void CAgoraObject::AddUID(uid_t uid)
 {
 	CollectorUID.push_back(uid);
 }
 
-uid_t CAgoraObject::GetUID(int ind)
+int CAgoraObject::GetUID(int ind)
 {
 	return CollectorUID.at(ind);
 }
@@ -905,13 +907,6 @@ void CAgoraObject::DelUID(uid_t uid)
 	catch (...) {}
 }
 
-
-void CAgoraObject::MuteAllAudio(int mute)
-{
-	RtcEngineParameters rep(this->GetEngine());
-
-	rep.muteAllRemoteAudioStreams(mute);
-}
 
 void CAgoraObject::MuteClient(LPARAM id, int mute)
 {
@@ -960,4 +955,14 @@ int CAgoraObject::GetIsMuted()
 void CAgoraObject::ClearUID()
 {
 	CollectorUID.clear();
+}
+
+IChannel* CAgoraObject::GetChanelTranslator()
+{
+	return m_channelTransl;
+}
+
+void CAgoraObject::MuteAllAudio(int mute)
+{
+	m_channelTransl->muteAllRemoteAudioStreams(mute);
 }

@@ -253,32 +253,33 @@ void CVideoDlg::AdjustButtonsNormal(int cx, int cy)
 {
 //	if (m_btnSetup.GetSafeHwnd() != NULL)
 //		m_btnSetup.MoveWindow(30, cy - 48, 24, 24, TRUE);
+	if (m_cmbRelay.GetSafeHwnd() != NULL)
+		m_cmbRelay.MoveWindow(cx / 2 - 384, cy - 48, 60, 42, TRUE);
 	if (m_btnCough.GetSafeHwnd() != NULL)
-		m_btnCough.MoveWindow(cx / 2 - 408, cy - 60, 48, 48, TRUE);
+		m_btnCough.MoveWindow(cx / 2 - 312, cy - 60, 48, 48, TRUE);
     if(m_btnMessage.GetSafeHwnd() != NULL)
-        m_btnMessage.MoveWindow(cx / 2 - 312, cy - 60, 48, 48, TRUE);
+        m_btnMessage.MoveWindow(cx / 2 - 240, cy - 60, 48, 48, TRUE);
 	if (m_btnMode.GetSafeHwnd() != NULL)
-		m_btnMode.MoveWindow(cx / 2 - 216, cy - 60, 48, 48, TRUE);
+		m_btnMode.MoveWindow(cx / 2 - 168, cy - 60, 48, 48, TRUE);
 	if (m_btnAudio.GetSafeHwnd() != NULL)
-		m_btnAudio.MoveWindow(cx / 2 - 120, cy - 60, 48, 48, TRUE);
+		m_btnAudio.MoveWindow(cx / 2 - 96, cy - 60, 48, 48, TRUE);
 	if (m_btnEndCall.GetSafeHwnd() != NULL)
 		m_btnEndCall.MoveWindow(cx / 2 - 24, cy - 60, 48, 48, TRUE);
 
 	if (m_btnScrCap.GetSafeHwnd() != NULL)
 		m_btnScrCap.MoveWindow(cx / 2 + 72, cy - 60, 48, 48, TRUE);
     if (m_btnMore.GetSafeHwnd() != NULL)
-        m_btnMore.MoveWindow(cx / 2 + 300, cy - 60, 48, 48, TRUE);
+        m_btnMore.MoveWindow(cx / 2 + 288, cy - 60, 48, 48, TRUE);
 	
 	if (m_btnShow.GetSafeHwnd() != NULL)
 		m_btnShow.MoveWindow(cx - 72, cy - 48, 48, 48, TRUE);
 
-	if (m_cmbRelay.GetSafeHwnd() != NULL)
-		m_cmbRelay.MoveWindow(cx / 2 - 425, cy - 48, 60, 42, TRUE);;
+	
 	if (m_cmbDest.GetSafeHwnd() != NULL)
-		m_cmbDest.MoveWindow(cx / 2 + 140, cy - 48, 60, 42, TRUE);
+		m_cmbDest.MoveWindow(cx / 2 + 144, cy - 48, 60, 42, TRUE);
 
 	if (m_btnPublish.GetSafeHwnd() != NULL)
-		m_btnPublish.MoveWindow(cx / 2 + 210, cy - 60, 48, 48, TRUE);
+		m_btnPublish.MoveWindow(cx / 2 + 216, cy - 60, 48, 48, TRUE);
 
 }
 
@@ -532,7 +533,7 @@ void CVideoDlg::EnableSize(BOOL bEnable)
 //		if (m_btnSetup.GetSafeHwnd() != NULL)
 //			m_btnSetup.MoveWindow(cx / 2 - 216, cy - 84, 72, 72, TRUE);
 		if (m_btnCough.GetSafeHwnd() != NULL)
-			m_btnCough.MoveWindow(cx / 2 + 144, cy - 84, 48, 48, TRUE);
+			m_btnCough.MoveWindow(cx / 2 + 192, cy - 84, 48, 48, TRUE);
 
 		if (m_btnMode.GetSafeHwnd() != NULL)
 			m_btnMode.MoveWindow(cx / 2 - 96, cy - 84, 48, 48, TRUE);
@@ -918,7 +919,6 @@ void CVideoDlg::OnBnClickedBtnaudio()
 	CAgoraObject *lpAgora = CAgoraObject::GetAgoraObject();
 
 	lpAgora->SwitchMute();
-	lpAgora->MuteClient(0, 0);
 
 	//if (lpAgora->IsLocalAudioMuted()) {
 	//	lpAgora->MuteLocalAudio(FALSE);
@@ -1427,7 +1427,6 @@ void CVideoDlg::RebindVideoWnd()
 {
 	if (m_wndVideo[0].GetSafeHwnd() == NULL || m_wndLocal.GetSafeHwnd() == NULL)
 		return;
-
 
 
 	POSITION pos = m_listWndInfoHost.GetHeadPosition();
