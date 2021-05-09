@@ -1252,12 +1252,11 @@ void CVideoDlg::RebindVideoWnd()
 	if (m_wndVideo[0].GetSafeHwnd() == NULL || m_wndLocal.GetSafeHwnd() == NULL)
 		return;
 
-
+	VideoCanvas canvas;
+	canvas.renderMode = RENDER_MODE_FIT;
 
 	POSITION pos = m_listWndInfoHost.GetHeadPosition();
 	if (pos != NULL) {
-		VideoCanvas canvas;
-		canvas.renderMode = RENDER_MODE_FIT;
 		AGVIDEO_WNDINFO& agvWndInfo = m_listWndInfoHost.GetAt(pos);
 
 		canvas.uid = agvWndInfo.nUID;
@@ -1280,8 +1279,6 @@ void CVideoDlg::RebindVideoWnd()
 	for (int nIndex = 1; nIndex < 4; nIndex++) {
 		if (pos != NULL) {
 			AGVIDEO_WNDINFO& agvWndInfo = m_listWndInfoDest.GetNext(pos);
-			VideoCanvas canvas;
-			canvas.renderMode = RENDER_MODE_FIT;
 
 			canvas.uid = agvWndInfo.nUID;
 			strcpy_s(canvas.channelId, 64, agvWndInfo.channelID);
@@ -1313,31 +1310,31 @@ void CVideoDlg::RebindVideoWnd()
 
 void CVideoDlg::UpdateVideoWnd(uid_t uid, bool mute)
 {
-	POSITION pos = ListWindowGetHeadPos(CHANNEL_TYPE::CHANNEL_DEST);
+	//POSITION pos = ListWindowGetHeadPos(CHANNEL_TYPE::CHANNEL_DEST);
 
-	for (int nIndex = 1; nIndex < 4; nIndex++) {
-		if (pos != NULL) {
-			pos = ListWindowGetHeadPos(CHANNEL_TYPE::CHANNEL_DEST);
-			AGVIDEO_WNDINFO& agvWndInfo = m_listWndInfoDest.GetNext(pos);
-			if (agvWndInfo.nUID == uid && mute) pos = ListWindowGetHeadPos(CHANNEL_TYPE::CHANNEL_SRC); //Kostyl
-			VideoCanvas canvas;
-			canvas.renderMode = RENDER_MODE_FIT;
+	//for (int nIndex = 1; nIndex < 4; nIndex++) {
+	//	if (pos != NULL) {
+	//		pos = ListWindowGetHeadPos(CHANNEL_TYPE::CHANNEL_DEST);
+	//		AGVIDEO_WNDINFO& agvWndInfo = s.GetNext(pos);
+	//		if (agvWndInfo.nUID == uid && mute) pos = ListWindowGetHeadPos(CHANNEL_TYPE::CHANNEL_SRC); //Kostyl
+	//		VideoCanvas canvas;
+	//		canvas.renderMode = RENDER_MODE_FIT;
 
-			canvas.uid = agvWndInfo.nUID;
-			strcpy_s(canvas.channelId, 64, agvWndInfo.channelID);
+	//		canvas.uid = agvWndInfo.nUID;
+	//		strcpy_s(canvas.channelId, 64, agvWndInfo.channelID);
 
-			canvas.view = m_wndVideo[nIndex].GetSafeHwnd();
-			agvWndInfo.nIndex = nIndex;
+	//		canvas.view = m_wndVideo[nIndex].GetSafeHwnd();
+	//		agvWndInfo.nIndex = nIndex;
 
-			int ret = CAgoraObject::GetEngine()->setupRemoteVideo(canvas);
-			m_wndVideo[nIndex].SetUID(canvas.uid);
-			m_wndVideo[nIndex].SetVideoResolution(agvWndInfo.nWidth, agvWndInfo.nHeight);
-			m_wndVideo[nIndex].SetFrameRateInfo(agvWndInfo.nFramerate);
-			m_wndVideo[nIndex].SetBitrateInfo(agvWndInfo.nBitrate);
-		}
-		else
-			m_wndVideo[nIndex].SetUID(0);
-	}
+	//		int ret = CAgoraObject::GetEngine()->setupRemoteVideo(canvas);
+	//		m_wndVideo[nIndex].SetUID(canvas.uid);
+	//		m_wndVideo[nIndex].SetVideoResolution(agvWndInfo.nWidth, agvWndInfo.nHeight);
+	//		m_wndVideo[nIndex].SetFrameRateInfo(agvWndInfo.nFramerate);
+	//		m_wndVideo[nIndex].SetBitrateInfo(agvWndInfo.nBitrate);
+	//	}
+	//	else
+	//		m_wndVideo[nIndex].SetUID(0);
+	//}
 }
 
 BOOL CVideoDlg::PreTranslateMessage(MSG* pMsg)
