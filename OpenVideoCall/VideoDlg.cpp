@@ -789,26 +789,22 @@ void CVideoDlg::OnBnClickedBtncough()
 {
 	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
 
-	//MuteAllAudio
+	int muteStatus = lpAgora->GetIsMuted();
 
-	if (lpAgora->IsLocalAudioMuted() == 0)
+	if (muteStatus == 1)
 	{
-		if (mStatus == FALSE)
-		{
+		if (mStatus == FALSE){
 			lpAgora->MuteSelf(1);
-			//m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+			m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
 			mStatus = TRUE;
 		}
-		else
-		{
+		else{
 			lpAgora->MuteSelf(0);
-			//m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+			m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
 			mStatus = FALSE;
 		}
 	}
-	
 }
-
 
 LRESULT CVideoDlg::OnEIDJoinChannelSuccess(WPARAM wParam, LPARAM lParam)
 {
