@@ -9,7 +9,8 @@
 // CVideoDlg ¶Ô»°¿ò
 enum class CHANNEL_CHANGE {
 	CHANNEL_CHANGE_RELAY,
-	CHANNEL_PUBLISH
+	CHANNEL_PUBLISH,
+	CHANNEL_UNPUBLISH
 };
 
 class CVideoDlg : public CDialogEx
@@ -44,6 +45,8 @@ public:
 
 	void UpdateDestCBox(Tokens token, int curSel);
 	void UpdateRelayCBox(Tokens token, int curSel);
+
+	void EnableCBox(BOOL state);
 protected:
 	int CollectSelInd();
 	

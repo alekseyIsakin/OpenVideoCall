@@ -365,27 +365,26 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 	lpRtcEngine->setClientRole(CLIENT_ROLE_BROADCASTER);
 
 	int ret = 0;
-	bool isPublish = lpAgoraObject->IsPublish();
 
 	langHolder Host		= *(netToken.GetTargetLngBgnItr() + indRelay);		// Source stream
 	langHolder LangRelay= *(netToken.GetRelayLngBgnItr()  + indDest);		// Translators stream
 	langHolder LangDest = *(netToken.GetTargetLngBgnItr() + indDest);		// Destination stream
-
+	
 	ret = lpAgoraObject->JoinChannelTransl(CString(LangRelay.langFull.c_str()), LangRelay.token.c_str(), 0);
-	ret = lpAgoraObject->JoinChannelDest(CString(LangDest.langFull.c_str()), LangDest.token.c_str(), 0 );
 	ret = lpAgoraObject->JoinChannelSrc(CString(Host.langFull.c_str()), Host.token.c_str(), 0);
-	
-	
+
+
+	agora::util::AutoPtr<agora::media::IMediaEngine> mediaEngine;
+
 	switch (typeChange)
 	{
+	case CHANNEL_CHANGE::CHANNEL_PUBLISH:
+		lpAgoraObject->JoinChannelDest(CString(LangDest.langFull.c_str()), LangDest.token.c_str(), 0 );
+		lpAgoraObject->TogglePublishChannel( CHANNEL_TYPE::CHANNEL_DEST );
+		break;
+	case CHANNEL_CHANGE::CHANNEL_UNPUBLISH:
 	case CHANNEL_CHANGE::CHANNEL_CHANGE_RELAY:
 		lpAgoraObject->TogglePublishChannel( CHANNEL_TYPE::CHANNEL_TRANSL );
-		break;
-	case CHANNEL_CHANGE::CHANNEL_PUBLISH:
-		lpAgoraObject->TogglePublishChannel(isPublish ?
-			CHANNEL_TYPE::CHANNEL_TRANSL:
-			CHANNEL_TYPE::CHANNEL_DEST
-		);
 		break;
 	default:
 		break;
@@ -399,11 +398,15 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 LRESULT COpenVideoCallDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 {
 	CAgoraObject*lpAgoraObject = CAgoraObject::GetAgoraObject();
+	CHANNEL_CHANGE	typeChange = (CHANNEL_CHANGE)wParam;
 
+	BOOL isPublish = lpAgoraObject->IsPublish();
+
+	if (isPublish) {
+		lpAgoraObject->LeaveDestChannel();
+	}
 	lpAgoraObject->LeaveSrcChannel();
-	lpAgoraObject->LeaveDestChannel();
 	lpAgoraObject->LeaveTranslChannel();
-	lpAgoraObject->LeaveCahnnel();
 
 	//lpAgoraObject->GetEngine()->stopPreview();
     

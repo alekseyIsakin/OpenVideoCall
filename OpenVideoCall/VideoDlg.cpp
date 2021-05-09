@@ -110,6 +110,7 @@ BEGIN_MESSAGE_MAP(CVideoDlg, CDialogEx)
 	//	ON_BN_CLICKED(ID_WHITEBOARD_GUESTMODE, &CVideoDlg::OnBnClickedGuestMode)
 
 	ON_CBN_SELCHANGE(IDC_CBXRELAY_VIDEO, &CVideoDlg::OnCbnSelchangeCmb)
+	ON_CBN_SELCHANGE(IDC_CBXRDEST_VIDEO, &CVideoDlg::OnCbnSelchangeCmb)
 	ON_BN_CLICKED(IDC_BTNPUBLISH_VIDEO, &CVideoDlg::OnBtnClickPublish)
 
 	ON_WM_SHOWWINDOW()
@@ -120,16 +121,23 @@ void CVideoDlg::OnCbnSelchangeCmb()
 {
 	int curSel = CollectSelInd();
 
-	OnBnClickedBtnclose();
+	GetParent()->SendMessage(WM_LEAVECHANNEL, 0, 0);
 	GetParent()->SendMessage(WM_JOINCHANNEL, (WPARAM)CHANNEL_CHANGE::CHANNEL_CHANGE_RELAY, curSel);
 }
 
 void CVideoDlg::OnBtnClickPublish()
 {
+	BOOL isPublish = CAgoraObject::GetAgoraObject()->IsPublish();
+	CHANNEL_CHANGE ch_state = isPublish ?
+		CHANNEL_CHANGE::CHANNEL_UNPUBLISH :
+		CHANNEL_CHANGE::CHANNEL_PUBLISH;
+
+	EnableCBox(isPublish);
+
 	int curSel = CollectSelInd();
 
-	OnBnClickedBtnclose();
-	GetParent()->SendMessage(WM_JOINCHANNEL, (WPARAM)CHANNEL_CHANGE::CHANNEL_PUBLISH, curSel);
+	GetParent()->SendMessage(WM_LEAVECHANNEL, 0, 0);
+	GetParent()->SendMessage(WM_JOINCHANNEL, (WPARAM)ch_state, curSel);
 }
 // CVideoDlg
 
@@ -162,6 +170,11 @@ void CVideoDlg::UpdateRelayCBox(Tokens token, int curSel)
 		nIndex++;
 	}
 	m_cmbRelay.SetCurSel(curSel);
+}
+void CVideoDlg::EnableCBox(BOOL state)
+{
+	m_cmbDest.EnableWindow(state);
+	m_cmbRelay.EnableWindow(state);
 }
 int CVideoDlg::CollectSelInd()
 {
