@@ -268,7 +268,7 @@ void CAGVideoWnd::OnRButtonDown(UINT nFlags, CPoint point)
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
 	//::SendMessage(GetParent()->GetSafeHwnd(), WM_SHOWMODECHANGED, (WPARAM)this, (LPARAM)m_nUID);
 
-	if (!ctr_Created && m_nUID != 0) { InitCtrls(); ctr_Created = TRUE; }
+	if (!ctr_Created && CAgoraObject::GetAgoraObject()->GetHostUID() != m_nUID && m_nUID != 0) { InitCtrls(); ctr_Created = TRUE; } // 
 	else if (ctr_Created) { 
 		CtrlMode = !CtrlMode;
 		m_btnShowVid.ShowWindow(CtrlMode); 
@@ -401,7 +401,7 @@ void CAGVideoWnd::OnVideoMuteClick() //Webcam mute
 	if (bHidden == FALSE)
 	{
 		::SendMessage(GetParent()->GetSafeHwnd(), WM_VIDEOMUTECLIENT, (WPARAM)this, (LPARAM)m_nUID);
-		Sleep(500); //Waits for video stream to end
+		//Sleep(500); //Waits for video stream to end
 		SetBackImage(IDB_BACKGROUND_VIDEO, 96, 96, RGB(0x44, 0x44, 0x44));
 		bHidden = TRUE;
 	}

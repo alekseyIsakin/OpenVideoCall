@@ -35,6 +35,7 @@ public:
 	HWND GetLocalVideoWnd() { return m_wndLocal.GetSafeHwnd(); };
 
 	void RebindVideoWnd();
+	void UpdateVideoWnd(uid_t uid, bool mute);
 
 	void ShowControlButton(BOOL bShow = TRUE);
 
@@ -180,6 +181,7 @@ private:	// data
 
 	CList<AGVIDEO_WNDINFO>	m_listWndInfoHost;
 	CList<AGVIDEO_WNDINFO>	m_listWndInfoDest;
+	CList<AGVIDEO_WNDINFO> m_listMuted;
 
 	BOOL			m_bRecording;
 	BOOL			m_bFullScreen;

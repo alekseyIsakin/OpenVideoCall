@@ -62,8 +62,6 @@ BEGIN_MESSAGE_MAP(CVideoDlg, CDialogEx)
 
 	ON_MESSAGE(WM_MSGID(EID_FIRST_REMOTE_VIDEO_DECODED), &CVideoDlg::OnEIDFirstRemoteFrameDecoded)
 	ON_MESSAGE(WM_MSGID(EID_USER_OFFLINE), &CVideoDlg::OnEIDUserOffline)
-	ON_MESSAGE(WM_MSGID(EID_USER_JOINED), &CVideoDlg::OnEIDUserJoined)
-
 	
 	ON_MESSAGE(WM_MSGID(EID_REMOTE_VIDEO_STAT), &CVideoDlg::OnRemoteVideoStat)
 
@@ -350,9 +348,55 @@ UINT CVideoDlg::ListWindowGetCount(CHANNEL_TYPE channel)
 UINT CVideoDlg::ListWindowGetTotalCount()
 {
 	return	m_listWndInfoHost.GetCount() +
-			m_listWndInfoDest.GetCount();
+		m_listWndInfoDest.GetCount();
 }
 
+
+
+LRESULT CVideoDlg::MuteClient(WPARAM wParam, LPARAM lParam) //Mutes specific user
+{
+	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
+
+	RtcEngineParameters rep(*lpAgora->GetEngine());
+	lpAgora->MuteClient(lParam, 1);
+
+	return 0;
+}
+
+LRESULT CVideoDlg::UnMuteClient(WPARAM wParam, LPARAM lParam) //UnMutes specific user
+{
+	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
+
+	RtcEngineParameters rep(*lpAgora->GetEngine());
+	lpAgora->MuteClient(lParam, 0);
+
+	return 0;
+}
+
+
+LRESULT CVideoDlg::HideClient(WPARAM wParam, LPARAM lParam) //Hides user's webcam
+{
+	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
+
+	RtcEngineParameters rep(*lpAgora->GetEngine());
+
+	rep.muteRemoteVideoStream(lParam, 1);
+	UpdateVideoWnd(lParam, 1);
+
+	return 0;
+}
+
+LRESULT CVideoDlg::UnHideClient(WPARAM wParam, LPARAM lParam) //Shows user's webcam
+{
+	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
+
+	RtcEngineParameters rep(*lpAgora->GetEngine());
+
+	rep.muteRemoteVideoStream(lParam, 0);
+	UpdateVideoWnd(lParam, 0);
+
+	return 0;
+}
 
 void CVideoDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
@@ -454,23 +498,23 @@ void CVideoDlg::OnBnClickedBtnclose()
 	GetParent()->SendMessage(WM_LEAVECHANNEL, 0, 0);
 
 	ListWindowRemoveAll();
-    m_dlgChat.ShowWindow(SW_HIDE);
-    m_dlgDevice.ShowWindow(SW_HIDE);
+	m_dlgChat.ShowWindow(SW_HIDE);
+	m_dlgDevice.ShowWindow(SW_HIDE);
 
-    // unmute local video
-    CAgoraObject::GetAgoraObject()->MuteLocalVideo(FALSE);
-    m_btnMode.SetBackImage(IDB_BTNAUDIO_VIDEO);
+	// unmute local video
+	CAgoraObject::GetAgoraObject()->MuteLocalVideo(FALSE);
+	m_btnMode.SetBackImage(IDB_BTNAUDIO_VIDEO);
 
-    // unmute local audio
-    CAgoraObject::GetAgoraObject()->MuteLocalAudio(FALSE);
-    m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+	// unmute local audio
+	CAgoraObject::GetAgoraObject()->MuteLocalAudio(FALSE);
+	m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
 
-    CAgoraObject::GetAgoraObject()->EnableScreenCapture(NULL, 0, NULL, FALSE);
-    m_btnScrCap.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+	CAgoraObject::GetAgoraObject()->EnableScreenCapture(NULL, 0, NULL, FALSE);
+	m_btnScrCap.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
 
-    m_dlgChat.ShowWindow(SW_HIDE);
-    m_dlgChat.ClearHistory();
-    m_btnMessage.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+	m_dlgChat.ShowWindow(SW_HIDE);
+	m_dlgChat.ClearHistory();
+	m_btnMessage.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
 
 	CDialogEx::OnOK();
 }
@@ -813,7 +857,7 @@ LRESULT CVideoDlg::OnEIDReJoinChannelSuccess(WPARAM wParam, LPARAM lParam)
 	LPAGE_REJOINCHANNEL_SUCCESS lpData = (LPAGE_REJOINCHANNEL_SUCCESS)wParam;
 	m_dlgChat.UpdateMessageStream();
 	ListWindowRemoveAll((CHANNEL_TYPE)lParam);
-	
+
 	delete lpData;
 
 	return 0;
@@ -839,7 +883,7 @@ LRESULT CVideoDlg::OnEIDFirstRemoteFrameDecoded(WPARAM wParam, LPARAM lParam)
 	POSITION pos = ListWindowGetHeadPos(chT);
 
 	while (pos != NULL) {
-		AGVIDEO_WNDINFO &agvWndInfo = ListWindowGetNextPos(chT, pos);
+		AGVIDEO_WNDINFO& agvWndInfo = ListWindowGetNextPos(chT, pos);
 		if (agvWndInfo.nUID == lpData->uid) {
 			bFound = TRUE;
 			break;
@@ -865,44 +909,21 @@ LRESULT CVideoDlg::OnEIDFirstRemoteFrameDecoded(WPARAM wParam, LPARAM lParam)
 
 LRESULT CVideoDlg::OnEIDUserJoined(WPARAM wParam, LPARAM lParam)
 {
-	LPAGE_USER_JOINED lpData = (LPAGE_USER_JOINED)wParam;
-	BOOL bFound = FALSE;
-	CHANNEL_TYPE chT = (CHANNEL_TYPE)lParam;
-	POSITION pos = ListWindowGetHeadPos(chT);
+    CString str;
+    LPAGE_USER_JOINED lpData = (LPAGE_USER_JOINED)wParam;
 
-
-	while (pos != NULL) {
-		AGVIDEO_WNDINFO& agvWndInfo = ListWindowGetNextPos(chT, pos);
-		if (agvWndInfo.nUID == lpData->uid) {
-			bFound = TRUE;
-			break;
-		}
-	}
-
-	if (!bFound) {
-		AGVIDEO_WNDINFO agvWndInfo;
-		memset(&agvWndInfo, 0, sizeof(AGVIDEO_WNDINFO));
-		agvWndInfo.nUID = lpData->uid;
-		strcpy_s(agvWndInfo.channelID, 64, lpData->channelID);
-		ListWindowAddTail(chT, agvWndInfo);
-	}
-
-	delete lpData;
-
-
-	RebindVideoWnd();
-
+    str.Format(_T("%d joined the channel"), lpData->uid);
+    MessageBox(str);
 	return 0;
 }
 
 LRESULT CVideoDlg::OnEIDUserOffline(WPARAM wParam, LPARAM lParam)
 {
-
 	LPAGE_USER_OFFLINE lpData = (LPAGE_USER_OFFLINE)wParam;
 	CHANNEL_TYPE chT = (CHANNEL_TYPE)lParam;
 
 	POSITION pos = ListWindowGetHeadPos(chT);
-	while (pos != NULL){
+	while (pos != NULL) {
 		if (ListWindowGetAt(chT, pos).nUID == lpData->uid) {
 			ListWindowRemoveAt(chT, pos);
 			RebindVideoWnd();
@@ -935,7 +956,7 @@ LRESULT CVideoDlg::OnRemoteVideoStat(WPARAM wParam, LPARAM lParam)
 	POSITION posNext = ListWindowGetHeadPos(chT);
 
 	while (posNext != NULL) {
-		AGVIDEO_WNDINFO &rWndInfo = ListWindowGetNextPos(chT, posNext);
+		AGVIDEO_WNDINFO& rWndInfo = ListWindowGetNextPos(chT, posNext);
 
 		if (rWndInfo.nUID == lpData->uid) {
 			rWndInfo.nFramerate = lpData->rendererOutputFrameRate;
@@ -1160,40 +1181,35 @@ void CVideoDlg::ShowVideo4()
 
 void CVideoDlg::ShowMulti()
 {
-	int nLocalIndex = 0;
-
-	m_wndLocal.ShowWindow(TRUE);
+	m_wndLocal.ShowWindow(SW_HIDE);
 	m_wndLocal.SetBigShowFlag(FALSE);
 	for (int nIndex = 0; nIndex < 4; nIndex++) {
 		m_wndVideo[nIndex].ShowWindow(SW_HIDE);
 		m_wndVideo[nIndex].SetBigShowFlag(FALSE);
+		m_wndVideo[nIndex].SetParent(this);
 	}
-	//if (m_lpBigShowed == NULL)
-	//	m_lpBigShowed = &m_wndVideo[0];
 
-	m_lpBigShowed = (CAGVideoWnd*)&m_wndVideo[CAgoraObject::GetAgoraObject()->SearchUID(CAgoraObject::GetAgoraObject()->GetHostUID())];
-	m_lpBigShowed->ShowWindow(SW_SHOW);
-	m_lpBigShowed->MoveWindow(&m_rcVideoArea, TRUE);
-	m_lpBigShowed->SetParent(this);
-	m_lpBigShowed->SetBigShowFlag(TRUE);
-	
+	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
+	int host = m_listWndInfoHost.GetHead().nIndex;
+
+	(&m_wndVideo[host])->ShowWindow(SW_SHOW);
+	(&m_wndVideo[host])->MoveWindow(&m_rcVideoArea, TRUE);
+	(&m_wndVideo[host])->SetBigShowFlag(TRUE);
+
+
+	m_wndLocal.MoveWindow((m_rcVideoArea.Width() / 2) - 300, m_rcVideoArea.bottom - 200, 192, 144, TRUE);
+	m_wndLocal.ShowWindow(SW_SHOW);
+	m_wndLocal.SetParent(this);
+
 	for (int nIndex = 0; nIndex < 4; nIndex++) {
-		int nXPos = (m_rcVideoArea.Width() / 2) - 402 + (204 * nLocalIndex);
+		int nXPos = (m_rcVideoArea.Width() / 2) - 300 + (204 * nIndex);
 		int nYPos = m_rcVideoArea.bottom - 200;
 
 		if (!m_wndVideo[nIndex].IsBigShow()) {
 			if (m_wndVideo[nIndex].GetUID() != 0) {
 				m_wndVideo[nIndex].MoveWindow(nXPos, nYPos, 192, 144, TRUE);
 				m_wndVideo[nIndex].ShowWindow(SW_SHOW);
-				m_wndVideo[nIndex].SetParent(m_lpBigShowed);
-				nLocalIndex++;
 			}
-		}
-		else{
-			m_wndLocal.MoveWindow(nXPos, nYPos, 192, 144, TRUE);
-			m_wndLocal.ShowWindow(SW_SHOW);
-			m_wndLocal.SetParent(m_lpBigShowed);
-			nLocalIndex++;
 		}
 	}
 
@@ -1231,7 +1247,6 @@ HWND CVideoDlg::GetRemoteVideoWnd(int nIndex)
 	return m_wndVideo[nIndex].GetSafeHwnd();
 }
 
-
 void CVideoDlg::RebindVideoWnd()
 {
 	if (m_wndVideo[0].GetSafeHwnd() == NULL || m_wndLocal.GetSafeHwnd() == NULL)
@@ -1253,6 +1268,7 @@ void CVideoDlg::RebindVideoWnd()
 
 		CAgoraObject::GetEngine()->setupRemoteVideo(canvas);
 		m_wndVideo[0].SetUID(canvas.uid);
+		CAgoraObject::GetAgoraObject()->SetHostUID(agvWndInfo.nUID);
 		m_wndVideo[0].SetVideoResolution(agvWndInfo.nWidth, agvWndInfo.nHeight);
 		m_wndVideo[0].SetFrameRateInfo(agvWndInfo.nFramerate);
 		m_wndVideo[0].SetBitrateInfo(agvWndInfo.nBitrate);
@@ -1263,7 +1279,7 @@ void CVideoDlg::RebindVideoWnd()
 	pos = m_listWndInfoDest.GetHeadPosition();
 	for (int nIndex = 1; nIndex < 4; nIndex++) {
 		if (pos != NULL) {
-			AGVIDEO_WNDINFO &agvWndInfo = m_listWndInfoDest.GetNext(pos);
+			AGVIDEO_WNDINFO& agvWndInfo = m_listWndInfoDest.GetNext(pos);
 			VideoCanvas canvas;
 			canvas.renderMode = RENDER_MODE_FIT;
 
@@ -1295,6 +1311,35 @@ void CVideoDlg::RebindVideoWnd()
 		ShowMulti();
 }
 
+void CVideoDlg::UpdateVideoWnd(uid_t uid, bool mute)
+{
+	POSITION pos = ListWindowGetHeadPos(CHANNEL_TYPE::CHANNEL_DEST);
+
+	for (int nIndex = 1; nIndex < 4; nIndex++) {
+		if (pos != NULL) {
+			pos = ListWindowGetHeadPos(CHANNEL_TYPE::CHANNEL_DEST);
+			AGVIDEO_WNDINFO& agvWndInfo = m_listWndInfoDest.GetNext(pos);
+			if (agvWndInfo.nUID == uid && mute) pos = ListWindowGetHeadPos(CHANNEL_TYPE::CHANNEL_SRC); //Kostyl
+			VideoCanvas canvas;
+			canvas.renderMode = RENDER_MODE_FIT;
+
+			canvas.uid = agvWndInfo.nUID;
+			strcpy_s(canvas.channelId, 64, agvWndInfo.channelID);
+
+			canvas.view = m_wndVideo[nIndex].GetSafeHwnd();
+			agvWndInfo.nIndex = nIndex;
+
+			int ret = CAgoraObject::GetEngine()->setupRemoteVideo(canvas);
+			m_wndVideo[nIndex].SetUID(canvas.uid);
+			m_wndVideo[nIndex].SetVideoResolution(agvWndInfo.nWidth, agvWndInfo.nHeight);
+			m_wndVideo[nIndex].SetFrameRateInfo(agvWndInfo.nFramerate);
+			m_wndVideo[nIndex].SetBitrateInfo(agvWndInfo.nBitrate);
+		}
+		else
+			m_wndVideo[nIndex].SetUID(0);
+	}
+}
+
 BOOL CVideoDlg::PreTranslateMessage(MSG* pMsg)
 {
 	if (pMsg->message == WM_KEYDOWN){
@@ -1321,10 +1366,10 @@ LRESULT CVideoDlg::OnShowModeChanged(WPARAM wParam, LPARAM lParam)
 			ShowVideo4();
 	}
 	else {
-		m_lpBigShowed = (CAGVideoWnd *)wParam;
+		m_lpBigShowed = (CAGVideoWnd*)wParam;
 		ShowMulti();
 	}
-	
+
 	return 0;
 }
 
