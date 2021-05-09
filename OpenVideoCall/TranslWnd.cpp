@@ -70,11 +70,13 @@ void CAGBckWnd::OnMuteClick() //Mic mute
 	if (bMuted == FALSE)
 	{
 		::SendMessage(GetParent()->GetSafeHwnd(), WM_AUDIOMUTECLIENT, (WPARAM)this, (LPARAM)m_nUID);
+		m_btnEnableAudio.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
 		bMuted = TRUE;
 	}
 	else
 	{
 		::SendMessage(GetParent()->GetSafeHwnd(), WM_AUDIOUNMUTECLIENT, (WPARAM)this, (LPARAM)m_nUID);
+		m_btnEnableAudio.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
 		bMuted = FALSE;
 	}
 }
@@ -84,11 +86,13 @@ void CAGBckWnd::OnVideoMuteClick() //Webcam mute
 	if (bHidden == FALSE)
 	{
 		::SendMessage(GetParent()->GetSafeHwnd(), WM_VIDEOMUTECLIENT, (WPARAM)this, (LPARAM)m_nUID);
+		m_btnShowVid.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
 		bHidden = TRUE;
 	}
 	else
 	{
 		::SendMessage(GetParent()->GetSafeHwnd(), WM_VIDEOUNMUTECLIENT, (WPARAM)this, (LPARAM)m_nUID);
+		m_btnShowVid.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
 		bHidden = FALSE;
 	}
 }
@@ -108,33 +112,30 @@ void CAGBckWnd::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
 	//::SendMessage(GetParent()->GetSafeHwnd(), WM_SHOWMODECHANGED, (WPARAM)this, (LPARAM)m_nUID);
-
-	if (!ctr_Created && CAgoraObject::GetAgoraObject()->GetHostUID() != m_nUID && m_nUID != 0) { InitCtrls(); ctr_Created = TRUE; } // 
-	else if (ctr_Created) {
-		CtrlMode = !CtrlMode;
-		m_btnShowVid.ShowWindow(CtrlMode);
-		m_btnEnableAudio.ShowWindow(CtrlMode);
-	}
 	CWnd::OnRButtonDown(nFlags, point);
 }
 
 void CAGBckWnd::InitCtrls()
 {
-	CRect		rcClient;
-	GetClientRect(&rcClient);
+	if (!ctr_Created && CAgoraObject::GetAgoraObject()->GetHostUID() != m_nUID && m_nUID != 0)
+	{
+		CRect		rcClient;
+		GetClientRect(&rcClient);
 
 
-	m_btnEnableAudio.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTN_AUDIO);
-	m_btnShowVid.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTN_VIDEO);
+		m_btnEnableAudio.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTN_AUDIO);
+		m_btnShowVid.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTN_VIDEO);
 
-	m_btnEnableAudio.MoveWindow(rcClient.Width() - 60, rcClient.Height() - 60, 48, 48, FALSE);
-	m_btnEnableAudio.SetBackImage(IDB_BTNMAUDIO_VIDEO, RGB(0x00, 0x00, 0x00));
+		m_btnEnableAudio.MoveWindow(rcClient.Width() - 60, rcClient.Height() - 60, 48, 48, FALSE);
+		m_btnEnableAudio.SetBackImage(IDB_BTNMAUDIO_VIDEO, RGB(0x00, 0x00, 0x00));
 
-	m_btnShowVid.MoveWindow(12, rcClient.Height() - 60, 48, 48, FALSE);
-	m_btnShowVid.SetBackImage(IDB_BTNVIDEO_VIDEO, RGB(0x00, 0x00, 0x00));
+		m_btnShowVid.MoveWindow(12, rcClient.Height() - 60, 48, 48, FALSE);
+		m_btnShowVid.SetBackImage(IDB_BTNVIDEO_VIDEO, RGB(0x00, 0x00, 0x00));
 
-	m_btnShowVid.ShowWindow(1);
-	m_btnEnableAudio.ShowWindow(1);
+		m_btnShowVid.ShowWindow(1);
+		m_btnEnableAudio.ShowWindow(1);
+		ctr_Created = TRUE;
+	}
 }
 
 BOOL CAGBckWnd::SetBackImage(UINT nID, UINT nWidth, UINT nHeight, COLORREF crMask)

@@ -164,12 +164,7 @@ BOOL CAGVideoWnd::OnEraseBkgnd(CDC* pDC)
 void CAGVideoWnd::SetUID(int nUID)
 {
 	m_nUID = nUID;
-
-	if (m_nUID == 0)
-		m_wndInfo.ShowWindow(SW_HIDE);
-	else
-		m_wndInfo.ShowWindow(SW_SHOW);
-
+	m_wndInfo.ShowWindow(SW_SHOW);
 }
 
 void CAGVideoWnd::SetChID(LPCSTR chr)
