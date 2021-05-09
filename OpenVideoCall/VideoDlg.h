@@ -7,6 +7,10 @@
 #include "ChatDlg.h"
 
 // CVideoDlg ¶Ô»°¿ò
+enum class CHANNEL_CHANGE {
+	CHANNEL_CHANGE_RELAY,
+	CHANNEL_PUBLISH
+};
 
 class CVideoDlg : public CDialogEx
 {
@@ -123,8 +127,10 @@ protected:
 	void AdjustSizeVideo4(int cx, int cy);
 	void AdjustSizeVideoMulti(int cx, int cy);
 
-	void OnCbnSelchangeCmbDest();
 	void OnCbnSelchangeCmb();
+	void OnBtnClickPublish();
+
+	void pass() { ; }			// nothing
 private:
 	CBrush			m_brHead;
 
@@ -141,6 +147,7 @@ private:
 
 	CComboBox		m_cmbDest;
 	CComboBox		m_cmbRelay;
+	CAGButton		m_btnPublish;
 
 	CAGButton		m_btnShow;
 

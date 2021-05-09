@@ -74,6 +74,8 @@ public:
 	BOOL LeaveSrcChannel();
 	BOOL LeaveTranslChannel();
 
+	BOOL IsPublish() { return m_channelDestPublish; }
+
 	CString GetChanelName();
 	CString GetCallID();
 	CString GetVendorKey() { return m_strVendorKey; };
@@ -131,7 +133,7 @@ public:
 	uid_t GetHostUID();
 	void SetHostUID(uid_t uid);
 
-	void TogglePublishChannel(CHANNEL_TYPE channel);
+	int TogglePublishChannel(CHANNEL_TYPE channel);
 
 protected:
 	CAgoraObject(void);

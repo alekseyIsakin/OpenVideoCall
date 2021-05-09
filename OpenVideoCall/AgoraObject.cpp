@@ -288,7 +288,6 @@ BOOL CAgoraObject::LeaveCahnnel()
 BOOL CAgoraObject::JoinChannelSrc(LPCTSTR lpChannelName, LPCSTR token, UINT nUID, LPCSTR info)
 {
 	int ret = 0;
-	LeaveSrcChannel();
 
 #ifdef UNICODE
 	CHAR szChannelName[128];
@@ -315,7 +314,6 @@ BOOL CAgoraObject::JoinChannelSrc(LPCTSTR lpChannelName, LPCSTR token, UINT nUID
 BOOL CAgoraObject::JoinChannelDest(LPCTSTR lpChannelName, LPCSTR token, UINT nUID, LPCSTR info)
 {
 	int ret = 0;
-	LeaveDestChannel();
 
 #ifdef UNICODE
 	CHAR szChannelName[128];
@@ -343,7 +341,6 @@ BOOL CAgoraObject::JoinChannelDest(LPCTSTR lpChannelName, LPCSTR token, UINT nUI
 BOOL CAgoraObject::JoinChannelTransl(LPCTSTR lpChannelName, LPCSTR token, UINT nUID, LPCSTR info)
 {
 	int ret = 0;
-	LeaveTranslChannel();
 
 #ifdef UNICODE
 	CHAR szChannelName[128];
@@ -368,9 +365,7 @@ BOOL CAgoraObject::JoinChannelTransl(LPCTSTR lpChannelName, LPCSTR token, UINT n
 	ret = m_channelTransl->joinChannel(token, info, nUID, options);
 	m_channelTranslJoin = ret == 0 ? true : false;
 
-	ret = m_channelTransl->publish();
 	m_channelTranslPublish = ret == 0 ? true : false;
-
 
 	return 0 == ret;
 }
@@ -383,8 +378,6 @@ BOOL CAgoraObject::LeaveDestChannel()
 		if (m_channelDestPublish) m_channelDest->unpublish();
 		if (m_channelDestJoin)	  m_channelDest->leaveChannel();
 		
-		//ret = m_channelDest->release();
-
 		m_channelDestPublish	= false;
 		m_channelDestJoin		= false;
 	}
@@ -396,8 +389,6 @@ BOOL CAgoraObject::LeaveSrcChannel()
 	if (m_channelSrc != NULL)
 	{
 		if (m_channelSrcJoin) m_channelSrc->leaveChannel();
-
-		//ret = m_channelSrc->release();
 
 		m_channelSrcJoin = false;
 	}
@@ -411,9 +402,7 @@ BOOL CAgoraObject::LeaveTranslChannel()
 	{
 		if (m_channelTranslPublish) m_channelTransl->unpublish();
 		if (m_channelTranslJoin)	m_channelTransl->leaveChannel();
-
-		//ret = m_channelTransl->release();
-
+		
 		m_channelTranslPublish	= false;
 		m_channelTranslJoin		= false;
 	}
@@ -850,11 +839,22 @@ void CAgoraObject::SetHostUID(uid_t uid)
 }
 
 
-void CAgoraObject::TogglePublishChannel(CHANNEL_TYPE channel) 
+int CAgoraObject::TogglePublishChannel(CHANNEL_TYPE channel) 
 {
 	int ret = -1;
-	if (m_channelTranslPublish)	m_channelTransl->unpublish();
-	if (m_channelDestPublish)	m_channelDest->unpublish();
+
+	if (m_channelTranslPublish)
+	{
+		ret = m_channelTransl->unpublish();
+		m_channelTranslPublish = 0;
+	}
+
+	if (m_channelDestPublish)	
+	{
+		ret = m_channelDest->unpublish();
+		m_channelDestPublish = 0; 
+	}
+	ret = -1;
 	switch (channel)
 	{
 	case CHANNEL_TYPE::CHANNEL_TRANSL:
@@ -871,5 +871,5 @@ void CAgoraObject::TogglePublishChannel(CHANNEL_TYPE channel)
 		break;
 	}
 
-	ret;
+	return 0 == ret;
 }

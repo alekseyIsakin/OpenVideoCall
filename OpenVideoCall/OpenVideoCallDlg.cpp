@@ -312,6 +312,7 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 {
 	IRtcEngine		*lpRtcEngine	= CAgoraObject::GetEngine();
 	CAgoraObject	*lpAgoraObject	= CAgoraObject::GetAgoraObject();
+	CHANNEL_CHANGE	typeChange		= (CHANNEL_CHANGE)wParam;
 	int				indDest			= lParam % 1000; // lParam % 1000 - index select item in RelayComboBox
 	int				indRelay		= lParam / 1000; // lParam / 1000 - index select item in DestComboBox
 
@@ -364,19 +365,32 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 	lpRtcEngine->setClientRole(CLIENT_ROLE_BROADCASTER);
 
 	int ret = 0;
+	bool isPublish = lpAgoraObject->IsPublish();
 
 	langHolder Host		= *(netToken.GetTargetLngBgnItr() + indRelay);		// Source stream
-	langHolder LangDest = *(netToken.GetTargetLngBgnItr() + indDest);		// Destination stream
 	langHolder LangRelay= *(netToken.GetRelayLngBgnItr()  + indDest);		// Translators stream
+	langHolder LangDest = *(netToken.GetTargetLngBgnItr() + indDest);		// Destination stream
 
 	ret = lpAgoraObject->JoinChannelTransl(CString(LangRelay.langFull.c_str()), LangRelay.token.c_str(), 0);
 	ret = lpAgoraObject->JoinChannelDest(CString(LangDest.langFull.c_str()), LangDest.token.c_str(), 0 );
 	ret = lpAgoraObject->JoinChannelSrc(CString(Host.langFull.c_str()), Host.token.c_str(), 0);
 	
-	lpAgoraObject->TogglePublishChannel(indDest == indRelay ?
-		CHANNEL_TYPE::CHANNEL_TRANSL :
-		CHANNEL_TYPE::CHANNEL_DEST  
-	);
+	
+	switch (typeChange)
+	{
+	case CHANNEL_CHANGE::CHANNEL_CHANGE_RELAY:
+		lpAgoraObject->TogglePublishChannel( CHANNEL_TYPE::CHANNEL_TRANSL );
+		break;
+	case CHANNEL_CHANGE::CHANNEL_PUBLISH:
+		lpAgoraObject->TogglePublishChannel(isPublish ?
+			CHANNEL_TYPE::CHANNEL_TRANSL:
+			CHANNEL_TYPE::CHANNEL_DEST
+		);
+		break;
+	default:
+		break;
+	}
+
 	lpAgoraObject->SetMsgHandlerWnd(m_dlgVideo.GetSafeHwnd());
 
 	return 0;
@@ -384,7 +398,7 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 
 LRESULT COpenVideoCallDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 {
-	CAgoraObject	*lpAgoraObject = CAgoraObject::GetAgoraObject();
+	CAgoraObject*lpAgoraObject = CAgoraObject::GetAgoraObject();
 
 	lpAgoraObject->LeaveSrcChannel();
 	lpAgoraObject->LeaveDestChannel();
