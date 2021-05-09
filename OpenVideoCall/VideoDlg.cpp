@@ -1212,11 +1212,12 @@ void CVideoDlg::ShowVideo1()
 	}
 
 	if (ListWindowGetTotalCount() == 0) {
-		m_wndLocal.MoveWindow(&m_rcVideoArea, FALSE);
+		m_wndTrLocal.MoveWindow((m_rcVideoArea.Width() / 2) - 400, m_rcVideoArea.bottom - 200, 191, 200, TRUE);
+		m_wndLocal.MoveWindow((m_rcVideoArea.Width() / 2) - 395, m_rcVideoArea.bottom - 195, 180, 135, TRUE);
+		m_wndTrLocal.SetParent(this);
 		m_wndLocal.SetParent(this);
-		m_wndLocal.SetBigShowFlag(TRUE);
+		m_wndTrLocal.ShowWindow(SW_SHOW);
 		m_wndLocal.ShowWindow(SW_SHOW);
-		m_wndTrLocal.ShowWindow(SW_HIDE);
 	}
 	else {
 		m_wndVideo[0].MoveWindow(&m_rcVideoArea, FALSE);
@@ -1225,11 +1226,11 @@ void CVideoDlg::ShowVideo1()
 		m_wndVideo[0].SetParent(this);
 
 		m_wndTrLocal.MoveWindow((m_rcVideoArea.Width() / 2) - 400, m_rcVideoArea.bottom - 200, 191, 200, TRUE);
-		m_wndTrLocal.ShowWindow(SW_SHOW);
-		m_wndTrLocal.SetParent(this);
 		m_wndLocal.MoveWindow((m_rcVideoArea.Width() / 2) - 395, m_rcVideoArea.bottom - 195, 180, 135, TRUE);
-		m_wndLocal.ShowWindow(SW_SHOW);
+		m_wndTrLocal.SetParent(this);
 		m_wndLocal.SetParent(this);
+		m_wndTrLocal.ShowWindow(SW_SHOW);
+		m_wndLocal.ShowWindow(SW_SHOW);
 	}
 
 	m_nScreenMode = SCREEN_VIDEO1;
