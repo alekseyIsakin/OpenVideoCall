@@ -89,10 +89,12 @@ BEGIN_MESSAGE_MAP(CVideoDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTNMODE_VIDEO, &CVideoDlg::OnBnClickedBtnmode)
 	ON_BN_CLICKED(IDC_BTNAUDIO_VIDEO, &CVideoDlg::OnBnClickedBtnaudio)
 
+
 	ON_BN_CLICKED(ID_IDR_VIDEOINFO, &CVideoDlg::OnBnClickedBtntip)
 	ON_BN_CLICKED(ID_IDR_DEVICE, &CVideoDlg::OnBnClickedBtnsetup)
 	ON_BN_CLICKED(ID_IDR_FILTER, &CVideoDlg::OnBnClickedBtnfilter)
-	ON_BN_CLICKED(IDB_BTNMCOUGH_VIDEO, &CVideoDlg::OnBnClickedBtncough)
+	//ON_BN_CLICKED(IDB_BTNMCOUGH_VIDEO, &CVideoDlg::OnBnClickedBtncough)
+	ON_BN_HILITE(IDB_BTNMCOUGH_VIDEO, &CVideoDlg::OnBnClickedBtncough)
 
     ON_BN_CLICKED(ID_IDR_VIDEOINFO, &CVideoDlg::OnBnClickedBtntip)
     ON_BN_CLICKED(ID_IDR_DEVICE, &CVideoDlg::OnBnClickedBtnsetup)
@@ -121,8 +123,10 @@ void CVideoDlg::OnCbnSelchangeCmb()
 {
 	int curSel = CollectSelInd();
 
+	ListWindowRemoveAll();
 	GetParent()->SendMessage(WM_LEAVECHANNEL, 0, 0);
 	GetParent()->SendMessage(WM_JOINCHANNEL, (WPARAM)CHANNEL_CHANGE::CHANNEL_CHANGE_RELAY, curSel);
+	RebindVideoWnd();
 }
 
 void CVideoDlg::OnBtnClickPublish()
@@ -136,6 +140,7 @@ void CVideoDlg::OnBtnClickPublish()
 
 	int curSel = CollectSelInd();
 
+	ListWindowRemoveAll();
 	GetParent()->SendMessage(WM_LEAVECHANNEL, 0, 0);
 	GetParent()->SendMessage(WM_JOINCHANNEL, (WPARAM)ch_state, curSel);
 }
@@ -352,6 +357,7 @@ POSITION CVideoDlg::ListWindowGetHeadPos(CHANNEL_TYPE channel)
 	case (CHANNEL_TYPE::CHANNEL_DEST):
 		return  m_listWndInfoDest.GetHeadPosition();
 	}
+	return POSITION();
 }
 
 CVideoDlg::AGVIDEO_WNDINFO CVideoDlg::ListWindowGetNextPos(CHANNEL_TYPE channel, POSITION& pos)
@@ -364,6 +370,7 @@ CVideoDlg::AGVIDEO_WNDINFO CVideoDlg::ListWindowGetNextPos(CHANNEL_TYPE channel,
 	case (CHANNEL_TYPE::CHANNEL_DEST):
 		return m_listWndInfoDest.GetNext(pos);
 	}
+	return CVideoDlg::AGVIDEO_WNDINFO();
 }
 
 CVideoDlg::AGVIDEO_WNDINFO CVideoDlg::ListWindowGetAt(CHANNEL_TYPE channel, POSITION pos)
@@ -376,6 +383,7 @@ CVideoDlg::AGVIDEO_WNDINFO CVideoDlg::ListWindowGetAt(CHANNEL_TYPE channel, POSI
 	case (CHANNEL_TYPE::CHANNEL_DEST):
 		return m_listWndInfoDest.GetAt(pos);
 	}
+	return CVideoDlg::AGVIDEO_WNDINFO();
 }
 
 void CVideoDlg::ListWindowRemoveAt(CHANNEL_TYPE channel, POSITION pos)
@@ -437,6 +445,13 @@ UINT CVideoDlg::ListWindowGetCount(CHANNEL_TYPE channel)
 	case (CHANNEL_TYPE::CHANNEL_DEST):
 		return m_listWndInfoDest.GetCount();
 	}
+	return 0;
+}
+
+UINT CVideoDlg::ListWindowGetTotalCount()
+{
+	return	m_listWndInfoHost.GetCount() +
+			m_listWndInfoDest.GetCount();
 }
 
 LRESULT CVideoDlg::MuteClient(WPARAM wParam, LPARAM lParam) //Mutes specific user
@@ -457,12 +472,6 @@ LRESULT CVideoDlg::UnMuteClient(WPARAM wParam, LPARAM lParam) //UnMutes specific
 	lpAgora->MuteClient(lParam, 0);
 
 	return 0;
-}
-
-UINT CVideoDlg::ListWindowGetTotalCount()
-{
-	return	m_listWndInfoHost.GetCount() +
-			m_listWndInfoDest.GetCount();
 }
 
 LRESULT CVideoDlg::HideClient(WPARAM wParam, LPARAM lParam) //Hides user's webcam
@@ -700,21 +709,21 @@ void CVideoDlg::OnBnClickedBtnfullscr()
 
 	m_btnShow.ShowWindow(nShowMode);
 
-	switch (m_nScreenMode)
-	{
-	case SCREEN_VIDEO1:
-		ShowVideo1();
-		break;
-	case SCREEN_VIDEO4:
-		ShowVideo4();
-		break;
-	case SCREEN_VIDEOMULTI:
-		ShowMulti();
-		break;
-	default:
-		break;
-	}
-
+	//switch (m_nScreenMode)
+	//{
+	//case SCREEN_VIDEO1:
+	//	ShowVideo1();
+	//	break;
+	//case SCREEN_VIDEO4:
+	//	ShowVideo4();
+	//	break;
+	//case SCREEN_VIDEOMULTI:
+	//	ShowMulti();
+	//	break;
+	//default:
+	//	break;
+	//}
+	ShowMulti();
 	Invalidate(TRUE);
 }
 
@@ -931,16 +940,14 @@ void CVideoDlg::OnBnClickedBtnaudio()
 {
 	CAgoraObject *lpAgora = CAgoraObject::GetAgoraObject();
 
-	lpAgora->SwitchMute();
-
-	//if (lpAgora->IsLocalAudioMuted()) {
-	//	lpAgora->MuteLocalAudio(FALSE);
-	//	m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
-	//}
-	//else {
-	//	lpAgora->MuteLocalAudio(TRUE);
-	//	m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
-	//}
+	if (lpAgora->IsLocalAudioMuted()) {
+		lpAgora->MuteLocalAudio(FALSE);
+		m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+	}
+	else {
+		lpAgora->MuteLocalAudio(TRUE);
+		m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
+	}
 }
 
 
@@ -993,8 +1000,9 @@ LRESULT CVideoDlg::OnEIDJoinChannelSuccess(WPARAM wParam, LPARAM lParam)
 {
 	LPAGE_JOINCHANNEL_SUCCESS lpData = (LPAGE_JOINCHANNEL_SUCCESS)wParam;
 	m_dlgChat.UpdateMessageStream();
+	CHANNEL_TYPE chT = (CHANNEL_TYPE)lParam;
 
-	ListWindowRemoveAll((CHANNEL_TYPE)lParam);
+	ListWindowRemoveAll(chT);
 
 	delete lpData;
 	return 0;
@@ -1004,10 +1012,12 @@ LRESULT CVideoDlg::OnEIDReJoinChannelSuccess(WPARAM wParam, LPARAM lParam)
 {
 	LPAGE_REJOINCHANNEL_SUCCESS lpData = (LPAGE_REJOINCHANNEL_SUCCESS)wParam;
 	m_dlgChat.UpdateMessageStream();
-	ListWindowRemoveAll((CHANNEL_TYPE)lParam);
-	
-	delete lpData;
 
+	CHANNEL_TYPE chT = (CHANNEL_TYPE)lParam;
+
+	ListWindowRemoveAll(chT);
+
+	delete lpData;
 	return 0;
 }
 
@@ -1061,6 +1071,7 @@ LRESULT CVideoDlg::OnEIDUserJoined(WPARAM wParam, LPARAM lParam)
 	BOOL bFound = FALSE;
 	CHANNEL_TYPE chT = (CHANNEL_TYPE)lParam;
 	POSITION pos = ListWindowGetHeadPos(chT);
+	CString s(lpData->channelID);
 
 	if (chT == CHANNEL_TYPE::CHANNEL_DEST) return 0;
 
@@ -1079,12 +1090,9 @@ LRESULT CVideoDlg::OnEIDUserJoined(WPARAM wParam, LPARAM lParam)
 		strcpy_s(agvWndInfo.channelID, 64, lpData->channelID);
 		ListWindowAddTail(chT, agvWndInfo);
 	}
-
 	delete lpData;
 
-
-	RebindVideoWnd();
-
+	//RebindVideoWnd();
 	return 0;
 }
 
@@ -1097,14 +1105,13 @@ LRESULT CVideoDlg::OnEIDUserOffline(WPARAM wParam, LPARAM lParam)
 	while (pos != NULL){
 		if (ListWindowGetAt(chT, pos).nUID == lpData->uid) {
 			ListWindowRemoveAt(chT, pos);
-			RebindVideoWnd();
 			break;
 		}
 		ListWindowGetNextPos(chT, pos);
 	}
-
 	delete lpData;
 
+	RebindVideoWnd();
 	return 0;
 }
 
@@ -1486,16 +1493,16 @@ void CVideoDlg::RebindVideoWnd()
 			m_wndVideo[nIndex].SetUID(0);
 	}
 
-	if (m_nScreenMode != SCREEN_VIDEOMULTI) {
-		if (ListWindowGetTotalCount() <= 1)
-			ShowVideo1();
-		else if (ListWindowGetTotalCount() > 1 && ListWindowGetTotalCount() < 4)
-			ShowVideo4();
-		else
-			ShowMulti();
-	}
-	else
-		ShowMulti();
+	//if (m_nScreenMode != SCREEN_VIDEOMULTI) {
+	//	if (ListWindowGetTotalCount() <= 1)
+	//		ShowVideo1();
+	//	else if (ListWindowGetTotalCount() > 1 && ListWindowGetTotalCount() < 4)
+	//		ShowVideo4();
+	//	else
+	//		ShowMulti();
+	//}
+	//else
+	ShowMulti();
 }
 
 BOOL CVideoDlg::PreTranslateMessage(MSG* pMsg)
@@ -1517,17 +1524,17 @@ BOOL CVideoDlg::PreTranslateMessage(MSG* pMsg)
 
 LRESULT CVideoDlg::OnShowModeChanged(WPARAM wParam, LPARAM lParam)
 {
-	if (m_nScreenMode == SCREEN_VIDEOMULTI) {
-		if (ListWindowGetTotalCount() <= 1)
-			ShowVideo1();
-		else if (ListWindowGetTotalCount() > 1 && ListWindowGetTotalCount() < 4)
-			ShowVideo4();
-	}
-	else {
-		m_lpBigShowed = (CAGVideoWnd *)wParam;
-		ShowMulti();
-	}
-	
+	//if (m_nScreenMode == SCREEN_VIDEOMULTI) {
+	//	if (ListWindowGetTotalCount() <= 1)
+	//		ShowVideo1();
+	//	else if (ListWindowGetTotalCount() > 1 && ListWindowGetTotalCount() < 4)
+	//		ShowVideo4();
+	//}
+	//else {
+	//	m_lpBigShowed = (CAGVideoWnd *)wParam;
+	//	ShowMulti();
+	//}
+	ShowMulti();
 	return 0;
 }
 
