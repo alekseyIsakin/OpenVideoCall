@@ -5,6 +5,7 @@
 #include "AGScreenCaptureDlg.h"
 #include "AGDesktopCaptureDlg.h"
 #include "ChatDlg.h"
+#include "TranslWnd.h"
 
 // CVideoDlg �Ի���
 
@@ -147,6 +148,7 @@ private:
 	
 	CAGVideoWnd		m_wndLocal;
 	CAGVideoWnd		m_wndVideo[4];
+	CAGBckWnd		m_wndTransl[4];
 	CAGVideoWnd		*m_lpBigShowed;
 
 	CDeviceDlg		m_dlgDevice;

@@ -151,6 +151,9 @@
     <ClInclude Include="AGChannelEventHandler.h">
       <Filter>AgoraObject</Filter>
     </ClInclude>
+    <ClInclude Include="TranslWnd.h">
+      <Filter>UI\Wnd</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -257,6 +260,9 @@
     </ClCompile>
     <ClCompile Include="AGChannelEventHandler.cpp">
       <Filter>AgoraObject</Filter>
+    </ClCompile>
+    <ClCompile Include="TranslWnd.cpp">
+      <Filter>UI\Wnd</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

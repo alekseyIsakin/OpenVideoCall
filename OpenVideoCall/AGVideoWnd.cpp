@@ -133,9 +133,6 @@ BEGIN_MESSAGE_MAP(CAGVideoWnd, CWnd)
 	ON_WM_SIZE()
 	ON_WM_LBUTTONDBLCLK()
     ON_WM_PAINT()
-	ON_BN_CLICKED(IDC_BTN_AUDIO, &CAGVideoWnd::OnMuteClick)
-	ON_BN_CLICKED(IDC_BTN_VIDEO, &CAGVideoWnd::OnVideoMuteClick)
-	ON_MESSAGE(WM_RESIZED, &CAGVideoWnd::OnResize)
 END_MESSAGE_MAP()
 
 
@@ -267,13 +264,6 @@ void CAGVideoWnd::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
 	//::SendMessage(GetParent()->GetSafeHwnd(), WM_SHOWMODECHANGED, (WPARAM)this, (LPARAM)m_nUID);
-
-	if (!ctr_Created && CAgoraObject::GetAgoraObject()->GetHostUID() != m_nUID && m_nUID != 0) { InitCtrls(); ctr_Created = TRUE; } // 
-	else if (ctr_Created) { 
-		CtrlMode = !CtrlMode;
-		m_btnShowVid.ShowWindow(CtrlMode); 
-		m_btnEnableAudio.ShowWindow(CtrlMode); 
-	}
 	CWnd::OnRButtonDown(nFlags, point);
 }
 
@@ -382,61 +372,7 @@ void CAGVideoWnd::OnPaint()
         return CWnd::OnPaint();
 }
 
-void CAGVideoWnd::OnMuteClick() //Mic mute
+void CAGVideoWnd::HideWnd(bool hide)
 {
-	if (bMuted == FALSE)
-	{
-		::SendMessage(GetParent()->GetSafeHwnd(), WM_AUDIOMUTECLIENT, (WPARAM)this, (LPARAM)m_nUID);
-		bMuted = TRUE;
-	}
-	else
-	{
-		::SendMessage(GetParent()->GetSafeHwnd(), WM_AUDIOUNMUTECLIENT, (WPARAM)this, (LPARAM)m_nUID);
-		bMuted = FALSE;
-	}
-}
-
-void CAGVideoWnd::OnVideoMuteClick() //Webcam mute
-{
-	if (bHidden == FALSE)
-	{
-		::SendMessage(GetParent()->GetSafeHwnd(), WM_VIDEOMUTECLIENT, (WPARAM)this, (LPARAM)m_nUID);
-		//Sleep(500); //Waits for video stream to end
-		SetBackImage(IDB_BACKGROUND_VIDEO, 96, 96, RGB(0x44, 0x44, 0x44));
-		bHidden = TRUE;
-	}
-	else
-	{
-		::SendMessage(GetParent()->GetSafeHwnd(), WM_VIDEOUNMUTECLIENT, (WPARAM)this, (LPARAM)m_nUID);
-		bHidden = FALSE;
-	}
-}
-
-LRESULT CAGVideoWnd::OnResize(WPARAM wParam, LPARAM lParam)
-{
-	CRect		rcClient;
-	GetClientRect(&rcClient);
-
-	m_btnEnableAudio.MoveWindow(rcClient.Width() - 48, rcClient.Height() - 84, 48, 48, TRUE);
-	m_btnShowVid.MoveWindow(rcClient.Width() - 105, rcClient.Height() - 84, 48, 48, TRUE);
-	return 0;
-}
-
-void CAGVideoWnd::InitCtrls()
-{
-	CRect		rcClient;
-	GetClientRect(&rcClient);
-
-
-	m_btnEnableAudio.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTN_AUDIO);
-	m_btnShowVid.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTN_VIDEO);
-
-	m_btnEnableAudio.MoveWindow(rcClient.Width() - 48, rcClient.Height() - 84, 48, 48, FALSE);
-	m_btnEnableAudio.SetBackImage(IDB_BTNMAUDIO_VIDEO, RGB(0x00, 0x00, 0x00));
-
-	m_btnShowVid.MoveWindow(rcClient.Width() - 105, rcClient.Height() - 84, 48, 48, FALSE);
-	m_btnShowVid.SetBackImage(IDB_BTNVIDEO_VIDEO, RGB(0x00, 0x00, 0x00));
-
-	m_btnShowVid.ShowWindow(1);
-	m_btnEnableAudio.ShowWindow(1);
+	this->ShowWindow(hide);
 }

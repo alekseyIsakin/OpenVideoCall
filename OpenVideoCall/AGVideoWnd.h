@@ -37,6 +37,38 @@ private:
 	CBrush	m_brBack;
 };
 
+//class CAGBckWnd : public CWnd
+//{
+//	DECLARE_DYNAMIC(CAGBckWnd)
+//
+//public:
+//	CAGBckWnd();
+//	virtual ~CAGBckWnd();
+//
+//	void ShowTips(BOOL bShow = TRUE);
+//	void SetVideoResolution(int nWidth, int nHeight);
+//	void SetFrameRateInfo(int nFPS);
+//	void SetBitrateInfo(int nBitrate);
+//
+//protected:
+//	afx_msg void OnPaint();
+//	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+//
+//	DECLARE_MESSAGE_MAP()
+//
+//private:
+//	BOOL		m_bShowTip;
+//
+//	COLORREF	m_crBackColor;
+//
+//	int		m_nWidth;
+//	int		m_nHeight;
+//	int		m_nFps;
+//	int		m_nBitrate;
+//
+//	CBrush	m_brBack;
+//};
+
 
 class CAGVideoWnd : public CWnd
 {
@@ -75,7 +107,8 @@ public:
 	void SetBigShowFlag(BOOL bBigShow);
 	BOOL IsBigShow() { return m_bBigShow; };
 
-	void InitCtrls();
+
+	void HideWnd(bool hide);
 
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -84,9 +117,6 @@ protected:
 	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
-	afx_msg void OnMuteClick();
-	afx_msg void OnVideoMuteClick();
-	afx_msg LRESULT OnResize(WPARAM wParam, LPARAM lParam);
 
 	DECLARE_MESSAGE_MAP()
 
@@ -95,6 +125,7 @@ private:
 	COLORREF		m_crBackColor;
 
 	CAGInfoWnd		m_wndInfo;
+	//CAGBckWnd		m_wndBck;
 
 private:
 	UINT		m_nUID;
@@ -109,13 +140,6 @@ private:
 	BOOL		m_bBigShow;
 
     BOOL        m_bBackground;
-
-	CAGButton		m_btnEnableAudio;
-	CAGButton		m_btnShowVid;
-	BOOL ctr_Created;
-	BOOL bMuted;
-	BOOL bHidden;
-	BOOL CtrlMode;
 public:
     afx_msg void OnPaint();
 };
