@@ -50,7 +50,7 @@ void CAGBckWnd::OnPaint()
 	if (m_bShowTip) {
 		GetClientRect(&rcClient);
 		rcClient.top += 4;
-		dc.FillSolidRect(16, 16, 159, 96, RGB(0x00, 0x00, 0x00));
+		dc.FillSolidRect(5, 5, 179, 111, RGB(0x00, 0x00, 0x00));
 	}
 }
 
@@ -84,8 +84,6 @@ void CAGBckWnd::OnVideoMuteClick() //Webcam mute
 	if (bHidden == FALSE)
 	{
 		::SendMessage(GetParent()->GetSafeHwnd(), WM_VIDEOMUTECLIENT, (WPARAM)this, (LPARAM)m_nUID);
-		//Sleep(500); //Waits for video stream to end
-		SetBackImage(IDB_BACKGROUND_VIDEO, 96, 96, RGB(0x44, 0x44, 0x44));
 		bHidden = TRUE;
 	}
 	else

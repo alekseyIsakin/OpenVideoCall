@@ -7,7 +7,6 @@
 #include "afxdialogex.h"
 #include "AGEventDef.h"
 #include "video_preprocessing_plugin.h"
-
 // CVideoDlg
 
 IMPLEMENT_DYNAMIC(CVideoDlg, CDialogEx)
@@ -1133,6 +1132,7 @@ void CVideoDlg::InitCtrls()
 	
 	for (int nIndex = 0; nIndex < 4; nIndex++){
 		m_wndTransl[nIndex].Create(NULL, NULL, WS_CHILD | WS_VISIBLE | WS_CHILDWINDOW, CRect(0, 0, 192, 200), this, IDC_STATIC);
+		m_wndTransl[nIndex].ShowWindow(SW_HIDE);
 		m_wndVideo[nIndex].Create(NULL, NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, CRect(0, 0, 1, 1), this, IDC_BASEWND_VIDEO + nIndex);
 		m_wndVideo[nIndex].SetBackImage(IDB_BACKGROUND_VIDEO, 96, 96, RGB(0x44, 0x44, 0x44));
 		m_wndVideo[nIndex].SetFaceColor(RGB(0x58, 0x58, 0x58));
@@ -1143,6 +1143,8 @@ void CVideoDlg::InitCtrls()
 	m_wndLocal.SetBackImage(IDB_BACKGROUND_VIDEO, 96, 96, RGB(0x44, 0x44, 0x44));
 	m_wndLocal.SetFaceColor(RGB(0x58, 0x58, 0x58));
 	m_wndLocal.SetUID(0);
+	m_wndTrLocal.Create(NULL, NULL, WS_CHILD | WS_VISIBLE | WS_CHILDWINDOW, CRect(0, 0, 192, 200), this, IDC_STATIC);
+	m_wndTrLocal.SetUID(0);
 
 	m_btnMin.MoveWindow(rcClient.Width() - 72, 1, 22, 22, TRUE);
 	m_btnRst.MoveWindow(rcClient.Width() - 48, 1, 22, 22, TRUE);
@@ -1214,6 +1216,7 @@ void CVideoDlg::ShowVideo1()
 		m_wndLocal.SetParent(this);
 		m_wndLocal.SetBigShowFlag(TRUE);
 		m_wndLocal.ShowWindow(SW_SHOW);
+		m_wndTrLocal.ShowWindow(SW_HIDE);
 	}
 	else {
 		m_wndVideo[0].MoveWindow(&m_rcVideoArea, FALSE);
@@ -1221,10 +1224,12 @@ void CVideoDlg::ShowVideo1()
 		m_wndVideo[0].SetBigShowFlag(TRUE);
 		m_wndVideo[0].SetParent(this);
 
-		m_wndLocal.MoveWindow((m_rcVideoArea.Width() / 2) - 96, m_rcVideoArea.bottom - 200, 192, 144, TRUE);
-		m_wndLocal.SetParent(&m_wndVideo[0]);
+		m_wndTrLocal.MoveWindow((m_rcVideoArea.Width() / 2) - 400, m_rcVideoArea.bottom - 200, 191, 200, TRUE);
+		m_wndTrLocal.ShowWindow(SW_SHOW);
+		m_wndTrLocal.SetParent(this);
+		m_wndLocal.MoveWindow((m_rcVideoArea.Width() / 2) - 395, m_rcVideoArea.bottom - 195, 180, 135, TRUE);
 		m_wndLocal.ShowWindow(SW_SHOW);
-		m_wndLocal.SetParent(&m_wndVideo[0]);
+		m_wndLocal.SetParent(this);
 	}
 
 	m_nScreenMode = SCREEN_VIDEO1;
@@ -1235,6 +1240,7 @@ void CVideoDlg::ShowVideo4()
 {
 	m_wndLocal.ShowWindow(SW_HIDE);
 	m_wndLocal.SetBigShowFlag(FALSE);
+	m_wndTrLocal.ShowWindow(SW_HIDE);
 	for (int nIndex = 0; nIndex < 4; nIndex++) {
 		m_wndTransl[nIndex].SetParent(this);
 		m_wndTransl[nIndex].ShowWindow(SW_HIDE);
@@ -1250,7 +1256,10 @@ void CVideoDlg::ShowVideo4()
 	(&m_wndVideo[host])->MoveWindow(&m_rcVideoArea, TRUE);
 	(&m_wndVideo[host])->SetBigShowFlag(TRUE);
 
-	m_wndLocal.MoveWindow((m_rcVideoArea.Width() / 2) - 400, m_rcVideoArea.bottom - 200, 192, 144, TRUE);
+	m_wndTrLocal.MoveWindow((m_rcVideoArea.Width() / 2) - 400, m_rcVideoArea.bottom - 200, 191, 200, TRUE);
+	m_wndTrLocal.ShowWindow(SW_SHOW);
+	m_wndTrLocal.SetParent(this);
+	m_wndLocal.MoveWindow((m_rcVideoArea.Width() / 2) - 395, m_rcVideoArea.bottom - 195, 180, 135, TRUE);
 	m_wndLocal.ShowWindow(SW_SHOW);
 	m_wndLocal.SetParent(this);
 
@@ -1261,7 +1270,7 @@ void CVideoDlg::ShowVideo4()
 			if (m_wndVideo[nIndex].GetUID() != 0) {
 				m_wndTransl[nIndex].MoveWindow(nXPos, nYPos, 191, 200, TRUE);
 				m_wndTransl[nIndex].ShowWindow(SW_SHOW);
-				m_wndVideo[nIndex].MoveWindow(nXPos + 16, nYPos + 16, 159, 120, TRUE);
+				m_wndVideo[nIndex].MoveWindow(nXPos + 5, nYPos + 5, 180, 135, TRUE);
 				m_wndTransl[nIndex].SetUID(m_wndVideo[nIndex].GetUID());
 				m_wndVideo[nIndex].IsHidden();
 			}
@@ -1276,6 +1285,7 @@ void CVideoDlg::ShowMulti()
 {
 	m_wndLocal.ShowWindow(SW_HIDE);
 	m_wndLocal.SetBigShowFlag(FALSE);
+	m_wndTrLocal.ShowWindow(SW_HIDE);
 	for (int nIndex = 0; nIndex < 4; nIndex++) {
 		m_wndTransl[nIndex].SetParent(this);
 		m_wndTransl[nIndex].ShowWindow(SW_HIDE);
@@ -1291,7 +1301,10 @@ void CVideoDlg::ShowMulti()
 	(&m_wndVideo[host])->MoveWindow(&m_rcVideoArea, TRUE);
 	(&m_wndVideo[host])->SetBigShowFlag(TRUE);
 
-	m_wndLocal.MoveWindow((m_rcVideoArea.Width() / 2) - 400, m_rcVideoArea.bottom - 200, 192, 144, TRUE);
+	m_wndTrLocal.MoveWindow((m_rcVideoArea.Width() / 2) - 400, m_rcVideoArea.bottom - 200, 191, 200, TRUE);
+	m_wndTrLocal.ShowWindow(SW_SHOW);
+	m_wndTrLocal.SetParent(this);
+	m_wndLocal.MoveWindow((m_rcVideoArea.Width() / 2) - 395, m_rcVideoArea.bottom - 195, 180, 135, TRUE);
 	m_wndLocal.ShowWindow(SW_SHOW);
 	m_wndLocal.SetParent(this);
 
@@ -1302,7 +1315,7 @@ void CVideoDlg::ShowMulti()
 			if (m_wndVideo[nIndex].GetUID() != 0) {
 				m_wndTransl[nIndex].MoveWindow(nXPos, nYPos, 191, 200, TRUE);
 				m_wndTransl[nIndex].ShowWindow(SW_SHOW);
-				m_wndVideo[nIndex].MoveWindow(nXPos + 16, nYPos + 16, 159, 120, TRUE);
+				m_wndVideo[nIndex].MoveWindow(nXPos + 5, nYPos + 5, 180, 135, TRUE);
 				m_wndTransl[nIndex].SetUID(m_wndVideo[nIndex].GetUID());
 				m_wndVideo[nIndex].IsHidden();
 			}
