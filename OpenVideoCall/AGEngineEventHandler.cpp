@@ -216,8 +216,6 @@ void CAGEngineEventHandler::onUserJoined(uid_t uid, int elapsed)
 	lpData->uid = uid;
 	lpData->elapsed = elapsed;
 	
-	CAgoraObject::GetAgoraObject()->AddUID(uid);
-
 	if(m_hMainWnd != NULL)
 		::PostMessage(m_hMainWnd, WM_MSGID(EID_USER_JOINED), (WPARAM)lpData, 0);
 }
@@ -228,8 +226,6 @@ void CAGEngineEventHandler::onUserOffline(uid_t uid, USER_OFFLINE_REASON_TYPE re
 
 	lpData->uid = uid;
 	lpData->reason = reason;
-
-	CAgoraObject::GetAgoraObject()->DelUID(uid);
 
 	if(m_hMainWnd != NULL)
 		::PostMessage(m_hMainWnd, WM_MSGID(EID_USER_OFFLINE), (WPARAM)lpData, 0);

@@ -81,8 +81,6 @@ protected:
     afx_msg void OnBnClickedBtnMore();
 	
 	afx_msg void OnBnClickedBtncough();
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 
     afx_msg void OnBnClickedBtntip();
     afx_msg void OnBnClickedBtnsetup();

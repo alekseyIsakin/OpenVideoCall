@@ -133,13 +133,7 @@ public:
 	Tokens GetComplexToken();
 	void SetComplexToken(Tokens token);
 
-	uid_t GetHostUID();
-	void SetHostUID(uid_t uid);
-
 	int TogglePublishChannel(CHANNEL_TYPE channel);
-
-
-	
 protected:
 	CAgoraObject(void);
 
@@ -189,16 +183,12 @@ public:
 	static CAGEngineEventHandler m_EngineEventHandler;
 
 	//std::vector<int> CollectAllUID();
-	int GetUID(int utd);
-	void AddUID(uid_t uid);
-	void DelUID(uid_t uid);
-	int SearchUID(uid_t uid); //Important
+
 	void MuteAllAudio(int mute);
-	void MuteClient(LPARAM id, int mute);
-	void MuteClient(int id, int mute);
 	void MuteSelf(int mute);
 	int SwitchMute();
 	int GetIsMuted();
 	void ClearUID();
+
 	IChannel* GetChanelTranslator();
 };

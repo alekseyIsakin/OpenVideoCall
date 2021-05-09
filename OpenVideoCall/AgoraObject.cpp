@@ -828,17 +828,6 @@ void CAgoraObject::SetComplexToken(Tokens token)
 	m_token = token;
 }
 
-uid_t CAgoraObject::GetHostUID()
-{
-	return m_hostUID;
-}
-
-void CAgoraObject::SetHostUID(uid_t uid)
-{
-	m_hostUID = uid;
-}
-
-
 int CAgoraObject::TogglePublishChannel(CHANNEL_TYPE channel)
 {
 	int ret = -1;
@@ -864,6 +853,7 @@ int CAgoraObject::TogglePublishChannel(CHANNEL_TYPE channel)
 	case CHANNEL_TYPE::CHANNEL_DEST:
 		if (m_channelDest != NULL && m_channelDestJoin)		ret = m_channelDest->publish();
 		m_channelDestPublish = (0 == ret);
+		MuteLocalAudio(0);
 		break;
 	case CHANNEL_TYPE::CHANNEL_SRC:
 		break;
@@ -871,59 +861,10 @@ int CAgoraObject::TogglePublishChannel(CHANNEL_TYPE channel)
 		break;
 	}
 
-	if (IsPublish())
-		CAgoraObject::GetEngine()->muteLocalVideoStream(true);
-	else
-		CAgoraObject::GetEngine()->muteLocalVideoStream(false);
+	MuteLocalVideo(IsPublish());
+	MuteAllAudio(IsPublish());
+	
 	return 0 == ret;
-}
-
-void CAgoraObject::AddUID(uid_t uid)
-{
-	CollectorUID.push_back(uid);
-}
-
-int CAgoraObject::GetUID(int ind)
-{
-	return CollectorUID.at(ind);
-}
-
-int CAgoraObject::SearchUID(uid_t uid) //Searches specific UID
-{
-	int index = 0;
-	for each (uid_t id in CollectorUID)
-	{
-		if (id == uid)
-			return index;
-		index++;
-	}
-	return index;
-}
-
-
-
-void CAgoraObject::DelUID(uid_t uid)
-{
-	try
-	{
-		CollectorUID.erase(CollectorUID.begin() + SearchUID(uid));
-	}
-	catch (...) {}
-}
-
-
-void CAgoraObject::MuteClient(LPARAM id, int mute)
-{
-	RtcEngineParameters rep(this->GetEngine());
-
-	rep.muteRemoteAudioStream(this->GetUID(this->SearchUID(id)), mute);
-}
-
-void CAgoraObject::MuteClient(int id, int mute)
-{
-	RtcEngineParameters rep(this->GetEngine());
-
-	rep.muteRemoteAudioStream(this->GetUID(id), mute);
 }
 
 void CAgoraObject::MuteSelf(int mute)

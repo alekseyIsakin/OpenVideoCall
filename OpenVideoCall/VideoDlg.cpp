@@ -51,10 +51,6 @@ BEGIN_MESSAGE_MAP(CVideoDlg, CDialogEx)
 	ON_WM_LBUTTONUP()
 
 	ON_MESSAGE(WM_SHOWMODECHANGED, &CVideoDlg::OnShowModeChanged)
-	ON_MESSAGE(WM_AUDIOMUTECLIENT, &CVideoDlg::MuteClient)
-	ON_MESSAGE(WM_AUDIOUNMUTECLIENT, &CVideoDlg::UnMuteClient)
-	ON_MESSAGE(WM_VIDEOMUTECLIENT, &CVideoDlg::HideClient)
-	ON_MESSAGE(WM_VIDEOUNMUTECLIENT, &CVideoDlg::UnHideClient)
 	ON_MESSAGE(WM_SHOWBIG, &CVideoDlg::OnShowBig)
 
 	ON_MESSAGE(WM_WINDOWSHARE, &CVideoDlg::OnWindowShareStart)
@@ -451,46 +447,6 @@ UINT CVideoDlg::ListWindowGetTotalCount()
 {
 	return	m_listWndInfoHost.GetCount() +
 			m_listWndInfoDest.GetCount();
-}
-
-LRESULT CVideoDlg::MuteClient(WPARAM wParam, LPARAM lParam) //Mutes specific user
-{
-	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
-
-	RtcEngineParameters rep(*lpAgora->GetEngine());
-	lpAgora->MuteClient(lParam, 1);
-
-	return 0;
-}
-
-LRESULT CVideoDlg::UnMuteClient(WPARAM wParam, LPARAM lParam) //UnMutes specific user
-{
-	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
-
-	RtcEngineParameters rep(*lpAgora->GetEngine());
-	lpAgora->MuteClient(lParam, 0);
-
-	return 0;
-}
-
-LRESULT CVideoDlg::HideClient(WPARAM wParam, LPARAM lParam) //Hides user's webcam
-{
-	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
-
-	RtcEngineParameters rep(*lpAgora->GetEngine());
-
-	rep.muteRemoteVideoStream(lpAgora->GetUID(lpAgora->SearchUID(lParam)), 1);
-	return 0;
-}
-
-LRESULT CVideoDlg::UnHideClient(WPARAM wParam, LPARAM lParam) //Shows user's webcam
-{
-	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
-
-	RtcEngineParameters rep(*lpAgora->GetEngine());
-
-	rep.muteRemoteVideoStream(lpAgora->GetUID(lpAgora->SearchUID(lParam)), 0);
-	return 0;
 }
 
 void CVideoDlg::OnMouseMove(UINT nFlags, CPoint point)
@@ -949,50 +905,25 @@ void CVideoDlg::OnBnClickedBtnaudio()
 	}
 }
 
-
-void CVideoDlg::OnLButtonDown(UINT nFlags, CPoint point)
-{
-	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
-	lpAgora->MuteSelf(1);
-	//CVideoDlg, CDialogEx
-	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	
-}
-
-
-void CVideoDlg::OnLButtonUp(UINT nFlags, CPoint point)
-{
-	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
-	lpAgora->MuteSelf(0);
-	//m_dlgCapSet.MoveWindow(m_rcRegion.left + 10, m_rcRegion.top + 40, 440, 80);
-	//m_dlgCapSet.ShowWindow(SW_SHOW);
-
-	//if (m_rcRegion.right == m_rcRegion.left
-	//	|| m_rcRegion.bottom == m_rcRegion.top) {
-	//	return;
-	//}
-	//m_dlgCapSet.SetCaptureRect(&m_rcRegion);
-}
-
 void CVideoDlg::OnBnClickedBtncough()
 {
-	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
+	//CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
 
-	int muteStatus = lpAgora->GetIsMuted();
+	//int muteStatus = lpAgora->GetIsMuted();
 
-	if (muteStatus == 1)
-	{
-		if (mStatus == FALSE){
-			lpAgora->MuteSelf(1);
-			m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
-			mStatus = TRUE;
-		}
-		else{
-			lpAgora->MuteSelf(0);
-			m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
-			mStatus = FALSE;
-		}
-	}
+	//if (muteStatus == 1)
+	//{
+	//	if (mStatus == FALSE){
+	//		lpAgora->MuteSelf(1);
+	//		m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+	//		mStatus = TRUE;
+	//	}
+	//	else{
+	//		lpAgora->MuteSelf(0);
+	//		m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+	//		mStatus = FALSE;
+	//	}
+	//}
 }
 
 LRESULT CVideoDlg::OnEIDJoinChannelSuccess(WPARAM wParam, LPARAM lParam)

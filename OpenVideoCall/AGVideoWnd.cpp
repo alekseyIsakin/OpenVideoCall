@@ -252,33 +252,6 @@ void CAGVideoWnd::SetFrameRateInfo(int nReceiveFrameRate)
 	m_wndInfo.SetFrameRateInfo(nReceiveFrameRate);
 }
 
-void CAGVideoWnd::OnLButtonDown(UINT nFlags, CPoint point)
-{
-	// TODO:  在此添加消息处理程序代码和/或调用默认值
-
-	::SendMessage(GetParent()->GetSafeHwnd(), WM_SHOWBIG, (WPARAM)this, (LPARAM)m_nUID);
-
-	CWnd::OnLButtonDown(nFlags, point);
-}
-
-
-void CAGVideoWnd::OnRButtonDown(UINT nFlags, CPoint point)
-{
-	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	//::SendMessage(GetParent()->GetSafeHwnd(), WM_SHOWMODECHANGED, (WPARAM)this, (LPARAM)m_nUID);
-
-	if (!ctr_Created) { InitCtrls(); ctr_Created = TRUE; }
-	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
-	if (lpAgora->SearchUID(m_nUID) != 0)
-	{
-		CtrlMode = !CtrlMode;
-		m_btnShowVid.ShowWindow(CtrlMode);
-		m_btnEnableAudio.ShowWindow(CtrlMode);
-	}
-	CWnd::OnRButtonDown(nFlags, point);
-}
-
-
 int CAGVideoWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CWnd::OnCreate(lpCreateStruct) == -1)
@@ -341,15 +314,6 @@ void CAGVideoWnd::OnSize(UINT nType, int cx, int cy)
 		m_wndInfo.MoveWindow(x, y, 192, 24);
 	}
 }
-
-
-void CAGVideoWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
-{
-	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	//::SendMessage(GetParent()->GetSafeHwnd(), WM_SHOWMODECHANGED, (WPARAM)this, (LPARAM)m_nUID);
-	CWnd::OnLButtonDblClk(nFlags, point);
-}
-
 
 void CAGVideoWnd::OnPaint()
 {
@@ -414,23 +378,20 @@ void CAGVideoWnd::OnVideoMuteClick() //Webcam mute
 void CAGVideoWnd::InitCtrls()
 {
 	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
-	if (lpAgora->SearchUID(m_nUID) != 0)
-	{
-		CRect		rcClient;
-		GetClientRect(&rcClient);
+	CRect		rcClient;
+	GetClientRect(&rcClient);
 
-		m_btnEnableAudio.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTN_AUDIO);
-		m_btnShowVid.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTN_VIDEO);
+	m_btnEnableAudio.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTN_AUDIO);
+	m_btnShowVid.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTN_VIDEO);
 
-		m_btnEnableAudio.MoveWindow(rcClient.Width() - 72, rcClient.Height() - 84, 48, 48, TRUE);
-		m_btnEnableAudio.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
-		m_btnEnableAudio.EnableFrameEffect(FALSE);
-		m_btnEnableAudio.SetBackImage(IDB_BTNFULLSCR_VIDEO, RGB(0x26, 0x26, 0x26));
-		m_btnShowVid.MoveWindow(rcClient.Width() - 472, rcClient.Height() - 84, 48, 48, TRUE);
-		m_btnShowVid.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
-		m_btnShowVid.EnableFrameEffect(FALSE);
-		m_btnShowVid.SetBackImage(IDB_BTNFULLSCR_VIDEO, RGB(0x26, 0x26, 0x26));
-		m_btnShowVid.ShowWindow(0);
-		m_btnEnableAudio.ShowWindow(0);
-	}
+	m_btnEnableAudio.MoveWindow(rcClient.Width() - 72, rcClient.Height() - 84, 48, 48, TRUE);
+	m_btnEnableAudio.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
+	m_btnEnableAudio.EnableFrameEffect(FALSE);
+	m_btnEnableAudio.SetBackImage(IDB_BTNFULLSCR_VIDEO, RGB(0x26, 0x26, 0x26));
+	m_btnShowVid.MoveWindow(rcClient.Width() - 472, rcClient.Height() - 84, 48, 48, TRUE);
+	m_btnShowVid.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
+	m_btnShowVid.EnableFrameEffect(FALSE);
+	m_btnShowVid.SetBackImage(IDB_BTNFULLSCR_VIDEO, RGB(0x26, 0x26, 0x26));
+	m_btnShowVid.ShowWindow(0);
+	m_btnEnableAudio.ShowWindow(0);
 }
