@@ -373,9 +373,6 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 	ret = lpAgoraObject->JoinChannelTransl(CString(LangRelay.langFull.c_str()), LangRelay.token.c_str(), 0);
 	ret = lpAgoraObject->JoinChannelSrc(CString(Host.langFull.c_str()), Host.token.c_str(), 0);
 
-
-	agora::util::AutoPtr<agora::media::IMediaEngine> mediaEngine;
-
 	switch (typeChange)
 	{
 	case CHANNEL_CHANGE::CHANNEL_PUBLISH:

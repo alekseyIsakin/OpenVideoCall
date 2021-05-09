@@ -4,6 +4,7 @@
 #include <IAgoraRtcChannel.h>
 #include "AGEngineEventHandler.h"
 #include "AGChannelEventHandler.h"
+#include "video_preprocessing_plugin.h"
 
 #include <string>
 #include "Tokens.h"

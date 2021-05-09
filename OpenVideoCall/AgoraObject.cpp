@@ -871,6 +871,10 @@ int CAgoraObject::TogglePublishChannel(CHANNEL_TYPE channel)
 		break;
 	}
 
+	if (IsPublish())
+		CAgoraObject::GetEngine()->muteLocalVideoStream(true);
+	else
+		CAgoraObject::GetEngine()->muteLocalVideoStream(false);
 	return 0 == ret;
 }
 
