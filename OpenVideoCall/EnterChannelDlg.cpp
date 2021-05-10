@@ -99,6 +99,7 @@ void CEnterChannelDlg::InitCtrls()
 	m_ctrUserName.SetCaretPos(CPoint(12, 148));
 	m_ctrUserName.ShowCaret();
     m_ctrUserName.SetTip(_T("User Name"));
+	m_ctrUserName.SetFocus();
 
  //   m_cmbEncType.Create(WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST | CBS_OWNERDRAWVARIABLE, CRect(ClientRect.Width() / 2 + 1, 168, 180, 32), this, IDC_CMBENCTYPE_CHANNEL);
  //   m_cmbEncType.MoveWindow(ClientRect.Width() / 2 + 50, 173, 120, 22, TRUE);
