@@ -478,6 +478,9 @@
     <Image Include="res\bitmap4.bmp">
       <Filter>Resources</Filter>
     </Image>
+    <Image Include="res\IDB_BTNMCOUGH_VIDEO.bmp">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Media Include="res\ID_TEST_AUDIO.wav">

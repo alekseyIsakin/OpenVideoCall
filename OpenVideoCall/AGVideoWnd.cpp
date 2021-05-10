@@ -1,4 +1,4 @@
-// AGVideoWnd.cpp : ÊµÏÖÎÄ¼þ
+ï»¿// AGVideoWnd.cpp : Êµï¿½ï¿½ï¿½Ä¼ï¿½
 //
 
 #include "stdafx.h"
@@ -95,7 +95,7 @@ void CAGInfoWnd::OnPaint()
 
 BOOL CAGInfoWnd::OnEraseBkgnd(CDC* pDC)
 {
-	// TODO:  ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌÐò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+	// TODO:  ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½ï¿½Öµ
 	CRect rcClient;
 
 	GetClientRect(&rcClient);
@@ -137,10 +137,10 @@ END_MESSAGE_MAP()
 
 
 
-// CAGVideoWnd ÏûÏ¢´¦Àí³ÌÐò
+// CAGVideoWnd ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 BOOL CAGVideoWnd::OnEraseBkgnd(CDC* pDC)
 {
-	// TODO:  ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌÐò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
+	// TODO:  ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½ï¿½Öµ
 	CRect		rcClient;
 	CPoint		ptDraw;
 	IMAGEINFO	imgInfo;
@@ -245,29 +245,11 @@ void CAGVideoWnd::SetFrameRateInfo(int nReceiveFrameRate)
 	m_wndInfo.SetFrameRateInfo(nReceiveFrameRate);
 }
 
-void CAGVideoWnd::OnLButtonDown(UINT nFlags, CPoint point)
-{
-	// TODO:  ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌÐò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
-
-	::SendMessage(GetParent()->GetSafeHwnd(), WM_SHOWBIG, (WPARAM)this, (LPARAM)m_nUID);
-
-	CWnd::OnLButtonDown(nFlags, point);
-}
-
-
-void CAGVideoWnd::OnRButtonDown(UINT nFlags, CPoint point)
-{
-	// TODO:  ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌÐò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
-	//::SendMessage(GetParent()->GetSafeHwnd(), WM_SHOWMODECHANGED, (WPARAM)this, (LPARAM)m_nUID);
-	CWnd::OnRButtonDown(nFlags, point);
-}
-
-
 int CAGVideoWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
-	// TODO:  ÔÚ´ËÌí¼ÓÄú×¨ÓÃµÄ´´½¨´úÂë
+	// TODO:  ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¨ï¿½ÃµÄ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	m_wndInfo.Create(NULL, NULL, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, CRect(0, 0, 192, 28), this, IDC_STATIC);
 	return 0;
 }
@@ -321,7 +303,7 @@ void CAGVideoWnd::OnSize(UINT nType, int cx, int cy)
 
 	int x = (cx - 192) / 2;
 	int y = cy - 24;
-	// TODO:  ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌÐò´úÂë
+	// TODO:  ï¿½Ú´Ë´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	if (m_wndInfo.GetSafeHwnd() != NULL) {
 		if (m_bBigShow)
 			y -= 4;
@@ -330,20 +312,11 @@ void CAGVideoWnd::OnSize(UINT nType, int cx, int cy)
 	}
 }
 
-
-void CAGVideoWnd::OnLButtonDblClk(UINT nFlags, CPoint point)
-{
-	// TODO:  ÔÚ´ËÌí¼ÓÏûÏ¢´¦Àí³ÌÐò´úÂëºÍ/»òµ÷ÓÃÄ¬ÈÏÖµ
-	//::SendMessage(GetParent()->GetSafeHwnd(), WM_SHOWMODECHANGED, (WPARAM)this, (LPARAM)m_nUID);
-	CWnd::OnLButtonDblClk(nFlags, point);
-}
-
-
 void CAGVideoWnd::OnPaint()
 {
     CPaintDC dc(this); // device context for painting
-    // TODO:  ÔÚ´Ë´¦Ìí¼ÓÏûÏ¢´¦Àí³ÌÐò´úÂë
-    // ²»Îª»æÍ¼ÏûÏ¢µ÷ÓÃ CWnd::OnPaint()
+    // TODO:  ï¿½Ú´Ë´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    // ï¿½ï¿½Îªï¿½ï¿½Í¼ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ CWnd::OnPaint()
 
 
 

@@ -4,6 +4,7 @@
 #include <IAgoraRtcChannel.h>
 #include "AGEngineEventHandler.h"
 #include "AGChannelEventHandler.h"
+#include "video_preprocessing_plugin.h"
 
 #include <string>
 #include "Tokens.h"
@@ -132,17 +133,14 @@ public:
 	Tokens GetComplexToken();
 	void SetComplexToken(Tokens token);
 
-	uid_t GetHostUID();
-	void SetHostUID(uid_t uid);
-
 	int TogglePublishChannel(CHANNEL_TYPE channel);
-
 protected:
 	CAgoraObject(void);
 
 	std::vector<int> CollectorUID;
 
 private:
+
 	DWORD	m_dwEngineFlag;
 	static  CAgoraObject	*m_lpAgoraObject;
 	static	IRtcEngine	    *m_lpAgoraEngine;
@@ -176,6 +174,8 @@ private:
 //	int			m_nCodecType;
 	Tokens m_token;
 	uid_t m_hostUID;
+
+	bool IsMuted;
 public:
 	static CAgoraObject *GetAgoraObject(LPCTSTR lpVendorKey = NULL);
 	static void CloseAgoraObject();
@@ -184,8 +184,6 @@ public:
 
 	int SearchUID(uid_t uid); //Important
 	void MuteAllAudio(int mute);
-	void MuteClient(LPARAM id, int mute);
-	void MuteClient(int id, int mute);
 	void MuteSelf(int mute);
 	void ClearUID();
 	IChannel* GetChannelTranslator();

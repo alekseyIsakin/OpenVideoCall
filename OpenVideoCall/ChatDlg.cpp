@@ -111,7 +111,7 @@ void CChatDlg::OnPaint()
 void CChatDlg::AddChatMessage(UINT nUID, LPCTSTR lpMessage)
 {
     CString str;
-
+    //CEnterChannelDlg::OnBnClickedBtnjoinChannel
     if (nUID != 0)
         str.Format(_T("%d: %s"), nUID, lpMessage);
     else

@@ -866,43 +866,25 @@ uid_t CAgoraObject::GetHostUID()
 	return m_hostUID;
 }
 
-void CAgoraObject::SetHostUID(uid_t uid)
-{
-	m_hostUID = uid;
+	return IsMuted;
 }
 
-
-int CAgoraObject::TogglePublishChannel(CHANNEL_TYPE channel) 
+int CAgoraObject::GetIsMuted()
 {
-	int ret = -1;
+	return IsMuted;
+}
 
-	if (m_channelTranslPublish)
-	{
-		ret = m_channelTransl->unpublish();
-		m_channelTranslPublish = 0;
-	}
+void CAgoraObject::ClearUID()
+{
+	CollectorUID.clear();
+}
 
-	if (m_channelDestPublish)	
-	{
-		ret = m_channelDest->unpublish();
-		m_channelDestPublish = 0; 
-	}
-	ret = -1;
-	switch (channel)
-	{
-	case CHANNEL_TYPE::CHANNEL_TRANSL:
-		if (m_channelTransl != NULL && m_channelTranslJoin)	ret = m_channelTransl->publish();
-		m_channelTranslPublish = (0 == ret);
-		break;
-	case CHANNEL_TYPE::CHANNEL_DEST:
-		if (m_channelDest != NULL && m_channelDestJoin)		ret = m_channelDest->publish();
-		m_channelDestPublish =	(0 == ret);
-		break;
-	case CHANNEL_TYPE::CHANNEL_SRC:
-		break;
-	default:
-		break;
-	}
+IChannel* CAgoraObject::GetChanelTranslator()
+{
+	return m_channelTransl;
+}
 
-	return 0 == ret;
+void CAgoraObject::MuteAllAudio(int mute)
+{
+	m_channelTransl->muteAllRemoteAudioStreams(mute);
 }

@@ -109,7 +109,7 @@ void CAGEngineEventHandler::onAudioVolumeIndication(const AudioVolumeInfo* speak
 void CAGEngineEventHandler::onLeaveChannel(const RtcStats& stat)
 {
 	LPAGE_LEAVE_CHANNEL lpData = new AGE_LEAVE_CHANNEL;
-
+	CAgoraObject::GetAgoraObject()->ClearUID();
 	memcpy(&lpData->rtcStat, &stat, sizeof(RtcStats));
 
 	CAgoraObject::GetAgoraObject()->ClearUID();
@@ -217,7 +217,7 @@ void CAGEngineEventHandler::onUserJoined(uid_t uid, int elapsed)
 	
 	lpData->uid = uid;
 	lpData->elapsed = elapsed;
-
+	
 	if(m_hMainWnd != NULL)
 		::PostMessage(m_hMainWnd, WM_MSGID(EID_USER_JOINED), (WPARAM)lpData, 0);
 }
