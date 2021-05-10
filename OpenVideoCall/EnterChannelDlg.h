@@ -41,8 +41,8 @@ protected:
 
 private:
 	CAGEdit			m_ctrChannel;
-	CAGEdit			m_ctrEncKey;
-    CAGComboBox     m_cmbEncType;
+	CAGEdit			m_ctrUserName;
+    //CAGComboBox     m_cmbEncType;
     CAGButton		m_btnTest;
 	CAGButton		m_btnJoin;
 	CAGButton		m_btnSetup;
