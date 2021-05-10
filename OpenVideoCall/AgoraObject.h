@@ -139,7 +139,7 @@ public:
 	void SetHostUID(uid_t uid);
 
 	int TogglePublishChannel(CHANNEL_TYPE channel);
-
+	BOOL RegistrLocalAccount(CString userAccount);
 protected:
 	CAgoraObject(void);
 

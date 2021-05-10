@@ -131,21 +131,47 @@ void CVideoDlg::OnCbnSelchangeCmb()
 void CVideoDlg::OnBtnClickPublish()
 {
 	BOOL isPublish = CAgoraObject::GetAgoraObject()->IsPublish();
-	CHANNEL_CHANGE ch_state = isPublish ?
-		CHANNEL_CHANGE::CHANNEL_UNPUBLISH :
-		CHANNEL_CHANGE::CHANNEL_PUBLISH;
+	ListWindowRemoveAll();
 
-	EnableCBox(isPublish);
+	if (!isPublish) PublishStream();
+	else			UnPublishStream();
 
-void CVideoDlg::UnPublishStream(BOOL joinBack) 
+}
+
+void CVideoDlg::UnPublishStream(BOOL joinBack)
 {
 	int				curSel = CollectSelInd();
 	CHANNEL_CHANGE	ch_state = CHANNEL_CHANGE::CHANNEL_UNPUBLISH;
 
-	ListWindowRemoveAll();
+	EnableCBox(true);
+	m_btnPublish.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+
 	GetParent()->SendMessage(WM_LEAVECHANNEL, 0, 0);
 	if (joinBack)
 		GetParent()->SendMessage(WM_JOINCHANNEL, (WPARAM)ch_state, curSel);
+}
+
+void CVideoDlg::PublishStream()
+{
+	if (m_cmbDest.GetCurSel() != m_cmbRelay.GetCurSel())
+	{
+		CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
+		int				curSel = CollectSelInd();
+
+		CHANNEL_CHANGE ch_state = CHANNEL_CHANGE::CHANNEL_PUBLISH;
+
+		EnableCBox(false);
+
+		if (lpAgora->IsLocalAudioMuted()) {
+			lpAgora->MuteLocalAudio(FALSE);
+			m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+		}
+
+		m_btnPublish.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
+
+		GetParent()->SendMessage(WM_LEAVECHANNEL, 0, 0);
+		GetParent()->SendMessage(WM_JOINCHANNEL, (WPARAM)ch_state, curSel);
+	}
 }
 // CVideoDlg
 
