@@ -11,6 +11,8 @@
 // CVideoDlg
 
 IMPLEMENT_DYNAMIC(CVideoDlg, CDialogEx)
+#define TEXT_PUBLISH	_T("Start")
+#define TEXT_UNPUBLISH	_T("Stop")
 
 CVideoDlg::CVideoDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CVideoDlg::IDD, pParent)
@@ -126,18 +128,37 @@ void CVideoDlg::OnCbnSelchangeCmb()
 
 void CVideoDlg::OnBtnClickPublish()
 {
-	BOOL isPublish = CAgoraObject::GetAgoraObject()->IsPublish();
-	CHANNEL_CHANGE ch_state = isPublish ?
-		CHANNEL_CHANGE::CHANNEL_UNPUBLISH :
-		CHANNEL_CHANGE::CHANNEL_PUBLISH;
+	if (m_cmbDest.GetCurSel() != m_cmbRelay.GetCurSel())
+	{
+		CAgoraObject*	lpAgora = CAgoraObject::GetAgoraObject();
+		BOOL			isPublish = lpAgora->IsPublish();
+		int				curSel = CollectSelInd();
 
-	EnableCBox(isPublish);
+		CHANNEL_CHANGE ch_state = isPublish ?
+			CHANNEL_CHANGE::CHANNEL_UNPUBLISH :
+			CHANNEL_CHANGE::CHANNEL_PUBLISH;
 
-	int curSel = CollectSelInd();
+		EnableCBox(isPublish);
 
-	ListWindowRemoveAll();
-	GetParent()->SendMessage(WM_LEAVECHANNEL, 0, 0);
-	GetParent()->SendMessage(WM_JOINCHANNEL, (WPARAM)ch_state, curSel);
+		if (lpAgora->IsLocalAudioMuted()) {
+			lpAgora->MuteLocalAudio(FALSE);
+			m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+		}
+
+		if (!isPublish) {
+			m_btnPublish.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
+			m_btnPublish.SetWindowTextW(TEXT_UNPUBLISH);
+		}
+		else {
+			m_btnPublish.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+			m_btnPublish.SetWindowTextW(TEXT_PUBLISH);
+		}
+
+		ListWindowRemoveAll();
+		GetParent()->SendMessage(WM_LEAVECHANNEL, 0, 0);
+		GetParent()->SendMessage(WM_JOINCHANNEL, (WPARAM)ch_state, curSel);
+	}
+
 }
 // CVideoDlg
 
@@ -171,11 +192,13 @@ void CVideoDlg::UpdateRelayCBox(Tokens token, int curSel)
 	}
 	m_cmbRelay.SetCurSel(curSel);
 }
+
 void CVideoDlg::EnableCBox(BOOL state)
 {
 	m_cmbDest.EnableWindow(state);
 	m_cmbRelay.EnableWindow(state);
 }
+
 int CVideoDlg::CollectSelInd()
 {
 	return  m_cmbDest.GetCurSel() + 
@@ -1231,7 +1254,7 @@ void CVideoDlg::InitCtrls()
     m_btnMore.EnableFrameEffect(FALSE);
     m_btnMore.SetBackImage(IDB_BTNMORE_VIDEO, RGB(0x26, 0x26, 0x26));
 
-	m_btnPublish.SetWindowTextW(_T("Publish"));
+	m_btnPublish.SetWindowTextW(TEXT_PUBLISH);
 }
 
 void CVideoDlg::ShowVideo1()
