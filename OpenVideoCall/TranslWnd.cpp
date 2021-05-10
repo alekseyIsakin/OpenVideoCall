@@ -93,6 +93,30 @@ void CAGBckWnd::OnVideoMuteClick() //Webcam mute
 	}
 }
 
+void CAGBckWnd::ResetButtons()
+{
+	if (bMuted == FALSE)
+	{
+		::SendMessage(GetParent()->GetSafeHwnd(), WM_AUDIOUNMUTECLIENT, (WPARAM)this, (LPARAM)m_nUID);
+		m_btnEnableAudio.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+	}
+	else
+	{
+		::SendMessage(GetParent()->GetSafeHwnd(), WM_AUDIOMUTECLIENT, (WPARAM)this, (LPARAM)m_nUID);
+		m_btnEnableAudio.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
+	}
+	if (bHidden == FALSE)
+	{
+		::SendMessage(GetParent()->GetSafeHwnd(), WM_VIDEOUNMUTECLIENT, (WPARAM)this, (LPARAM)m_nUID);
+		m_btnShowVid.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+	}
+	else
+	{
+		::SendMessage(GetParent()->GetSafeHwnd(), WM_VIDEOMUTECLIENT, (WPARAM)this, (LPARAM)m_nUID);
+		m_btnShowVid.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
+	}
+}
+
 //LRESULT CAGBckWnd::OnResize(WPARAM wParam, LPARAM lParam)
 //{
 //	CRect		rcClient;

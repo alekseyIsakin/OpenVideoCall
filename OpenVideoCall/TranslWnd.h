@@ -13,6 +13,7 @@ public:
 	void SetUID(int nUID);
 	BOOL SetBackImage(UINT nID, UINT nWidth, UINT nHeight, COLORREF crMask);
 	BOOL GetIsHidden();
+	void ResetButtons();
 
 protected:
 	afx_msg void OnPaint();

@@ -319,6 +319,10 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="IDB_TIP_VIDEO.BMP" />
+    <Image Include="res\bitmap5.bmp" />
+    <Image Include="res\bitmap6.bmp" />
+    <Image Include="res\bitmap7.bmp" />
+    <Image Include="res\bmp00001.bmp" />
     <Image Include="res\IDB_BTNMCOUGH_VIDEO.bmp" />
     <Image Include="res\bitmap3.bmp" />
     <Image Include="res\bitmap4.bmp" />
