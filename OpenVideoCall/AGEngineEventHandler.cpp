@@ -17,7 +17,7 @@ void CAGEngineEventHandler::SetMsgReceiver(HWND hWnd)
 }
 void CAGEngineEventHandler::onLocalUserRegistered(uid_t uid, const char* userAccount)
 {
-	CAgoraObject::GetAgoraObject()->SetSelfUID(uid);
+	CAgoraObject::GetAgoraObject()->SelfUIDAdd(uid);
 	CAgoraObject::GetAgoraObject()->SetSelfAccount(userAccount);
 }
 

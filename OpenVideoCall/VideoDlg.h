@@ -138,7 +138,7 @@ protected:
 	void OnBtnClickPublish();
 
 	void PublishStream();
-	void UnPublishStream();
+	void UnPublishStream(BOOL joinBack=true);
 private:
 	CBrush			m_brHead;
 

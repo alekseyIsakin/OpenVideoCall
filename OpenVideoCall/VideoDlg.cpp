@@ -134,7 +134,7 @@ void CVideoDlg::OnBtnClickPublish()
 	else			UnPublishStream();
 }
 
-void CVideoDlg::UnPublishStream() 
+void CVideoDlg::UnPublishStream(BOOL joinBack) 
 {
 	int				curSel = CollectSelInd();
 	CHANNEL_CHANGE	ch_state = CHANNEL_CHANGE::CHANNEL_UNPUBLISH;
@@ -144,7 +144,8 @@ void CVideoDlg::UnPublishStream()
 	m_btnPublish.SetWindowTextW(TEXT_PUBLISH);
 
 	GetParent()->SendMessage(WM_LEAVECHANNEL, 0, 0);
-	GetParent()->SendMessage(WM_JOINCHANNEL, (WPARAM)ch_state, curSel);
+	if (joinBack)
+		GetParent()->SendMessage(WM_JOINCHANNEL, (WPARAM)ch_state, curSel);
 }
 void CVideoDlg::PublishStream()
 {
@@ -584,7 +585,7 @@ void CVideoDlg::OnBnClickedBtnmin()
 
 void CVideoDlg::OnBnClickedBtnclose()
 {
-	GetParent()->SendMessage(WM_LEAVECHANNEL, 0, 0);
+	UnPublishStream(false);
 	ListWindowRemoveAll();
 
     m_dlgChat.ShowWindow(SW_HIDE);
@@ -605,7 +606,6 @@ void CVideoDlg::OnBnClickedBtnclose()
     m_dlgChat.ClearHistory();
     m_btnMessage.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
 
-	UnPublishStream();
 
 	CDialogEx::OnOK();
 }

@@ -85,11 +85,11 @@ public:
 	CString GetCallID();
 	CString GetVendorKey() { return m_strVendorKey; };
 
-	void SetSelfUID(UINT nUID) { m_nSelfUID = nUID; };
-	UINT GetSelfUID() { return m_nSelfUID; };
+	void SelfUIDAdd(uid_t uid) { m_nSelfUID = uid; }
+	BOOL SelfUIDCheck(uid_t uid);
 
 	const char* GetSelfAccount() { return m_selfAccount; };
-	void SetSelfAccount(const char*acc) { strcpy_s(m_selfAccount, 256, acc); }
+	void SetSelfAccount(const char*acc) { strcpy_s(m_selfAccount, 255, acc); }
 
 	BOOL EnableVideo(BOOL bEnable = TRUE);
 	BOOL IsVideoEnabled();
@@ -167,7 +167,7 @@ private:
 	BOOL		m_channelTranslPublish	= false;
 
 	uid_t		m_nSelfUID;
-	char		m_selfAccount[256];
+	char		m_selfAccount[255];
 	CString		m_strChannelName;
 	BOOL		m_bVideoEnable;
 
