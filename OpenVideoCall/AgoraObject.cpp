@@ -306,6 +306,7 @@ BOOL CAgoraObject::JoinChannelSrc(LPCTSTR lpChannelName, LPCSTR token, UINT nUID
 	options.autoSubscribeAudio = 1;
 	options.autoSubscribeVideo = 1;
 	ret = m_channelSrc->joinChannel(token, info, nUID, options);
+	//ret = m_channelSrc->joinChannelWithUserAccount(token, m_selfAccount, options);
 
 	m_channelSrcJoin = ret == 0 ? true : false;
 	return 0 == ret;
@@ -333,6 +334,7 @@ BOOL CAgoraObject::JoinChannelDest(LPCTSTR lpChannelName, LPCSTR token, UINT nUI
 	m_channelDest->setClientRole(CLIENT_ROLE_BROADCASTER);
 	m_channelDest->setChannelEventHandler(&m_channelDestEventHandler);
 	ret = m_channelDest->joinChannel(token, info, nUID, options);
+	//ret = m_channelDest->joinChannelWithUserAccount(token, m_selfAccount, options);
 
 	m_channelDestJoin = ret == 0 ? true : false;
 	return 0 == ret;
@@ -448,6 +450,28 @@ BOOL CAgoraObject::EnableVideo(BOOL bEnable)
 BOOL CAgoraObject::IsVideoEnabled()
 {
 	return m_bVideoEnable;
+}
+
+BOOL CAgoraObject::SelfUIDCheck(uid_t uid)
+{
+	return m_nSelfUID == uid;
+}
+
+BOOL CAgoraObject::RegistrLocalAccount(CString userAccount)
+{
+	CHAR userAcc[255];
+	UserInfo usrInfo;
+	int ret = -1;
+
+	CT2A userA(userAccount);
+	strcpy_s(userAcc, 255, userA);
+
+	CAgoraObject::GetEngine()->getUserInfoByUserAccount(userAcc, &usrInfo);
+	
+	if (SelfUIDCheck(usrInfo.uid) || usrInfo.uid == 0)
+		ret = CAgoraObject::GetEngine()->registerLocalUserAccount(CT2A(APP_ID), userAcc);
+
+	return 0 == ret;
 }
 
 BOOL CAgoraObject::EnableScreenCapture(HWND hWnd, int nCapFPS, LPCRECT lpCapRect, BOOL bEnable, int nBitrate)
@@ -699,12 +723,12 @@ BOOL CAgoraObject::SendChatMessage(int nStreamID, LPCTSTR lpChatMessage)
     int nMessageLen = _tcslen(lpChatMessage);
     _ASSERT(nMessageLen < 128);
 
-    CHAR szUTF8[256];
+	CHAR szUTF8[255];
 
 #ifdef UNICODE
-    int nUTF8Len = ::WideCharToMultiByte(CP_UTF8, 0, lpChatMessage, nMessageLen, szUTF8, 256, NULL, NULL);
+	int nUTF8Len = ::WideCharToMultiByte(CP_UTF8, 0, lpChatMessage, nMessageLen, szUTF8, 255, NULL, NULL);
 #else
-    int nUTF8Len = ::MultiByteToWideChar(CP_UTF8, lpChatMessage, nMessageLen, szUTF8, 256);
+	int nUTF8Len = ::MultiByteToWideChar(CP_UTF8, lpChatMessage, nMessageLen, szUTF8, 255);
 #endif
 
 	CString s(m_channelTransl->channelId());

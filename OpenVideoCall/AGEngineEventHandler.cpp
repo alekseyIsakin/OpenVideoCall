@@ -15,6 +15,11 @@ void CAGEngineEventHandler::SetMsgReceiver(HWND hWnd)
 {
 	m_hMainWnd = hWnd;
 }
+void CAGEngineEventHandler::onLocalUserRegistered(uid_t uid, const char* userAccount)
+{
+	CAgoraObject::GetAgoraObject()->SelfUIDAdd(uid);
+	CAgoraObject::GetAgoraObject()->SetSelfAccount(userAccount);
+}
 
 void CAGEngineEventHandler::onJoinChannelSuccess(const char* channel, uid_t uid, int elapsed)
 {

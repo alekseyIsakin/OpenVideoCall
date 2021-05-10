@@ -210,8 +210,12 @@ void CEnterChannelDlg::OnBnClickedBtnjoinChannel()
 	//	// EnableEncryption of engine.
 	//	CAgoraObject::GetAgoraObject()->EnableEncryption(true, config);
 	//}
-	GetParent()->SendMessage(WM_JOINCHANNEL, 0, 0);
 	//return nickName;
+
+	bool ret = CAgoraObject::GetAgoraObject()->RegistrLocalAccount(nickName);
+	
+	if (ret)
+		GetParent()->SendMessage(WM_JOINCHANNEL, 0, 0);
 }
 
 

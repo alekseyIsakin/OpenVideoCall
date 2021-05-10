@@ -144,7 +144,8 @@ protected:
 	void OnCbnSelchangeCmb();
 	void OnBtnClickPublish();
 
-	void pass() { ; }			// nothing
+	void PublishStream();
+	void UnPublishStream(BOOL joinBack=true);
 private:
 	CBrush			m_brHead;
 

@@ -404,6 +404,7 @@ LRESULT COpenVideoCallDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 	}
 	lpAgoraObject->LeaveSrcChannel();
 	lpAgoraObject->LeaveTranslChannel();
+	lpAgoraObject->LeaveCahnnel();
 
 	//lpAgoraObject->GetEngine()->stopPreview();
     

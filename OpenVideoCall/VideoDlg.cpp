@@ -137,11 +137,15 @@ void CVideoDlg::OnBtnClickPublish()
 
 	EnableCBox(isPublish);
 
-	int curSel = CollectSelInd();
+void CVideoDlg::UnPublishStream(BOOL joinBack) 
+{
+	int				curSel = CollectSelInd();
+	CHANNEL_CHANGE	ch_state = CHANNEL_CHANGE::CHANNEL_UNPUBLISH;
 
 	ListWindowRemoveAll();
 	GetParent()->SendMessage(WM_LEAVECHANNEL, 0, 0);
-	GetParent()->SendMessage(WM_JOINCHANNEL, (WPARAM)ch_state, curSel);
+	if (joinBack)
+		GetParent()->SendMessage(WM_JOINCHANNEL, (WPARAM)ch_state, curSel);
 }
 // CVideoDlg
 
@@ -602,7 +606,8 @@ void CVideoDlg::OnBnClickedBtnmin()
 
 void CVideoDlg::OnBnClickedBtnclose()
 {
-	GetParent()->SendMessage(WM_LEAVECHANNEL, 0, 0);
+	UnPublishStream(false);
+	ListWindowRemoveAll();
 
 	ListWindowRemoveAll();
 	m_dlgChat.ShowWindow(SW_HIDE);
