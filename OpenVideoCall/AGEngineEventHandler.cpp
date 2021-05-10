@@ -275,7 +275,6 @@ void CAGEngineEventHandler::onStreamMessage(uid_t uid, int streamId, const char*
 
     if (m_hMainWnd != NULL)
         ::PostMessage(m_hMainWnd, WM_MSGID(EID_STREAM_MESSAGE), (WPARAM)lpData, 0);
-
 }
 
 void CAGEngineEventHandler::onApiCallExecuted(int err, const char* api, const char* result)

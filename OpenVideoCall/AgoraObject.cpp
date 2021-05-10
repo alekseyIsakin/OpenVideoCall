@@ -364,7 +364,8 @@ BOOL CAgoraObject::JoinChannelTransl(LPCTSTR lpChannelName, LPCSTR token, UINT n
 	options.autoSubscribeAudio = 1;
 	options.autoSubscribeVideo = 1;
 	
-	ret = m_channelTransl->joinChannel(token, info, nUID, options);
+	//ret = m_channelTransl->joinChannel(token, info, nUID, options);
+	ret = m_channelTransl->joinChannelWithUserAccount(token, m_selfAccount, options);
 	m_channelTranslJoin = ret == 0 ? true : false;
 
 	m_channelTranslPublish = ret == 0 ? true : false;
