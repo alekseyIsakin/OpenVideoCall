@@ -1177,24 +1177,26 @@ LRESULT CVideoDlg::OnStopRecordingService(WPARAM wParam, LPARAM lParam)
 
 LRESULT CVideoDlg::OnStreamMessage(WPARAM wParam, LPARAM lParam)
 {
-    LPAGE_STREAM_MESSAGE lpData = (LPAGE_STREAM_MESSAGE)wParam;
-    TCHAR szMessage[256];
+	LPAGE_STREAM_MESSAGE lpData = (LPAGE_STREAM_MESSAGE)wParam;
+	TCHAR szMessage[256];
+	UserInfo usrInf;
 
-    int nUTF8Len = lpData->length;
-    
-    memset(szMessage, 0, 256 * sizeof(TCHAR));
+	CAgoraObject::GetEngine()->getUserInfoByUid(lpData->uid, &usrInf);
+	int nUTF8Len = lpData->length;
+
+	memset(szMessage, 0, 256 * sizeof(TCHAR));
 #ifdef UNICODE
-    ::MultiByteToWideChar(CP_UTF8, 0, lpData->data, lpData->length, szMessage, 256);
+	::MultiByteToWideChar(CP_UTF8, 0, lpData->data, lpData->length, szMessage, 256);
 #else
-    _tcscpy_s(szMessage, 256, lpData->data);
+	_tcscpy_s(szMessage, 256, lpData->data);
 #endif
 
-    m_dlgChat.AddChatMessage(lpData->uid, szMessage);
+	m_dlgChat.AddChatMessage(CString(usrInf.userAccount), szMessage);
 
-    delete[] lpData->data;
-    delete lpData;
+	delete[] lpData->data;
+	delete lpData;
 
-    return 0;
+	return 0;
 }
 
 void CVideoDlg::DrawHead(CDC *pDC)
