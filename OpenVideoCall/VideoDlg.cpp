@@ -88,7 +88,7 @@ BEGIN_MESSAGE_MAP(CVideoDlg, CDialogEx)
 	ON_BN_CLICKED(ID_IDR_VIDEOINFO, &CVideoDlg::OnBnClickedBtntip)
 	ON_BN_CLICKED(ID_IDR_DEVICE, &CVideoDlg::OnBnClickedBtnsetup)
 	ON_BN_CLICKED(ID_IDR_FILTER, &CVideoDlg::OnBnClickedBtnfilter)
-	ON_BN_CLICKED(IDB_BTNMCOUGH_VIDEO, &CVideoDlg::OnBnClickedBtnaudio)
+	ON_BN_CLICKED(IDB_BTNMCOUGH_VIDEO, &CVideoDlg::OnBnClickedBtncough)
 
     ON_BN_CLICKED(ID_IDR_VIDEOINFO, &CVideoDlg::OnBnClickedBtntip)
     ON_BN_CLICKED(ID_IDR_DEVICE, &CVideoDlg::OnBnClickedBtnsetup)
@@ -991,22 +991,32 @@ void CVideoDlg::OnBnClickedBtnaudio()
 
 void CVideoDlg::OnBnClickedBtncough()
 {
+	//CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
+
+	//int muteStatus = lpAgora->GetIsMuted();
+
+	//if (muteStatus == 1)
+	//{
+	//	if (mStatus == FALSE){
+	//		lpAgora->MuteSelf(1);
+	//		m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+	//		mStatus = TRUE;
+	//	}
+	//	else{
+	//		lpAgora->MuteSelf(0);
+	//		m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+	//		mStatus = FALSE;
+	//	}
+	//}
 	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
 
-	int muteStatus = lpAgora->GetIsMuted();
-
-	if (muteStatus == 1)
-	{
-		if (mStatus == FALSE){
-			lpAgora->MuteSelf(1);
-			m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
-			mStatus = TRUE;
-		}
-		else{
-			lpAgora->MuteSelf(0);
-			m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
-			mStatus = FALSE;
-		}
+	if (lpAgora->IsLocalAudioMuted()) {
+		lpAgora->MuteLocalAudio(FALSE);
+		m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+	}
+	else {
+		lpAgora->MuteLocalAudio(TRUE);
+		m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
 	}
 }
 
