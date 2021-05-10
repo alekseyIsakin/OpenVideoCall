@@ -991,32 +991,18 @@ void CVideoDlg::OnBnClickedBtnaudio()
 
 void CVideoDlg::OnBnClickedBtncough()
 {
-	//CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
-
-	//int muteStatus = lpAgora->GetIsMuted();
-
-	//if (muteStatus == 1)
-	//{
-	//	if (mStatus == FALSE){
-	//		lpAgora->MuteSelf(1);
-	//		m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
-	//		mStatus = TRUE;
-	//	}
-	//	else{
-	//		lpAgora->MuteSelf(0);
-	//		m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
-	//		mStatus = FALSE;
-	//	}
-	//}
 	CAgoraObject* lpAgora = CAgoraObject::GetAgoraObject();
 
-	if (lpAgora->IsLocalAudioMuted()) {
-		lpAgora->MuteLocalAudio(FALSE);
-		m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+	int muteStatus = lpAgora->GetIsMuted();
+	if (muteStatus == FALSE) {
+		lpAgora->MuteSelf(1);
+		m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
+		lpAgora->SetIsMuted(1);
 	}
 	else {
-		lpAgora->MuteLocalAudio(TRUE);
-		m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_PUSH);
+		lpAgora->MuteSelf(0);
+		m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+		lpAgora->SetIsMuted(0);
 	}
 }
 

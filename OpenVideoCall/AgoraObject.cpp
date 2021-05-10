@@ -914,6 +914,11 @@ int CAgoraObject::GetIsMuted()
 	return IsMuted;
 }
 
+void CAgoraObject::SetIsMuted(bool mute)
+{
+	IsMuted = mute;
+}
+
 int CAgoraObject::TogglePublishChannel(CHANNEL_TYPE channel)
 {
 	int ret = -1;

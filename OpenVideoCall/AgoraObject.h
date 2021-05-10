@@ -197,4 +197,5 @@ public:
 	IChannel* GetChannelTranslator();
 	int SwitchMute();
 	int GetIsMuted();
+	void SetIsMuted(bool mute);
 };
