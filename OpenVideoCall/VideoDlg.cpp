@@ -230,7 +230,9 @@ void CVideoDlg::ShowButtonsNormal()
 	m_btnEndCall.SetBackImage(IDB_BTNENDCALL_VIDEO, RGB(0x26, 0x26, 0x26));
 	m_btnEndCall.ShowWindow(nShowMode);
 	m_btnScrCap.ShowWindow(nShowMode);
-	m_btnShow.ShowWindow(nShowMode);
+	//m_btnShow.ShowWindow(nShowMode);
+	m_cmbDest.SetParent(this);
+	m_cmbRelay.SetParent(this);
 
 	GetClientRect(&rcClient);
 	AdjustButtonsNormal(rcClient.Width(), rcClient.Height());
@@ -243,26 +245,26 @@ void CVideoDlg::AdjustButtonsNormal(int cx, int cy)
 //		m_btnSetup.MoveWindow(30, cy - 48, 24, 24, TRUE);
 
     if(m_btnMessage.GetSafeHwnd() != NULL)
-        m_btnMessage.MoveWindow(cx / 2 - 312, cy - 60, 48, 48, TRUE);
+        m_btnMessage.MoveWindow(cx / 2 - 460, cy - 60, 48, 48, TRUE);
 	if (m_btnMode.GetSafeHwnd() != NULL)
-		m_btnMode.MoveWindow(cx / 2 - 216, cy - 60, 48, 48, TRUE);
+		m_btnMode.MoveWindow(cx / 2 - 390, cy - 60, 48, 48, TRUE);
 	if (m_btnAudio.GetSafeHwnd() != NULL)
-		m_btnAudio.MoveWindow(cx / 2 - 120, cy - 60, 48, 48, TRUE);
+		m_btnAudio.MoveWindow(cx / 2 - 24, cy - 60, 48, 48, TRUE);
 	if (m_btnEndCall.GetSafeHwnd() != NULL)
-		m_btnEndCall.MoveWindow(cx / 2 - 24, cy - 60, 48, 48, TRUE);
+		m_btnEndCall.MoveWindow(cx / 2 + 400, cy - 60, 48, 48, TRUE);
 
 	if (m_btnScrCap.GetSafeHwnd() != NULL)
 		m_btnScrCap.MoveWindow(cx / 2 + 72, cy - 60, 48, 48, TRUE);
     if (m_btnMore.GetSafeHwnd() != NULL)
         m_btnMore.MoveWindow(cx / 2 + 300, cy - 60, 48, 48, TRUE);
 	
-	if (m_btnShow.GetSafeHwnd() != NULL)
-		m_btnShow.MoveWindow(cx - 72, cy - 48, 48, 48, TRUE);
+	//if (m_btnShow.GetSafeHwnd() != NULL)
+	//	m_btnShow.MoveWindow(cx - 72, cy - 48, 48, 48, TRUE);
 
 	if (m_cmbRelay.GetSafeHwnd() != NULL)
-		m_cmbRelay.MoveWindow(cx / 2 - 425, cy - 48, 60, 42, TRUE);;
+		m_cmbRelay.MoveWindow(cx / 2 - 425, cy - 550, 60, 42, TRUE);;
 	if (m_cmbDest.GetSafeHwnd() != NULL)
-		m_cmbDest.MoveWindow(cx / 2 + 140, cy - 48, 60, 42, TRUE);
+		m_cmbDest.MoveWindow(cx / 2 + 365, cy - 550, 60, 42, TRUE);
 
 	if (m_btnPublish.GetSafeHwnd() != NULL)
 		m_btnPublish.MoveWindow(cx / 2 + 210, cy - 60, 48, 48, TRUE);
@@ -519,8 +521,8 @@ void CVideoDlg::EnableSize(BOOL bEnable)
 			m_btnMode.MoveWindow(cx / 2 - 96, cy - 84, 48, 48, TRUE);
 		if (m_btnAudio.GetSafeHwnd() != NULL)
 			m_btnAudio.MoveWindow(cx / 2 + 24, cy - 84, 48, 48, TRUE);
-		if (m_btnShow.GetSafeHwnd() != NULL)
-            m_btnShow.MoveWindow(cx - 72, cy - 84, 48, 48, TRUE);
+		//if (m_btnShow.GetSafeHwnd() != NULL)
+        //    m_btnShow.MoveWindow(cx - 72, cy - 84, 48, 48, TRUE);
 		if (m_btnEndCall.GetSafeHwnd() != NULL)
 			m_btnEndCall.MoveWindow(cx - 120, cy - 84, 48, 48, TRUE);
 
@@ -656,7 +658,7 @@ void CVideoDlg::OnBnClickedBtnfullscr()
 	m_btnScrCap.ShowWindow(nShowMode);
     m_btnMore.ShowWindow(nShowMode);
 	m_btnPublish.ShowWindow(nShowMode);
-	m_btnShow.ShowWindow(nShowMode);
+	//m_btnShow.ShowWindow(nShowMode);
 
 	switch (m_nScreenMode)
 	{
@@ -705,7 +707,7 @@ void CVideoDlg::ShowControlButton(BOOL bShow)
 	m_btnMode.ShowWindow(nShowMode);
     m_btnMore.ShowWindow(nShowMode);
 	m_btnAudio.ShowWindow(nShowMode);
-	m_btnShow.ShowWindow(nShowMode);
+	//m_btnShow.ShowWindow(nShowMode);
 	m_btnEndCall.ShowWindow(nShowMode);
 	m_btnPublish.ShowWindow(nShowMode);
 }
@@ -1128,7 +1130,7 @@ void CVideoDlg::InitCtrls()
 	m_cmbDest.Create(WS_VISIBLE | WS_CHILD | CBS_AUTOHSCROLL | CBS_DROPDOWNLIST, CRect(0, 0, 1, 1), this, IDC_CBXRDEST_VIDEO);
 	m_cmbRelay.Create(WS_VISIBLE | WS_CHILD | CBS_AUTOHSCROLL | CBS_DROPDOWNLIST, CRect(0, 0, 1, 1), this, IDC_CBXRELAY_VIDEO);
 
-	m_btnShow.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNSCR_VIDEO);
+	//m_btnShow.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNSCR_VIDEO);
 	
 	for (int nIndex = 0; nIndex < 4; nIndex++){
 		m_wndTransl[nIndex].Create(NULL, NULL, WS_CHILD | WS_VISIBLE | WS_CHILDWINDOW, CRect(0, 0, 192, 200), this, IDC_STATIC);
@@ -1153,13 +1155,13 @@ void CVideoDlg::InitCtrls()
     m_btnMessage.MoveWindow(rcClient.Width() / 2 - 144, rcClient.Height() - 84, 48, 48, TRUE);
     m_btnMode.MoveWindow(rcClient.Width() / 2 - 24, rcClient.Height() - 84, 48, 48, TRUE);
     m_btnAudio.MoveWindow(rcClient.Width() / 2 + 24, rcClient.Height() - 84, 48, 48, TRUE);
-    m_btnShow.MoveWindow(rcClient.Width() - 72, rcClient.Height() - 84, 48, 48, TRUE);
+    //m_btnShow.MoveWindow(rcClient.Width() - 72, rcClient.Height() - 84, 48, 48, TRUE);
     m_btnMore.MoveWindow(rcClient.Width() / 2 + 264, rcClient.Height() - 84, 48, 48, TRUE);
     m_btnEndCall.MoveWindow(rcClient.Width() - 120, rcClient.Height() - 84, 48, 48, TRUE);
 
 	m_btnPublish.MoveWindow(rcClient.Width() - 80, rcClient.Height() - 84, 300, 48, TRUE);
-	m_cmbDest.MoveWindow(rcClient.Width() - 80, rcClient.Height() - 84, 300, 48, TRUE);
-	m_cmbRelay.MoveWindow(rcClient.Width() - 80, rcClient.Height() - 84, 300, 48, TRUE);
+	m_cmbDest.MoveWindow(rcClient.Width() - 80, rcClient.Height() - 450, 300, 48, TRUE);
+	m_cmbRelay.MoveWindow(rcClient.Width() - 80, rcClient.Height() - 450, 300, 48, TRUE);
 
 	m_wndVideo[0].MoveWindow(0, 24, rcClient.Width(), rcClient.Height() - 96, TRUE);
 
@@ -1187,9 +1189,9 @@ void CVideoDlg::InitCtrls()
 	m_btnAudio.EnableFrameEffect(FALSE);
 	m_btnAudio.SetBackImage(IDB_BTNMAUDIO_VIDEO, RGB(0x26, 0x26, 0x26));
 	
-	m_btnShow.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
-	m_btnShow.EnableFrameEffect(FALSE);
-	m_btnShow.SetBackImage(IDB_BTNFULLSCR_VIDEO, RGB(0x26, 0x26, 0x26));
+	//m_btnShow.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
+	//m_btnShow.EnableFrameEffect(FALSE);
+	//m_btnShow.SetBackImage(IDB_BTNFULLSCR_VIDEO, RGB(0x26, 0x26, 0x26));
 
 	m_btnEndCall.SetBackColor(RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26), RGB(0x26, 0x26, 0x26));
 	m_btnEndCall.EnableFrameEffect(FALSE);
