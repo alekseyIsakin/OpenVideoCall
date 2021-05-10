@@ -214,6 +214,8 @@ void CEnterChannelDlg::OnBnClickedBtnjoinChannel()
 	//}
 	//return nickName;
 
+	if (nickName == _T("")) return;
+	
 	bool ret = CAgoraObject::GetAgoraObject()->RegistrLocalAccount(nickName);
 	
 	if (ret)
