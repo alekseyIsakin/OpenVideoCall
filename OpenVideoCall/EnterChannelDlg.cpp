@@ -8,6 +8,7 @@
 
 #include "afxdialogex.h"
 
+#define USER_NAME_DEF _T("User Name")
 
 // CEnterChannelDlg 对话框
 
@@ -98,7 +99,8 @@ void CEnterChannelDlg::InitCtrls()
     m_ctrUserName.SetFont(&m_ftHead);
 	m_ctrUserName.SetCaretPos(CPoint(12, 148));
 	m_ctrUserName.ShowCaret();
-    m_ctrUserName.SetTip(_T("User Name"));
+	m_ctrUserName.SetWindowTextW(nullptr);
+    m_ctrUserName.SetTip(USER_NAME_DEF);
 	m_ctrUserName.SetFocus();
 
  //   m_cmbEncType.Create(WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST | CBS_OWNERDRAWVARIABLE, CRect(ClientRect.Width() / 2 + 1, 168, 180, 32), this, IDC_CMBENCTYPE_CHANNEL);
@@ -214,7 +216,7 @@ void CEnterChannelDlg::OnBnClickedBtnjoinChannel()
 	//}
 	//return nickName;
 
-	if (nickName == _T("")) return;
+	if (nickName == USER_NAME_DEF) return;
 	
 	bool ret = CAgoraObject::GetAgoraObject()->RegistrLocalAccount(nickName);
 	
