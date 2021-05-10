@@ -866,6 +866,21 @@ uid_t CAgoraObject::GetHostUID()
 	return m_hostUID;
 }
 
+int CAgoraObject::SwitchMute()
+{
+	if (IsMuted == 1)
+	{
+		IsMuted = 0;
+		MuteAllAudio(0);
+		MuteSelf(1);
+	}
+	else
+	{
+		IsMuted = 1;
+		MuteAllAudio(1);
+		MuteSelf(0);
+	}
+
 	return IsMuted;
 }
 
@@ -874,17 +889,46 @@ int CAgoraObject::GetIsMuted()
 	return IsMuted;
 }
 
-void CAgoraObject::ClearUID()
+int CAgoraObject::TogglePublishChannel(CHANNEL_TYPE channel)
 {
-	CollectorUID.clear();
+	int ret = -1;
+
+	if (m_channelTranslPublish)
+	{
+		ret = m_channelTransl->unpublish();
+		m_channelTranslPublish = 0;
+	}
+
+	if (m_channelDestPublish)
+	{
+		ret = m_channelDest->unpublish();
+		m_channelDestPublish = 0;
+	}
+	ret = -1;
+	switch (channel)
+	{
+	case CHANNEL_TYPE::CHANNEL_TRANSL:
+		if (m_channelTransl != NULL && m_channelTranslJoin)	ret = m_channelTransl->publish();
+		m_channelTranslPublish = (0 == ret);
+		break;
+	case CHANNEL_TYPE::CHANNEL_DEST:
+		if (m_channelDest != NULL && m_channelDestJoin)		ret = m_channelDest->publish();
+		m_channelDestPublish = (0 == ret);
+		MuteLocalAudio(0);
+		break;
+	case CHANNEL_TYPE::CHANNEL_SRC:
+		break;
+	default:
+		break;
+	}
+
+	MuteLocalVideo(IsPublish());
+	MuteAllAudio(IsPublish());
+
+	return 0 == ret;
 }
 
-IChannel* CAgoraObject::GetChanelTranslator()
+void CAgoraObject::SetHostUID(uid_t uid)
 {
-	return m_channelTransl;
-}
-
-void CAgoraObject::MuteAllAudio(int mute)
-{
-	m_channelTransl->muteAllRemoteAudioStreams(mute);
+	m_hostUID = uid;
 }

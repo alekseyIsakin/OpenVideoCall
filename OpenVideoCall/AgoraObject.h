@@ -4,7 +4,6 @@
 #include <IAgoraRtcChannel.h>
 #include "AGEngineEventHandler.h"
 #include "AGChannelEventHandler.h"
-#include "video_preprocessing_plugin.h"
 
 #include <string>
 #include "Tokens.h"
@@ -28,13 +27,13 @@ using namespace agora::rtc;
 
 /* NOTE:
 	PLEASE KEEP THIS App ID IN SAFE PLACE
-    Get your own App ID at https://dashboard.agora.io/
-    After you entered the App ID, remove <##> outside of Your App ID
-    APP_ID _T("<YOUR_APP_ID>")
-    Obtain a temp Access Token at https://dashboard.agora.io
-    You will need to deploy your own token server for production release
-    Leave this value empty if Security keys/Token is not enabled for your project
-    APP_TOKEN "<YOUR TOKEN>"
+	Get your own App ID at https://dashboard.agora.io/
+	After you entered the App ID, remove <##> outside of Your App ID
+	APP_ID _T("<YOUR_APP_ID>")
+	Obtain a temp Access Token at https://dashboard.agora.io
+	You will need to deploy your own token server for production release
+	Leave this value empty if Security keys/Token is not enabled for your project
+	APP_TOKEN "<YOUR TOKEN>"
 */
 #define APP_ID _T("8f5f3639ee4941238369d5ecbcecad14")
 #define APP_TOKEN ""
@@ -109,57 +108,60 @@ public:
 
 	BOOL SetLogFilter(UINT logFilterType, LPCTSTR lpLogPath);
 
-    BOOL SetEncryptionSecret(LPCTSTR lpKey, int nEncryptType = 0);
+	BOOL SetEncryptionSecret(LPCTSTR lpKey, int nEncryptType = 0);
 
 	BOOL EnableEncryption(bool enabled, const EncryptionConfig& config);
 
-    BOOL EnableLocalRender(BOOL bEnable);
+	BOOL EnableLocalRender(BOOL bEnable);
 
-    int CreateMessageStream();
-    BOOL SendChatMessage(int nStreamID, LPCTSTR lpChatMessage);
+	int CreateMessageStream();
+	BOOL SendChatMessage(int nStreamID, LPCTSTR lpChatMessage);
 
-	static IRtcEngine *GetEngine();
-	
+	static IRtcEngine* GetEngine();
+
 	static CString GetSDKVersion();
 	static CString GetSDKVersionEx();
 
 	static BOOL EnableWhiteboardVer(BOOL bEnable);
 	static BOOL EnableWhiteboardFeq(BOOL bEnable);
 
-    void SetDefaultParameters();
+	void SetDefaultParameters();
 
 	std::string GetToken();
 
 	Tokens GetComplexToken();
 	void SetComplexToken(Tokens token);
 
+	uid_t GetHostUID();
+	void SetHostUID(uid_t uid);
+
 	int TogglePublishChannel(CHANNEL_TYPE channel);
+
 protected:
 	CAgoraObject(void);
 
 	std::vector<int> CollectorUID;
 
 private:
-
 	DWORD	m_dwEngineFlag;
-	static  CAgoraObject	*m_lpAgoraObject;
-	static	IRtcEngine	    *m_lpAgoraEngine;
+	static  CAgoraObject* m_lpAgoraObject;
+	static	IRtcEngine* m_lpAgoraEngine;
 	static	CString			m_strVendorKey;
 
 	IChannel* m_channelSrc;
 	IChannel* m_channelDest;
 	IChannel* m_channelTransl;
-	
+
 	AGChannelEventHandler m_channelSrcEventHandler;
 	AGChannelEventHandler m_channelDestEventHandler;
 	AGChannelEventHandler m_channelTranslEventHandler;
-	
-	BOOL		m_channelSrcJoin		= false;
-	BOOL		m_channelDestJoin		= false;
-	BOOL		m_channelTranslJoin		= false;
 
-	BOOL		m_channelDestPublish	= false;
-	BOOL		m_channelTranslPublish	= false;
+	BOOL		m_channelSrcJoin = false;
+	BOOL		m_channelDestJoin = false;
+	BOOL		m_channelTranslJoin = false;
+
+	BOOL		m_channelDestPublish = false;
+	BOOL		m_channelTranslPublish = false;
 
 	UINT		m_nSelfUID;
 	CString		m_strChannelName;
@@ -170,21 +172,25 @@ private:
 	BOOL		m_bEchoTest;
 
 	BOOL		m_bScreenCapture;
-	
-//	int			m_nCodecType;
+
+	//	int			m_nCodecType;
 	Tokens m_token;
 	uid_t m_hostUID;
 
 	bool IsMuted;
 public:
-	static CAgoraObject *GetAgoraObject(LPCTSTR lpVendorKey = NULL);
+	static CAgoraObject* GetAgoraObject(LPCTSTR lpVendorKey = NULL);
 	static void CloseAgoraObject();
 
 	static CAGEngineEventHandler m_EngineEventHandler;
 
 	int SearchUID(uid_t uid); //Important
 	void MuteAllAudio(int mute);
+	void MuteClient(LPARAM id, int mute);
+	void MuteClient(int id, int mute);
 	void MuteSelf(int mute);
 	void ClearUID();
 	IChannel* GetChannelTranslator();
+	int SwitchMute();
+	int GetIsMuted();
 };

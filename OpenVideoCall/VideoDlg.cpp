@@ -644,24 +644,25 @@ void CVideoDlg::OnBnClickedBtnrest()
 	int cx = rcClient.Width();
 	int cy = rcClient.Height();
 
-	switch (m_nScreenMode)
-	{
-	case SCREEN_VIDEO1:
-		AdjustSizeVideo1(cx, cy);
-		AdjustButtonsNormal(cx, cy);
-		break;
-	case SCREEN_VIDEO4:
-		AdjustSizeVideo4(cx, cy);
-		AdjustButtonsNormal(cx, cy);
-		break;
-	case SCREEN_VIDEOMULTI:
-		AdjustSizeVideoMulti(cx, cy);
-		AdjustButtonsNormal(cx, cy);
-		break;
-	default:
-		break;
-	}
-
+	//switch (m_nScreenMode)
+	//{
+	//case SCREEN_VIDEO1:
+	//	AdjustSizeVideo1(cx, cy);
+	//	AdjustButtonsNormal(cx, cy);
+	//	break;
+	//case SCREEN_VIDEO4:
+	//	AdjustSizeVideo4(cx, cy);
+	//	AdjustButtonsNormal(cx, cy);
+	//	break;
+	//case SCREEN_VIDEOMULTI:
+	//	AdjustSizeVideoMulti(cx, cy);
+	//	AdjustButtonsNormal(cx, cy);
+	//	break;
+	//default:
+	//	break;
+	//}
+	//AdjustSizeVideoMulti(cx, cy);
+	//AdjustButtonsNormal(cx, cy);
 	Invalidate(TRUE);
 }
 
@@ -1478,15 +1479,15 @@ void CVideoDlg::RebindVideoWnd()
 			m_wndVideo[nIndex].SetUID(0);
 	}
 
-	if (m_nScreenMode != SCREEN_VIDEOMULTI) {
-		if (ListWindowGetTotalCount() <= 1)
-			ShowVideo1();
-		else if (ListWindowGetTotalCount() > 1 && ListWindowGetTotalCount() < 4)
-			ShowVideo4();
-		else
-			ShowMulti();
-	}
-	else
+	//if (m_nScreenMode != SCREEN_VIDEOMULTI) {
+	//	if (ListWindowGetTotalCount() <= 1)
+	//		ShowVideo1();
+	//	else if (ListWindowGetTotalCount() > 1 && ListWindowGetTotalCount() < 4)
+	//		ShowVideo4();
+	//	else
+	//		ShowMulti();
+	//}
+	//else
 		ShowMulti();
 
 }
@@ -1522,17 +1523,17 @@ BOOL CVideoDlg::PreTranslateMessage(MSG* pMsg)
 
 LRESULT CVideoDlg::OnShowModeChanged(WPARAM wParam, LPARAM lParam)
 {
-	if (m_nScreenMode == SCREEN_VIDEOMULTI) {
-		if (ListWindowGetTotalCount() <= 1)
-			ShowVideo1();
-		else if (ListWindowGetTotalCount() > 1 && ListWindowGetTotalCount() < 4)
-			ShowVideo4();
-	}
-	else {
-		m_lpBigShowed = (CAGVideoWnd*)wParam;
-		ShowMulti();
-	}
-
+	//if (m_nScreenMode == SCREEN_VIDEOMULTI) {
+	//	if (ListWindowGetTotalCount() <= 1)
+	//		ShowVideo1();
+	//	else if (ListWindowGetTotalCount() > 1 && ListWindowGetTotalCount() < 4)
+	//		ShowVideo4();
+	//}
+	//else {
+	//	m_lpBigShowed = (CAGVideoWnd*)wParam;
+	//	ShowMulti();
+	//}
+	ShowMulti();
 	return 0;
 }
 
