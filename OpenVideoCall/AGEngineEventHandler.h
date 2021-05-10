@@ -12,6 +12,7 @@ public:
 	void SetMsgReceiver(HWND hWnd = NULL) ;
 	HWND GetMsgReceiver() {return m_hMainWnd;};
 
+	virtual void onLocalUserRegistered(uid_t uid, const char* userAccount) override;
 	virtual void onJoinChannelSuccess(const char* channel, uid_t uid, int elapsed) override;
 	virtual void onRejoinChannelSuccess(const char* channel, uid_t uid, int elapsed) override;
 	virtual void onWarning(int warn, const char* msg) override;

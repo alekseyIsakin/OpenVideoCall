@@ -242,7 +242,7 @@ typedef struct _AGE_APICALL_EXECUTED
 
 typedef struct _AGE_STREAM_MESSAGE
 {
-	int       uid;
+	int			uid;
     int         streamId;
     char        *data;
     size_t      length;

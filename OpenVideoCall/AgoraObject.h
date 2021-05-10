@@ -79,12 +79,17 @@ public:
 
 	BOOL IsPublish() { return m_channelDestPublish; }
 
+	BOOL RegistrLocalAccount(CString userAccount);
+
 	CString GetChanelName();
 	CString GetCallID();
 	CString GetVendorKey() { return m_strVendorKey; };
 
 	void SetSelfUID(UINT nUID) { m_nSelfUID = nUID; };
 	UINT GetSelfUID() { return m_nSelfUID; };
+
+	const char* GetSelfAccount() { return m_selfAccount; };
+	void SetSelfAccount(const char*acc) { strcpy_s(m_selfAccount, 256, acc); }
 
 	BOOL EnableVideo(BOOL bEnable = TRUE);
 	BOOL IsVideoEnabled();
@@ -161,7 +166,8 @@ private:
 	BOOL		m_channelDestPublish	= false;
 	BOOL		m_channelTranslPublish	= false;
 
-	UINT		m_nSelfUID;
+	uid_t		m_nSelfUID;
+	char		m_selfAccount[256];
 	CString		m_strChannelName;
 	BOOL		m_bVideoEnable;
 

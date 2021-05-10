@@ -66,7 +66,6 @@ BEGIN_MESSAGE_MAP(CVideoDlg, CDialogEx)
 	ON_MESSAGE(WM_MSGID(EID_USER_OFFLINE), &CVideoDlg::OnEIDUserOffline)
 	ON_MESSAGE(WM_MSGID(EID_USER_JOINED), &CVideoDlg::OnEIDUserJoined)
 
-
 	ON_MESSAGE(WM_MSGID(EID_REMOTE_VIDEO_STAT), &CVideoDlg::OnRemoteVideoStat)
 
 	ON_MESSAGE(WM_MSGID(EID_START_RCDSRV), &CVideoDlg::OnStartRecordingService)
@@ -91,7 +90,7 @@ BEGIN_MESSAGE_MAP(CVideoDlg, CDialogEx)
 	ON_BN_CLICKED(ID_IDR_VIDEOINFO, &CVideoDlg::OnBnClickedBtntip)
 	ON_BN_CLICKED(ID_IDR_DEVICE, &CVideoDlg::OnBnClickedBtnsetup)
 	ON_BN_CLICKED(ID_IDR_FILTER, &CVideoDlg::OnBnClickedBtnfilter)
-	ON_BN_CLICKED(IDB_BTNMCOUGH_VIDEO, &CVideoDlg::OnBnClickedBtncough)
+	ON_BN_HILITE(IDB_BTNMCOUGH_VIDEO, &CVideoDlg::OnBnClickedBtncough)
 
     ON_BN_CLICKED(ID_IDR_VIDEOINFO, &CVideoDlg::OnBnClickedBtntip)
     ON_BN_CLICKED(ID_IDR_DEVICE, &CVideoDlg::OnBnClickedBtnsetup)
@@ -586,8 +585,8 @@ void CVideoDlg::OnBnClickedBtnmin()
 void CVideoDlg::OnBnClickedBtnclose()
 {
 	GetParent()->SendMessage(WM_LEAVECHANNEL, 0, 0);
-
 	ListWindowRemoveAll();
+
     m_dlgChat.ShowWindow(SW_HIDE);
     m_dlgDevice.ShowWindow(SW_HIDE);
 
@@ -598,9 +597,6 @@ void CVideoDlg::OnBnClickedBtnclose()
     // unmute local audio
     CAgoraObject::GetAgoraObject()->MuteLocalAudio(FALSE);
     m_btnAudio.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
-
-	CAgoraObject::GetAgoraObject()->MuteLocalAudio(FALSE);		//может быть баг
-	m_btnCough.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
 
     CAgoraObject::GetAgoraObject()->EnableScreenCapture(NULL, 0, NULL, FALSE);
     m_btnScrCap.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
@@ -1131,8 +1127,10 @@ LRESULT CVideoDlg::OnStopRecordingService(WPARAM wParam, LPARAM lParam)
 LRESULT CVideoDlg::OnStreamMessage(WPARAM wParam, LPARAM lParam)
 {
     LPAGE_STREAM_MESSAGE lpData = (LPAGE_STREAM_MESSAGE)wParam;
-    TCHAR szMessage[256];
+	TCHAR szMessage[256];
+	UserInfo usrInf;
 
+	CAgoraObject::GetEngine()->getUserInfoByUid(lpData->uid, &usrInf);
     int nUTF8Len = lpData->length;
     
     memset(szMessage, 0, 256 * sizeof(TCHAR));
@@ -1142,7 +1140,7 @@ LRESULT CVideoDlg::OnStreamMessage(WPARAM wParam, LPARAM lParam)
     _tcscpy_s(szMessage, 256, lpData->data);
 #endif
 
-    m_dlgChat.AddChatMessage(lpData->uid, szMessage);
+    m_dlgChat.AddChatMessage(CString( usrInf.userAccount), szMessage);
 
     delete[] lpData->data;
     delete lpData;
@@ -1191,7 +1189,7 @@ void CVideoDlg::InitCtrls()
 	m_cmbDest.Create(WS_VISIBLE | WS_CHILD | CBS_AUTOHSCROLL | CBS_DROPDOWNLIST, CRect(0, 0, 1, 1), this, IDC_CBXRDEST_VIDEO);
 	m_cmbRelay.Create(WS_VISIBLE | WS_CHILD | CBS_AUTOHSCROLL | CBS_DROPDOWNLIST, CRect(0, 0, 1, 1), this, IDC_CBXRELAY_VIDEO);
 
-	m_btnCough.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDB_BTNMCOUGH_VIDEO);
+	m_btnCough.Create(NULL, WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON, CRect(0, 0, 1, 1), this, IDB_BTNMCOUGH_VIDEO);
 
 	m_btnShow.Create(NULL, WS_VISIBLE | WS_CHILD, CRect(0, 0, 1, 1), this, IDC_BTNSCR_VIDEO);
 	

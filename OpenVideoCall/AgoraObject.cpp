@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include "AGJson.h"
 
-CAgoraObject *CAgoraObject::m_lpAgoraObject = NULL;
-IRtcEngine *CAgoraObject::m_lpAgoraEngine = NULL;
+CAgoraObject* CAgoraObject::m_lpAgoraObject = NULL;
+IRtcEngine* CAgoraObject::m_lpAgoraEngine = NULL;
 CAGEngineEventHandler CAgoraObject::m_EngineEventHandler;
 CString   CAgoraObject::m_strVendorKey;
 
@@ -28,42 +28,42 @@ CAgoraObject::~CAgoraObject(void)
 
 CString CAgoraObject::LoadAppID()
 {
-    TCHAR szFilePath[MAX_PATH];
-    CString strAppID(APP_ID);
-    if (!strAppID.IsEmpty())
-        return strAppID;
+	TCHAR szFilePath[MAX_PATH];
+	CString strAppID(APP_ID);
+	if (!strAppID.IsEmpty())
+		return strAppID;
 
-    ::GetModuleFileName(NULL, szFilePath, MAX_PATH);
-    LPTSTR lpLastSlash = _tcsrchr(szFilePath, _T('\\'));
+	::GetModuleFileName(NULL, szFilePath, MAX_PATH);
+	LPTSTR lpLastSlash = _tcsrchr(szFilePath, _T('\\'));
 
-    if (lpLastSlash == NULL)
-        return strAppID;
+	if (lpLastSlash == NULL)
+		return strAppID;
 
-    SIZE_T nNameLen = MAX_PATH - (lpLastSlash - szFilePath + 1);
-    _tcscpy_s(lpLastSlash + 1, nNameLen, _T("AppID.ini"));
+	SIZE_T nNameLen = MAX_PATH - (lpLastSlash - szFilePath + 1);
+	_tcscpy_s(lpLastSlash + 1, nNameLen, _T("AppID.ini"));
 
-    if (!PathFileExists(szFilePath)) {
-        HANDLE handle = CreateFile(szFilePath, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_NEW, 0, NULL);
-        CloseHandle(handle);
-    }
+	if (!PathFileExists(szFilePath)) {
+		HANDLE handle = CreateFile(szFilePath, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_NEW, 0, NULL);
+		CloseHandle(handle);
+	}
 
-    TCHAR szAppid[MAX_PATH] = { 0 };
-    ::GetPrivateProfileString(_T("AppID"), _T("AppID"), NULL, szAppid, MAX_PATH, szFilePath);
-    if (_tcslen(szAppid) == 0) {
-        ::WritePrivateProfileString(_T("AppID"), _T("AppID"), _T(""), szFilePath);
-        ::ShellExecute(NULL, _T("open"), szFilePath, NULL, NULL, SW_MAXIMIZE);
-    }
+	TCHAR szAppid[MAX_PATH] = { 0 };
+	::GetPrivateProfileString(_T("AppID"), _T("AppID"), NULL, szAppid, MAX_PATH, szFilePath);
+	if (_tcslen(szAppid) == 0) {
+		::WritePrivateProfileString(_T("AppID"), _T("AppID"), _T(""), szFilePath);
+		::ShellExecute(NULL, _T("open"), szFilePath, NULL, NULL, SW_MAXIMIZE);
+	}
 
-    strAppID = szAppid;
+	strAppID = szAppid;
 
-    return strAppID;
+	return strAppID;
 }
 
 
 CString CAgoraObject::GetSDKVersion()
 {
 	int nBuildNumber = 0;
-	const char *lpszEngineVer = getAgoraRtcEngineVersion(&nBuildNumber);
+	const char* lpszEngineVer = getAgoraRtcEngineVersion(&nBuildNumber);
 
 	CString strEngineVer;
 
@@ -78,7 +78,7 @@ CString CAgoraObject::GetSDKVersion()
 CString CAgoraObject::GetSDKVersionEx()
 {
 	int nBuildNumber = 0;
-	const char *lpszEngineVer = getAgoraRtcEngineVersion(&nBuildNumber);
+	const char* lpszEngineVer = getAgoraRtcEngineVersion(&nBuildNumber);
 
 	CString strEngineVer;
 	CString strVerEx;
@@ -97,21 +97,21 @@ CString CAgoraObject::GetSDKVersionEx()
 	return strVerEx;
 }
 
-IRtcEngine *CAgoraObject::GetEngine()
+IRtcEngine* CAgoraObject::GetEngine()
 {
-	if(m_lpAgoraEngine == NULL)
-		m_lpAgoraEngine = (IRtcEngine *)createAgoraRtcEngine();
+	if (m_lpAgoraEngine == NULL)
+		m_lpAgoraEngine = (IRtcEngine*)createAgoraRtcEngine();
 
 	return m_lpAgoraEngine;
 }
 
-CAgoraObject *CAgoraObject::GetAgoraObject(LPCTSTR lpVendorKey)
+CAgoraObject* CAgoraObject::GetAgoraObject(LPCTSTR lpVendorKey)
 {
-	if(m_lpAgoraObject == NULL)
+	if (m_lpAgoraObject == NULL)
 		m_lpAgoraObject = new CAgoraObject();
 
-	if(m_lpAgoraEngine == NULL)
-		m_lpAgoraEngine = (IRtcEngine *)createAgoraRtcEngine();
+	if (m_lpAgoraEngine == NULL)
+		m_lpAgoraEngine = (IRtcEngine*)createAgoraRtcEngine();
 
 	// ���VendorKeyΪ����ֱ�ӷ��ض���
 	if (lpVendorKey == NULL)
@@ -139,10 +139,10 @@ CAgoraObject *CAgoraObject::GetAgoraObject(LPCTSTR lpVendorKey)
 
 void CAgoraObject::CloseAgoraObject()
 {
-	if(m_lpAgoraEngine != NULL)
+	if (m_lpAgoraEngine != NULL)
 		m_lpAgoraEngine->release();
 
-	if(m_lpAgoraObject != NULL)
+	if (m_lpAgoraObject != NULL)
 		delete m_lpAgoraObject;
 
 	m_lpAgoraEngine = NULL;
@@ -165,7 +165,7 @@ HWND CAgoraObject::GetMsgHandlerWnd()
 
 void CAgoraObject::SetNetworkTestFlag(BOOL bEnable)
 {
-	if(bEnable)
+	if (bEnable)
 		m_dwEngineFlag |= AG_ENGFLAG_ENNETTEST;
 	else
 		m_dwEngineFlag &= (~AG_ENGFLAG_ENNETTEST);
@@ -178,7 +178,7 @@ BOOL CAgoraObject::GetNetworkTestFlag()
 
 void CAgoraObject::SetEchoTestFlag(BOOL bEnable)
 {
-	if(bEnable)
+	if (bEnable)
 		m_dwEngineFlag |= AG_ENGFLAG_ECHOTEST;
 	else
 		m_dwEngineFlag &= (~AG_ENGFLAG_ECHOTEST);
@@ -191,7 +191,7 @@ BOOL CAgoraObject::GetEchoTestFlag()
 
 void CAgoraObject::SetSpeakerphoneTestFlag(BOOL bEnable)
 {
-	if(bEnable)
+	if (bEnable)
 		m_dwEngineFlag |= AG_ENGFLAG_SPKPHTEST;
 	else
 		m_dwEngineFlag &= (~AG_ENGFLAG_SPKPHTEST);
@@ -204,7 +204,7 @@ BOOL CAgoraObject::GetSpeakerphoneTestFlag()
 
 void CAgoraObject::SetMicrophoneTestFlag(BOOL bEnable)
 {
-	if(bEnable)
+	if (bEnable)
 		m_dwEngineFlag |= AG_ENGFLAG_MICPHTEST;
 	else
 		m_dwEngineFlag &= (~AG_ENGFLAG_MICPHTEST);
@@ -241,14 +241,14 @@ BOOL CAgoraObject::SetLogFilePath(LPCTSTR lpLogPath)
 
 	if (::GetFileAttributes(lpLogPath) == INVALID_FILE_ATTRIBUTES) {
 		::GetModuleFileNameA(NULL, szLogPathA, MAX_PATH);
-		LPSTR lpLastSlash = strrchr(szLogPathA, '\\')+1;
+		LPSTR lpLastSlash = strrchr(szLogPathA, '\\') + 1;
 		strcpy_s(lpLastSlash, 64, "AgoraSDK.log");
 	}
 	else {
 #ifdef UNICODE
 		::WideCharToMultiByte(CP_UTF8, 0, lpLogPath, -1, szLogPathA, MAX_PATH, NULL, NULL);
 #else
-		::MultiByteToWideChar(CP_UTF8, 0, lpLogPath, -1, (WCHAR *)szLogPathA, MAX_PATH, NULL, NULL);
+		::MultiByteToWideChar(CP_UTF8, 0, lpLogPath, -1, (WCHAR*)szLogPathA, MAX_PATH, NULL, NULL);
 #endif
 	}
 
@@ -263,7 +263,7 @@ BOOL CAgoraObject::JoinChannel(LPCTSTR lpChannelName, UINT nUID, LPCSTR lpChanne
 {
 	int nRet = 0;
 
-//	m_lpAgoraEngine->setVideoProfile(VIDEO_PROFILE_720P);
+	//	m_lpAgoraEngine->setVideoProfile(VIDEO_PROFILE_720P);
 #ifdef UNICODE
 	CHAR szChannelName[128];
 
@@ -275,7 +275,7 @@ BOOL CAgoraObject::JoinChannel(LPCTSTR lpChannelName, UINT nUID, LPCSTR lpChanne
 
 	if (nRet == 0)
 		m_strChannelName = lpChannelName;
-	
+
 	return nRet == 0 ? TRUE : FALSE;
 }
 
@@ -305,7 +305,8 @@ BOOL CAgoraObject::JoinChannelSrc(LPCTSTR lpChannelName, LPCSTR token, UINT nUID
 	ChannelMediaOptions options;
 	options.autoSubscribeAudio = 1;
 	options.autoSubscribeVideo = 1;
-	ret = m_channelSrc->joinChannel(token, info, nUID, options);
+	//ret = m_channelSrc->joinChannel(token, info, nUID, options);
+	ret = m_channelSrc->joinChannelWithUserAccount(token, m_selfAccount, options);
 
 	m_channelSrcJoin = ret == 0 ? true : false;
 	return 0 == ret;
@@ -327,12 +328,13 @@ BOOL CAgoraObject::JoinChannelDest(LPCTSTR lpChannelName, LPCSTR token, UINT nUI
 	ChannelMediaOptions options;
 	options.autoSubscribeAudio = 1;
 	options.autoSubscribeVideo = 1;
-	
+
 	m_channelDestEventHandler.SetChannelType(CHANNEL_TYPE::CHANNEL_DEST);
 
 	m_channelDest->setClientRole(CLIENT_ROLE_BROADCASTER);
 	m_channelDest->setChannelEventHandler(&m_channelDestEventHandler);
-	ret = m_channelDest->joinChannel(token, info, nUID, options);
+	//ret = m_channelDest->joinChannel(token, info, nUID, options);
+	ret = m_channelDest->joinChannelWithUserAccount(token, m_selfAccount, options);
 
 	m_channelDestJoin = ret == 0 ? true : false;
 	return 0 == ret;
@@ -361,8 +363,9 @@ BOOL CAgoraObject::JoinChannelTransl(LPCTSTR lpChannelName, LPCSTR token, UINT n
 	ChannelMediaOptions options;
 	options.autoSubscribeAudio = 1;
 	options.autoSubscribeVideo = 1;
-	
-	ret = m_channelTransl->joinChannel(token, info, nUID, options);
+
+	//ret = m_channelTransl->joinChannel(token, info, nUID, options);
+	ret = m_channelTransl->joinChannelWithUserAccount(token, m_selfAccount, options);
 	m_channelTranslJoin = ret == 0 ? true : false;
 
 	m_channelTranslPublish = ret == 0 ? true : false;
@@ -370,16 +373,16 @@ BOOL CAgoraObject::JoinChannelTransl(LPCTSTR lpChannelName, LPCSTR token, UINT n
 	return 0 == ret;
 }
 
-BOOL CAgoraObject::LeaveDestChannel() 
+BOOL CAgoraObject::LeaveDestChannel()
 {
 	int ret = -1;
 	if (m_channelDest != NULL)
 	{
 		if (m_channelDestPublish) m_channelDest->unpublish();
 		if (m_channelDestJoin)	  m_channelDest->leaveChannel();
-		
-		m_channelDestPublish	= false;
-		m_channelDestJoin		= false;
+
+		m_channelDestPublish = false;
+		m_channelDestJoin = false;
 	}
 	return 0 == ret;
 }
@@ -395,16 +398,16 @@ BOOL CAgoraObject::LeaveSrcChannel()
 	return 0 == ret;
 }
 
-BOOL CAgoraObject::LeaveTranslChannel() 
+BOOL CAgoraObject::LeaveTranslChannel()
 {
 	int ret = -1;
 	if (m_channelTransl != NULL)
 	{
 		if (m_channelTranslPublish) m_channelTransl->unpublish();
 		if (m_channelTranslJoin)	m_channelTransl->leaveChannel();
-		
-		m_channelTranslPublish	= false;
-		m_channelTranslJoin		= false;
+
+		m_channelTranslPublish = false;
+		m_channelTranslJoin = false;
 	}
 	return 0 == ret;
 }
@@ -450,6 +453,17 @@ BOOL CAgoraObject::IsVideoEnabled()
 	return m_bVideoEnable;
 }
 
+BOOL CAgoraObject::RegistrLocalAccount(CString userAccount)
+{
+	CHAR appID[260];
+
+	::WideCharToMultiByte(CP_UTF8, 0, APP_ID, -1, appID, MAX_PATH, NULL, NULL);
+	CT2A userAcc(userAccount);
+	int ret = CAgoraObject::GetEngine()->registerLocalUserAccount(appID, userAcc);
+
+	return 0 == ret;
+}
+
 BOOL CAgoraObject::EnableScreenCapture(HWND hWnd, int nCapFPS, LPCRECT lpCapRect, BOOL bEnable, int nBitrate)
 {
 	ASSERT(m_lpAgoraEngine != NULL);
@@ -463,15 +477,15 @@ BOOL CAgoraObject::EnableScreenCapture(HWND hWnd, int nCapFPS, LPCRECT lpCapRect
 	capParam.frameRate = nCapFPS;
 
 	if (bEnable) {
-		if (lpCapRect == NULL){
+		if (lpCapRect == NULL) {
 			RECT rc;
-			if (hWnd){
+			if (hWnd) {
 				GetWindowRect(hWnd, &rc);
 				capParam.dimensions.width = rc.right - rc.left;
 				capParam.dimensions.height = rc.bottom - rc.top;
 				ret = m_lpAgoraEngine->startScreenCaptureByWindowId(hWnd, rcCap, capParam);
 			}
-			else{
+			else {
 				GetWindowRect(GetDesktopWindow(), &rc);
 				agora::rtc::Rectangle screenRegion = { rc.left, rc.right, rc.right - rc.left, rc.bottom - rc.top };
 				capParam.dimensions.width = rc.right - rc.left;
@@ -491,8 +505,8 @@ BOOL CAgoraObject::EnableScreenCapture(HWND hWnd, int nCapFPS, LPCRECT lpCapRect
 
 			if (hWnd)
 				ret = m_lpAgoraEngine->startScreenCaptureByWindowId(hWnd, rcCap, capParam);
-			else{
-				
+			else {
+
 				agora::rtc::Rectangle screenRegion = rcCap;
 				ret = m_lpAgoraEngine->startScreenCaptureByScreenRect(screenRegion, rcCap, capParam);
 			}
@@ -575,7 +589,7 @@ BOOL CAgoraObject::EnableNetworkTest(BOOL bEnable)
 {
 	int ret = 0;
 
-	
+
 	if (bEnable)
 		ret = m_lpAgoraEngine->enableLastmileTest();
 	else
@@ -648,24 +662,24 @@ BOOL CAgoraObject::SetEncryptionSecret(LPCTSTR lpKey, int nEncryptType)
 	::MultiByteToWideChar(CP_ACP, 0, lpKey, -1, szAnsi, MAX_PATH);
 	::WideCharToMultiByte(CP_UTF8, 0, szAnsi, -1, szUTF8, MAX_PATH, NULL, NULL);
 #endif
-    switch (nEncryptType)
-    {
-    case 0:
-        m_lpAgoraEngine->setEncryptionMode("aes-128-xts");
-    	break;
-    case 1:
-        m_lpAgoraEngine->setEncryptionMode("aes-256-xts");
-        break;
-    default:
-        m_lpAgoraEngine->setEncryptionMode("aes-128-xts");
-        break;
-    }
+	switch (nEncryptType)
+	{
+	case 0:
+		m_lpAgoraEngine->setEncryptionMode("aes-128-xts");
+		break;
+	case 1:
+		m_lpAgoraEngine->setEncryptionMode("aes-256-xts");
+		break;
+	default:
+		m_lpAgoraEngine->setEncryptionMode("aes-128-xts");
+		break;
+	}
 	int nRet = m_lpAgoraEngine->setEncryptionSecret(szUTF8);
 
 	return nRet == 0 ? TRUE : FALSE;
 }
 
-BOOL CAgoraObject::EnableEncryption(bool enabled, const EncryptionConfig & config)
+BOOL CAgoraObject::EnableEncryption(bool enabled, const EncryptionConfig& config)
 {
 	int nRet = m_lpAgoraEngine->enableEncryption(enabled, config);
 	return nRet == 0 ? TRUE : FALSE;
@@ -673,44 +687,44 @@ BOOL CAgoraObject::EnableEncryption(bool enabled, const EncryptionConfig & confi
 
 BOOL CAgoraObject::EnableLocalRender(BOOL bEnable)
 {
-    int nRet = 0;
+	int nRet = 0;
 
-    //if (bEnable)
-    //    nRet = m_lpAgoraEngine->setParameters("{\"che.video.local.render\":true}");
-    //else
-    //    nRet = m_lpAgoraEngine->setParameters("{\"che.video.local.render\":false}");
+	//if (bEnable)
+	//    nRet = m_lpAgoraEngine->setParameters("{\"che.video.local.render\":true}");
+	//else
+	//    nRet = m_lpAgoraEngine->setParameters("{\"che.video.local.render\":false}");
 
-    return nRet == 0 ? TRUE : FALSE;
+	return nRet == 0 ? TRUE : FALSE;
 }
 
 int CAgoraObject::CreateMessageStream()
 {
-    int nDataStream = 0;
+	int nDataStream = 0;
 
 	if (m_channelTransl != NULL)
 		m_channelTransl->createDataStream(&nDataStream, true, true);
 
-    return nDataStream;
+	return nDataStream;
 }
 
 BOOL CAgoraObject::SendChatMessage(int nStreamID, LPCTSTR lpChatMessage)
 {
-    _ASSERT(nStreamID != 0);
-    int nMessageLen = _tcslen(lpChatMessage);
-    _ASSERT(nMessageLen < 128);
+	_ASSERT(nStreamID != 0);
+	int nMessageLen = _tcslen(lpChatMessage);
+	_ASSERT(nMessageLen < 128);
 
-    CHAR szUTF8[256];
+	CHAR szUTF8[256];
 
 #ifdef UNICODE
-    int nUTF8Len = ::WideCharToMultiByte(CP_UTF8, 0, lpChatMessage, nMessageLen, szUTF8, 256, NULL, NULL);
+	int nUTF8Len = ::WideCharToMultiByte(CP_UTF8, 0, lpChatMessage, nMessageLen, szUTF8, 256, NULL, NULL);
 #else
-    int nUTF8Len = ::MultiByteToWideChar(CP_UTF8, lpChatMessage, nMessageLen, szUTF8, 256);
+	int nUTF8Len = ::MultiByteToWideChar(CP_UTF8, lpChatMessage, nMessageLen, szUTF8, 256);
 #endif
 
 	CString s(m_channelTransl->channelId());
-    int nRet = m_channelTransl->sendStreamMessage(nStreamID, szUTF8, nUTF8Len);
+	int nRet = m_channelTransl->sendStreamMessage(nStreamID, szUTF8, nUTF8Len);
 
-    return nRet == 0 ? TRUE : FALSE;
+	return nRet == 0 ? TRUE : FALSE;
 }
 
 
@@ -741,7 +755,7 @@ BOOL CAgoraObject::EnableWhiteboardFeq(BOOL bEnable)
 {
 	// HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Internet Explorer\MAIN\FeatureControl\FEATURE_BROWSER_EMULATION
 	HKEY hKey = NULL;
-	
+
 	LSTATUS lStatus = ::RegCreateKeyEx(HKEY_CURRENT_USER, _T("SOFTWARE\\Wow6432Node\\Microsoft\\Internet Explorer\\MAIN\\FeatureControl\\FEATURE_MANAGE_SCRIPT_CIRCULAR_REFS"), 0, REG_OPTION_NON_VOLATILE
 		, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &hKey, NULL);
 
@@ -763,57 +777,57 @@ BOOL CAgoraObject::EnableWhiteboardFeq(BOOL bEnable)
 
 void CAgoraObject::SetDefaultParameters()
 {
-    CAGJson m_agJson;
-    std::map<std::string, std::string> mapStringParamsters;
-    std::map<std::string, bool> mapBoolParameters;
-    std::map<std::string, int> mapIntParameters;
-    std::map<std::string, std::string> mapObjectParameters;
-    if (m_agJson.GetParameters(mapStringParamsters, mapBoolParameters, mapIntParameters, mapObjectParameters)) {
-        AParameter apm(m_lpAgoraEngine);
-        for (auto iter = mapBoolParameters.begin();
-            iter != mapBoolParameters.end(); ++iter) {
-            apm->setBool(iter->first.c_str(), iter->second);
-        }
-        for (auto iter = mapStringParamsters.begin();
-            iter != mapStringParamsters.end(); ++iter) {
-            apm->setString(iter->first.c_str(), iter->second.c_str());
-        }
-        for (auto iter = mapIntParameters.begin();
-            iter != mapIntParameters.end(); ++iter) {
-            apm->setInt(iter->first.c_str(), iter->second);
-        }
+	CAGJson m_agJson;
+	std::map<std::string, std::string> mapStringParamsters;
+	std::map<std::string, bool> mapBoolParameters;
+	std::map<std::string, int> mapIntParameters;
+	std::map<std::string, std::string> mapObjectParameters;
+	if (m_agJson.GetParameters(mapStringParamsters, mapBoolParameters, mapIntParameters, mapObjectParameters)) {
+		AParameter apm(m_lpAgoraEngine);
+		for (auto iter = mapBoolParameters.begin();
+			iter != mapBoolParameters.end(); ++iter) {
+			apm->setBool(iter->first.c_str(), iter->second);
+		}
+		for (auto iter = mapStringParamsters.begin();
+			iter != mapStringParamsters.end(); ++iter) {
+			apm->setString(iter->first.c_str(), iter->second.c_str());
+		}
+		for (auto iter = mapIntParameters.begin();
+			iter != mapIntParameters.end(); ++iter) {
+			apm->setInt(iter->first.c_str(), iter->second);
+		}
 
-        for (auto iter = mapObjectParameters.begin();
-            iter != mapObjectParameters.end(); ++iter) {
-            apm->setObject(iter->first.c_str(), iter->second.c_str());
-        }
-    }
+		for (auto iter = mapObjectParameters.begin();
+			iter != mapObjectParameters.end(); ++iter) {
+			apm->setObject(iter->first.c_str(), iter->second.c_str());
+		}
+	}
 }
 
 
 std::string CAgoraObject::GetToken()
 {
-    std::string token(APP_TOKEN);
-    if (!token.empty())
-        return token;
+	std::string token(APP_TOKEN);
+	if (!token.empty())
+		return token;
 
-    TCHAR szFilePath[MAX_PATH];
-    ::GetModuleFileName(NULL, szFilePath, MAX_PATH);
-    LPTSTR lpLastSlash = _tcsrchr(szFilePath, _T('\\'));
+	TCHAR szFilePath[MAX_PATH];
+	::GetModuleFileName(NULL, szFilePath, MAX_PATH);
+	LPTSTR lpLastSlash = _tcsrchr(szFilePath, _T('\\'));
 
-    if (lpLastSlash == NULL)
-        return token;
+	if (lpLastSlash == NULL)
+		return token;
 
-    SIZE_T nNameLen = MAX_PATH - (lpLastSlash - szFilePath + 1);
-    _tcscpy_s(lpLastSlash + 1, nNameLen, _T("AppID.ini"));
+	SIZE_T nNameLen = MAX_PATH - (lpLastSlash - szFilePath + 1);
+	_tcscpy_s(lpLastSlash + 1, nNameLen, _T("AppID.ini"));
 
 
-    TCHAR szToken[MAX_PATH] = { 0 };
-    char temp[MAX_PATH] = { 0 };
-    ::GetPrivateProfileString(_T("AppID"), _T("AppToken"), NULL, szToken, MAX_PATH, szFilePath);
-    ::WideCharToMultiByte(CP_UTF8, 0, szToken, -1, temp, 128, NULL, NULL);
+	TCHAR szToken[MAX_PATH] = { 0 };
+	char temp[MAX_PATH] = { 0 };
+	::GetPrivateProfileString(_T("AppID"), _T("AppToken"), NULL, szToken, MAX_PATH, szFilePath);
+	::WideCharToMultiByte(CP_UTF8, 0, szToken, -1, temp, 128, NULL, NULL);
 
-    return temp;
+	return temp;
 }
 
 Tokens CAgoraObject::GetComplexToken()
@@ -863,7 +877,7 @@ int CAgoraObject::TogglePublishChannel(CHANNEL_TYPE channel)
 
 	MuteLocalVideo(IsPublish());
 	MuteAllAudio(IsPublish());
-	
+
 	return 0 == ret;
 }
 

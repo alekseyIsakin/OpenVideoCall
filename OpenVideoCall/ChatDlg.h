@@ -15,7 +15,7 @@ public:
 // 对话框数据
 	enum { IDD = IDD_MESSAGE_DIALOG };
 
-    void AddChatMessage(UINT nUID, LPCTSTR lpMessage);
+    void AddChatMessage(LPCTSTR nUID, LPCTSTR lpMessage);
     void ClearHistory();
     void UpdateMessageStream();
 

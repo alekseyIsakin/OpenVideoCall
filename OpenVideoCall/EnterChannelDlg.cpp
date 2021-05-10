@@ -192,8 +192,12 @@ void CEnterChannelDlg::OnBnClickedBtntestChannel()
 void CEnterChannelDlg::OnBnClickedBtnjoinChannel()
 {
 	CString nickName;
+	//CString strChannelName = _T("10482357");
+
+	m_ctrChannel.SetWindowTextW(_T("10482357"));
 	m_ctrEncKey.GetWindowText(nickName);
 
+	bool ret = CAgoraObject::GetAgoraObject()->RegistrLocalAccount(nickName);
 	//CString str = CAgoraObject::GetAgoraObject()->GetCallID();
 	//CString strKey;
 	//m_ctrEncKey.GetWindowText(strKey);
@@ -210,7 +214,8 @@ void CEnterChannelDlg::OnBnClickedBtnjoinChannel()
 	//	// EnableEncryption of engine.
 	//	CAgoraObject::GetAgoraObject()->EnableEncryption(true, config);
 	//}
-	GetParent()->SendMessage(WM_JOINCHANNEL, 0, 0);
+	if (ret)
+		GetParent()->SendMessage(WM_JOINCHANNEL, 0, 0);
 	//return nickName;
 }
 

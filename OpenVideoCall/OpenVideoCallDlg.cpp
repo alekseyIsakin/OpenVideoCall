@@ -319,8 +319,7 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
     lpAgoraObject->SetDefaultParameters();
 
 	//10482357
-	//CString strChannelName = m_dlgEnterChannel.GetChannelName();
-	CString strChannelName = _T("10482357");
+	CString strChannelName = m_dlgEnterChannel.GetChannelName();
 
 	Tokens netToken;
 	netToken.GetCloudToken(strChannelName);
