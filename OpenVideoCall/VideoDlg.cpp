@@ -272,7 +272,6 @@ void CVideoDlg::OnSize(UINT nType, int cx, int cy)
 	default:
 		break;
 	}
-
 	Invalidate(TRUE);
 }
 
@@ -372,16 +371,18 @@ void CVideoDlg::AdjustSizeVideoMulti(int cx, int cy)
 
 	for (int nIndex = 0; nIndex < 4; nIndex++) {
 		int nXPos = (m_rcVideoArea.Width() / 2) - 402 + (204 * nLocalIndex);
-		int nYPos = m_rcVideoArea.top + 400;
+		int nYPos = m_rcVideoArea.bottom - 200;
 
 		if (!m_wndVideo[nIndex].IsBigShow()) {
 			if (m_wndVideo[nIndex].GetUID() != 0) {
-				m_wndVideo[nIndex].MoveWindow(nXPos, nYPos, 192, 144, TRUE);
+				m_wndTransl[nIndex].MoveWindow(nXPos, nYPos, 191, 200, TRUE);
+				m_wndVideo[nIndex].MoveWindow(nXPos + 5, nYPos + 5, 180, 135, TRUE);
 				nLocalIndex++;
 			}
 		}
-		else{
-			m_wndLocal.MoveWindow(nXPos, nYPos, 192, 144, TRUE);
+		else {
+			m_wndTrLocal.MoveWindow(nXPos, nYPos, 191, 200, TRUE);
+			m_wndLocal.MoveWindow(nXPos + 5, nYPos + 5, 180, 135, TRUE);
 			nLocalIndex++;
 		}
 	}
