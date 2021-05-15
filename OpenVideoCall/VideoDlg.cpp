@@ -221,6 +221,7 @@ int CVideoDlg::CollectSelInd()
 	return  m_cmbDest.GetCurSel() + 
 			m_cmbRelay.GetCurSel() * 1000;
 }
+
 void CVideoDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CDialogEx::OnSize(nType, cx, cy);

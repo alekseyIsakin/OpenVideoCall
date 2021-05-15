@@ -34,7 +34,7 @@ COpenVideoCallApp::COpenVideoCallApp()
 
 // The one and only CAgoraVideoCallApp object
 
-COpenVideoCallApp theApp;
+//COpenVideoCallApp theApp;
 
 
 // CAgoraVideoCallApp initialization
