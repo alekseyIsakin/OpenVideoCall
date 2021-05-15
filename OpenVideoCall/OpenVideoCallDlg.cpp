@@ -242,8 +242,10 @@ void COpenVideoCallDlg::DrawClient(CDC *lpDC)
     lpDC->FillSolidRect(0, 0, 720, 24, RGB(0, 161, 230));
 	lpDC->SetBkColor(RGB(0x00, 0x9E, 0xEB));
 	lpDC->SetTextColor(RGB(0xFF, 0xFF, 0xFF));
-	lpString = LANG_STR("IDS_TITLE");
-	lpDC->TextOut(rcClient.Width()/2 - 80, 3, lpString, _tcslen(lpString));
+
+
+	lpString = _T("RSI Exchange Interpreter Desktop");
+	lpDC->TextOut(rcClient.Width()/2 - 100, 3, lpString, _tcslen(lpString));
 	
     lpDC->SelectObject(&m_ftDes);
     lpDC->SetTextColor(RGB(0x91, 0x96, 0xA0));
@@ -344,7 +346,6 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 	
 	//cancel setVideoProfile bitrate since version 2.1.0
     m_nVideoSolution = m_dlgSetup.GetVideoSolution();
-   // lpRtcEngine->setVideoProfile((VIDEO_PROFILE_TYPE)m_nVideoSolution, m_dlgSetup.IsWHSwap());
     lpAgoraObject->EnableVideo(TRUE);
 
     VideoEncoderConfiguration config;
@@ -353,9 +354,16 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
     SIZE resolution = m_dlgSetup.GetVideoResolution();
     config.dimensions.width = resolution.cx;
     config.dimensions.height = resolution.cy;
-    lpRtcEngine->setVideoEncoderConfiguration(config);
 
-	m_dlgVideo.SetWindowText(_T("Transliter-3000"));
+	////////////////////////////////////
+	config.degradationPreference = MAINTAIN_QUALITY;
+	config.orientationMode = ORIENTATION_MODE_ADAPTIVE;
+	lpRtcEngine->setVideoProfile(VIDEO_PROFILE_LANDSCAPE_480P_4, m_dlgSetup.IsWHSwap());
+	lpRtcEngine->setAudioProfile(AUDIO_PROFILE_SPEECH_STANDARD, AUDIO_SCENARIO_MEETING);
+    lpRtcEngine->setVideoEncoderConfiguration(config);
+	m_dlgVideo.SetWindowText(_T("RSI Exchange Interpreter Desktop"));
+	///////////////////////////////////
+
 	lpRtcEngine->setupLocalVideo(vc);
 	lpRtcEngine->startPreview();
 
