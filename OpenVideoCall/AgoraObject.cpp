@@ -152,9 +152,11 @@ void CAgoraObject::CloseAgoraObject()
 void CAgoraObject::SetMsgHandlerWnd(HWND hWnd)
 {
 	m_EngineEventHandler.SetMsgReceiver(hWnd);
-	m_channelDestEventHandler.setMsgHandler(hWnd);
-	m_channelSrcEventHandler.setMsgHandler(hWnd);
-	m_channelTranslEventHandler.setMsgHandler(hWnd);
+
+	m_channelHostEventHandler.setMsgHandler		(hWnd);
+	m_channelDestEventHandler.setMsgHandler		(hWnd);
+	m_channelSrcEventHandler.setMsgHandler		(hWnd);
+	m_channelTranslEventHandler.setMsgHandler	(hWnd);
 }
 
 HWND CAgoraObject::GetMsgHandlerWnd()
@@ -285,6 +287,33 @@ BOOL CAgoraObject::LeaveCahnnel()
 	return nRet == 0 ? TRUE : FALSE;
 }
 
+BOOL CAgoraObject::JoinChannelHost(LPCTSTR lpChannelName, LPCSTR token, UINT nUID, LPCSTR info)
+{
+	int ret = 0;
+
+#ifdef UNICODE
+	CHAR szChannelName[128];
+
+	::WideCharToMultiByte(CP_ACP, 0, lpChannelName, -1, szChannelName, 128, NULL, NULL);
+	m_channelHost = static_cast<IRtcEngine2*>(CAgoraObject::GetEngine())->createChannel(szChannelName);
+#else
+	m_channelHost = static_cast<IRtcEngine2*>(CAgoraObject::GetEngine())->createChannel(CT2A(lpChannelName));
+#endif
+
+	m_channelHostEventHandler.SetChannelType(CHANNEL_TYPE::CHANNEL_HOST);
+	m_channelHost->setClientRole(CLIENT_ROLE_AUDIENCE);
+	m_channelHost->setChannelEventHandler(&m_channelHostEventHandler);
+
+	ChannelMediaOptions options;
+	options.autoSubscribeAudio = 1;
+	options.autoSubscribeVideo = 1;
+	ret = m_channelHost->joinChannel(token, info, nUID, options);
+	//ret = m_channelHost->joinChannelWithUserAccount(token, m_selfAccount, options);
+
+	m_channelHostJoin = ret == 0 ? true : false;
+	return 0 == ret;
+}
+
 BOOL CAgoraObject::JoinChannelSrc(LPCTSTR lpChannelName, LPCSTR token, UINT nUID, LPCSTR info)
 {
 	int ret = 0;
@@ -304,7 +333,7 @@ BOOL CAgoraObject::JoinChannelSrc(LPCTSTR lpChannelName, LPCSTR token, UINT nUID
 
 	ChannelMediaOptions options;
 	options.autoSubscribeAudio = 1;
-	options.autoSubscribeVideo = 1;
+	options.autoSubscribeVideo = 0;
 	ret = m_channelSrc->joinChannel(token, info, nUID, options);
 	//ret = m_channelSrc->joinChannelWithUserAccount(token, m_selfAccount, options);
 
@@ -373,13 +402,23 @@ BOOL CAgoraObject::JoinChannelTransl(LPCTSTR lpChannelName, LPCSTR token, UINT n
 	return 0 == ret;
 }
 
+BOOL CAgoraObject::LeaveHostChannel()
+{
+	int ret = -1;
+	if (m_channelHost != NULL)
+	{
+		if (m_channelHostJoin)	  ret = m_channelHost->leaveChannel();
+		m_channelHostJoin = false;
+	}
+	return 0 == ret;
+}
 BOOL CAgoraObject::LeaveDestChannel() 
 {
 	int ret = -1;
 	if (m_channelDest != NULL)
 	{
-		if (m_channelDestPublish) m_channelDest->unpublish();
-		if (m_channelDestJoin)	  m_channelDest->leaveChannel();
+		if (m_channelDestPublish) ret = m_channelDest->unpublish();
+		if (m_channelDestJoin)	  ret = m_channelDest->leaveChannel();
 		
 		m_channelDestPublish	= false;
 		m_channelDestJoin		= false;
@@ -391,8 +430,7 @@ BOOL CAgoraObject::LeaveSrcChannel()
 	int ret = -1;
 	if (m_channelSrc != NULL)
 	{
-		if (m_channelSrcJoin) m_channelSrc->leaveChannel();
-
+		if (m_channelSrcJoin) ret = m_channelSrc->leaveChannel();
 		m_channelSrcJoin = false;
 	}
 	return 0 == ret;
@@ -403,8 +441,8 @@ BOOL CAgoraObject::LeaveTranslChannel()
 	int ret = -1;
 	if (m_channelTransl != NULL)
 	{
-		if (m_channelTranslPublish) m_channelTransl->unpublish();
-		if (m_channelTranslJoin)	m_channelTransl->leaveChannel();
+		if (m_channelTranslPublish) ret = m_channelTransl->unpublish();
+		if (m_channelTranslJoin)	ret = m_channelTransl->leaveChannel();
 		
 		m_channelTranslPublish	= false;
 		m_channelTranslJoin		= false;

@@ -178,9 +178,9 @@ private:
 	UINT			m_nBigShowedUID;
 	
 	CAGVideoWnd		m_wndLocal;
+	CAGBckWnd		m_wndTrLocal;
 	CAGVideoWnd		m_wndVideo[4];
 	CAGBckWnd		m_wndTransl[4];
-	CAGBckWnd		m_wndTrLocal;
 	CAGVideoWnd		*m_lpBigShowed;
 
 	CDeviceDlg		m_dlgDevice;

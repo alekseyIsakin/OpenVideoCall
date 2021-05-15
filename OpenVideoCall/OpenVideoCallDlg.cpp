@@ -366,12 +366,17 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 
 	int ret = 0;
 
-	langHolder Host		= *(netToken.GetTargetLngBgnItr() + indRelay);		// Source stream
+	langHolder Src		= *(netToken.GetTargetLngBgnItr() + indRelay);		// Source stream
 	langHolder LangRelay= *(netToken.GetRelayLngBgnItr()  + indDest);		// Translators stream
 	langHolder LangDest = *(netToken.GetTargetLngBgnItr() + indDest);		// Destination stream
 	
 	ret = lpAgoraObject->JoinChannelTransl(CString(LangRelay.langFull.c_str()), LangRelay.token.c_str(), 0);
-	ret = lpAgoraObject->JoinChannelSrc(CString(Host.langFull.c_str()), Host.token.c_str(), 0);
+	ret = lpAgoraObject->JoinChannelSrc(CString(Src.langFull.c_str()),			Src.token.c_str(), 0);
+
+	if (!lpAgoraObject->IsHostJoin()) {
+		langHolder Host	= *(netToken.GetTargetLngEndItr()-1);		// Host stream
+		ret = lpAgoraObject->JoinChannelHost(CString(Host.langFull.c_str()), Host.token.c_str(), 0);
+	}
 
 	switch (typeChange)
 	{
@@ -399,11 +404,10 @@ LRESULT COpenVideoCallDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 
 	BOOL isPublish = lpAgoraObject->IsPublish();
 
-	if (isPublish) {
-		lpAgoraObject->LeaveDestChannel();
-	}
-	lpAgoraObject->LeaveSrcChannel();
+	if (isPublish) { lpAgoraObject->LeaveDestChannel(); }
 	lpAgoraObject->LeaveTranslChannel();
+	lpAgoraObject->LeaveSrcChannel();
+	lpAgoraObject->LeaveHostChannel();
 	lpAgoraObject->LeaveCahnnel();
 
 	//lpAgoraObject->GetEngine()->stopPreview();

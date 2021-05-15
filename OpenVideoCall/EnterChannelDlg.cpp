@@ -198,24 +198,6 @@ void CEnterChannelDlg::OnBnClickedBtnjoinChannel()
 	CString nickName;
 	m_ctrUserName.GetWindowText(nickName);
 
-	//CString str = CAgoraObject::GetAgoraObject()->GetCallID();
-	//CString strKey;
-	//m_ctrEncKey.GetWindowText(strKey);
-	//if (strKey.GetLength() > 0)
-	//{
-	//	// configuration of encrypt
-	//	EncryptionConfig config;
-	//	// set encrypt mode
-	//	config.encryptionMode = ENCRYPTION_MODE(m_cmbEncType.GetCurSel() + 1);
-	//	// set encrypt key
- //   char szKey[520] = { 0 };
- //   WideCharToMultiByte(CP_UTF8, 0, strKey.GetBuffer(0), strKey.GetLength(), szKey, 520, NULL, NULL);
- //   config.encryptionKey = szKey;
-	//	// EnableEncryption of engine.
-	//	CAgoraObject::GetAgoraObject()->EnableEncryption(true, config);
-	//}
-	//return nickName;
-
 	if (nickName == USER_NAME_DEF) return;
 	
 	bool ret = CAgoraObject::GetAgoraObject()->RegistrLocalAccount(nickName);

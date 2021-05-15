@@ -392,11 +392,13 @@ POSITION CVideoDlg::ListWindowGetHeadPos(CHANNEL_TYPE channel)
 {
 	switch (channel)
 	{
-	case (CHANNEL_TYPE::CHANNEL_SRC):
+	case (CHANNEL_TYPE::CHANNEL_HOST):
 		return m_listWndInfoHost.GetHeadPosition();
 	case (CHANNEL_TYPE::CHANNEL_TRANSL):
 	case (CHANNEL_TYPE::CHANNEL_DEST):
 		return  m_listWndInfoDest.GetHeadPosition();
+	case (CHANNEL_TYPE::CHANNEL_SRC):
+		break;
 	}
 	return POSITION();
 }
@@ -405,11 +407,13 @@ CVideoDlg::AGVIDEO_WNDINFO CVideoDlg::ListWindowGetNextPos(CHANNEL_TYPE channel,
 {
 	switch (channel)
 	{
-	case (CHANNEL_TYPE::CHANNEL_SRC):
+	case (CHANNEL_TYPE::CHANNEL_HOST):
 		return m_listWndInfoHost.GetNext(pos);
 	case (CHANNEL_TYPE::CHANNEL_TRANSL):
 	case (CHANNEL_TYPE::CHANNEL_DEST):
 		return m_listWndInfoDest.GetNext(pos);
+	case (CHANNEL_TYPE::CHANNEL_SRC):
+		break;
 	}
 	return CVideoDlg::AGVIDEO_WNDINFO();
 }
@@ -418,11 +422,13 @@ CVideoDlg::AGVIDEO_WNDINFO CVideoDlg::ListWindowGetAt(CHANNEL_TYPE channel, POSI
 {
 	switch (channel)
 	{
-	case (CHANNEL_TYPE::CHANNEL_SRC):
+	case (CHANNEL_TYPE::CHANNEL_HOST):
 		return m_listWndInfoHost.GetAt(pos);
 	case (CHANNEL_TYPE::CHANNEL_TRANSL):
 	case (CHANNEL_TYPE::CHANNEL_DEST):
 		return m_listWndInfoDest.GetAt(pos);
+	case (CHANNEL_TYPE::CHANNEL_SRC):
+		break;
 	}
 	return CVideoDlg::AGVIDEO_WNDINFO();
 }
@@ -431,12 +437,14 @@ void CVideoDlg::ListWindowRemoveAt(CHANNEL_TYPE channel, POSITION pos)
 {
 	switch (channel)
 	{
-	case (CHANNEL_TYPE::CHANNEL_SRC):
+	case (CHANNEL_TYPE::CHANNEL_HOST):
 		m_listWndInfoHost.RemoveAt(pos);
 		break;
 	case (CHANNEL_TYPE::CHANNEL_TRANSL):
 	case (CHANNEL_TYPE::CHANNEL_DEST):
 		m_listWndInfoDest.RemoveAt(pos);
+		break;
+	case (CHANNEL_TYPE::CHANNEL_SRC):
 		break;
 	}
 }
@@ -445,12 +453,14 @@ void CVideoDlg::ListWindowAddTail(CHANNEL_TYPE channel, AGVIDEO_WNDINFO wnd)
 {
 	switch (channel)
 	{
-	case (CHANNEL_TYPE::CHANNEL_SRC):
+	case (CHANNEL_TYPE::CHANNEL_HOST):
 		m_listWndInfoHost.AddTail(wnd);
 		break;
 	case (CHANNEL_TYPE::CHANNEL_TRANSL):
 	case (CHANNEL_TYPE::CHANNEL_DEST):
 		m_listWndInfoDest.AddTail(wnd);
+		break;
+	case (CHANNEL_TYPE::CHANNEL_SRC):
 		break;
 	}
 }
@@ -459,12 +469,14 @@ void CVideoDlg::ListWindowRemoveAll(CHANNEL_TYPE channel)
 {
 	switch (channel)
 	{
-	case (CHANNEL_TYPE::CHANNEL_SRC):
+	case (CHANNEL_TYPE::CHANNEL_HOST):
 		m_listWndInfoHost.RemoveAll();
 		break;
 	case (CHANNEL_TYPE::CHANNEL_TRANSL):
 	case (CHANNEL_TYPE::CHANNEL_DEST):
 		m_listWndInfoDest.RemoveAll();
+		break;
+	case (CHANNEL_TYPE::CHANNEL_SRC):
 		break;
 	}
 }
@@ -479,12 +491,14 @@ UINT CVideoDlg::ListWindowGetCount(CHANNEL_TYPE channel)
 {
 	switch (channel)
 	{
-	case (CHANNEL_TYPE::CHANNEL_SRC):
+	case (CHANNEL_TYPE::CHANNEL_HOST):
 		return m_listWndInfoHost.GetCount();
 		break;
 	case (CHANNEL_TYPE::CHANNEL_TRANSL):
 	case (CHANNEL_TYPE::CHANNEL_DEST):
 		return m_listWndInfoDest.GetCount();
+	case (CHANNEL_TYPE::CHANNEL_SRC):
+		break;
 	}
 	return 0;
 }

@@ -68,15 +68,18 @@ public:
 	BOOL JoinChannel(LPCTSTR lpChannelName, UINT nUID = 0, LPCSTR lpChannelToken = NULL);
 	BOOL LeaveCahnnel();
 
+	BOOL JoinChannelHost(LPCTSTR channel, LPCSTR token, UINT nUID, LPCSTR info = "");
 	BOOL JoinChannelSrc(LPCTSTR channel, LPCSTR token, UINT nUID, LPCSTR info = "");
 	BOOL JoinChannelDest(LPCTSTR channel, LPCSTR token, UINT nUID, LPCSTR info = "");
 	BOOL JoinChannelTransl(LPCTSTR channel, LPCSTR token, UINT nUID, LPCSTR info = "");
 
+	BOOL LeaveHostChannel();
 	BOOL LeaveDestChannel();
 	BOOL LeaveSrcChannel();
 	BOOL LeaveTranslChannel();
 
 	BOOL IsPublish() { return m_channelDestPublish; }
+	BOOL IsHostJoin() { return m_channelHostJoin; }
 
 	CString GetChanelName();
 	CString GetCallID();
@@ -151,16 +154,19 @@ private:
 	static	IRtcEngine* m_lpAgoraEngine;
 	static	CString			m_strVendorKey;
 
+	IChannel* m_channelHost;
 	IChannel* m_channelSrc;
 	IChannel* m_channelDest;
 	IChannel* m_channelTransl;
 
+	AGChannelEventHandler m_channelHostEventHandler;
 	AGChannelEventHandler m_channelSrcEventHandler;
 	AGChannelEventHandler m_channelDestEventHandler;
 	AGChannelEventHandler m_channelTranslEventHandler;
 
-	BOOL		m_channelSrcJoin = false;
-	BOOL		m_channelDestJoin = false;
+	BOOL		m_channelHostJoin	= false;
+	BOOL		m_channelSrcJoin	= false;
+	BOOL		m_channelDestJoin	= false;
 	BOOL		m_channelTranslJoin = false;
 
 	BOOL		m_channelDestPublish = false;
