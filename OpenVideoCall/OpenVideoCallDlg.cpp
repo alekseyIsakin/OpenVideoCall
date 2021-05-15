@@ -16,8 +16,6 @@
 
 // CAgoraVideoCallDlg dialog
 
-
-
 COpenVideoCallDlg::COpenVideoCallDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(COpenVideoCallDlg::IDD, pParent)
 {
@@ -349,15 +347,21 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
     lpAgoraObject->EnableVideo(TRUE);
 
     VideoEncoderConfiguration config;
-    config.bitrate = m_dlgSetup.GetBirate();
-    config.frameRate = (FRAME_RATE)m_dlgSetup.GetFPS();
-    SIZE resolution = m_dlgSetup.GetVideoResolution();
-    config.dimensions.width = resolution.cx;
-    config.dimensions.height = resolution.cy;
-
+	//config.bitrate = m_dlgSetup.GetBirate();
+	//config.frameRate = (FRAME_RATE)m_dlgSetup.GetFPS();
+	//SIZE resolution = m_dlgSetup.GetVideoResolution();
+	//config.dimensions.width = resolution.cx;
+	//config.dimensions.height = resolution.cy;    
 	////////////////////////////////////
+	config.bitrate = BASE_BITRATE;
+	config.frameRate = BASE_FRAME_RATE;
+
+	SIZE resolution = BASE_RESOLUTION;
+	config.dimensions.width = resolution.cx;
+	config.dimensions.height = resolution.cy;
 	config.degradationPreference = MAINTAIN_QUALITY;
 	config.orientationMode = ORIENTATION_MODE_ADAPTIVE;
+
 	lpRtcEngine->setVideoProfile(VIDEO_PROFILE_LANDSCAPE_480P_4, m_dlgSetup.IsWHSwap());
 	lpRtcEngine->setAudioProfile(AUDIO_PROFILE_SPEECH_STANDARD, AUDIO_SCENARIO_MEETING);
     lpRtcEngine->setVideoEncoderConfiguration(config);

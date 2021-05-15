@@ -25,6 +25,10 @@ using namespace agora::rtc;
 #define AG_CODEC_EVP	0x00000001
 #define AG_CODEC_VP8	0x00000002
 
+#define BASE_BITRATE 200
+#define	BASE_FRAME_RATE (FRAME_RATE)15;
+#define	BASE_RESOLUTION SIZE { 320, 240};
+
 /* NOTE:
 	PLEASE KEEP THIS App ID IN SAFE PLACE
 	Get your own App ID at https://dashboard.agora.io/
