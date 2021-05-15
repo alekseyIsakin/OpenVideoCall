@@ -263,7 +263,7 @@ BOOL CAgoraObject::JoinChannel(LPCTSTR lpChannelName, UINT nUID, LPCSTR lpChanne
 {
 	int nRet = 0;
 
-//	m_lpAgoraEngine->setVideoProfile(VIDEO_PROFILE_720P);
+	//m_lpAgoraEngine->setVideoProfile(VIDEO_PROFILE_LANDSCAPE_480P_4, false);
 #ifdef UNICODE
 	CHAR szChannelName[128];
 
