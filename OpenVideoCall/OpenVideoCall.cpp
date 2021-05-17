@@ -7,6 +7,7 @@
 #include "LogoDlg.h"
 #include "OpenVideoCallDlg.h"
 #include "EnterChannelDlg.h"
+#include "EnterApplication.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -76,12 +77,15 @@ BOOL COpenVideoCallApp::InitInstance()
 
 	INT_PTR nResponse = 0;
 	CLogoDlg Logo;
+	
 
 	nResponse = Logo.DoModal();
 	COpenVideoCallDlg	avcDlg;
+	CEnterApplication StartMenu;
 
 	m_pMainWnd = &avcDlg;
 	nResponse = avcDlg.DoModal();
+	nResponse = StartMenu.DoModal();
 
 	if (nResponse == IDOK)
 	{

@@ -23,8 +23,10 @@ public:
 	enum { IDD = IDD_ENTERAPPLICATION_DIALOG };
 
 protected:
+	HICON m_hIcon;
+
 	virtual void DoDataExchange(CDataExchange* pDX);
-	//virtual BOOL OnInitDialog();
+	virtual BOOL OnInitDialog();
 	//virtual BOOL PreTranslateMessage(MSG* pMsg);
 
 	afx_msg void OnPaint();

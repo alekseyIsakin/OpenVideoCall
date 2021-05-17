@@ -20,12 +20,38 @@ CEnterApplication::~CEnterApplication()
 void CEnterApplication::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	//DDX_Control(pDX, IDC_BTNJOIN_APPLICATION, m_btnJoin);
+	DDX_Control(pDX, IDC_BTNJOIN_APPLICATION, m_btnJoin);
 }
 
 BEGIN_MESSAGE_MAP(CEnterApplication, CDialogEx)
 	ON_BN_CLICKED(IDC_BTNJOIN_APPLICATION, &CEnterApplication::OnBnClickedBtnjoinChannel)
 END_MESSAGE_MAP()
+
+BOOL CEnterApplication::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	// Add "About..." menu item to system menu.
+
+	// Set the icon for this dialog.  The framework does this automatically
+	//  when the application's main window is not a dialog
+	SetIcon(m_hIcon, TRUE);			// Set big icon
+	SetIcon(m_hIcon, FALSE);		// Set small icon
+
+	// TODO: Add extra initialization here
+	//m_ftTitle.CreateFont(16, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, _T("Arial"));
+	//m_ftDescp.CreateFont(15, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, _T("Arial"));
+
+	SetBackgroundColor(RGB(0xFF, 0xFF, 0xFF));
+	InitCtrls();
+
+	AnimateWindow(500, AW_BLEND | AW_SLIDE);
+	//m_nTimerID = SetTimer(1, 1000, NULL);
+
+	Invalidate(TRUE);
+
+	return TRUE;  // return TRUE  unless you set the focus to a control
+}
 
 void CEnterApplication::OnPaint()
 {
