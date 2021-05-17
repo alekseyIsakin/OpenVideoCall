@@ -154,6 +154,7 @@
     <ClInclude Include="TranslWnd.h">
       <Filter>UI\Wnd</Filter>
     </ClInclude>
+    <ClInclude Include="EnterApplication.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -264,6 +265,7 @@
     <ClCompile Include="TranslWnd.cpp">
       <Filter>UI\Wnd</Filter>
     </ClCompile>
+    <ClCompile Include="EnterApplication.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenVideoCall.rc">
