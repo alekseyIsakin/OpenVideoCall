@@ -118,6 +118,8 @@ protected:
 	afx_msg LRESULT HideClient(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT UnHideClient(WPARAM wParam, LPARAM lParam);
 
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+
 	DECLARE_MESSAGE_MAP()
 
 protected:
@@ -146,8 +148,16 @@ protected:
 
 	void PublishStream();
 	void UnPublishStream(BOOL joinBack=true);
+
+	void StopTimer();
+	void StartTimer(int IDevent=1, int Elapse=1000);
+	void ResetTimeCounter();
+	void UpdateTimerLabel();
+
 private:
 	CBrush			m_brHead;
+
+	CStatic			m_statTimer;
 
 	CAGButton		m_btnMin;
 	CAGButton		m_btnRst;
@@ -195,6 +205,10 @@ private:
     CBitmap         m_bitMenuInfo;
     CBitmap         m_bitMenuDevice;
     CBitmap         m_bitMenuFilter;
+
+	UINT_PTR		m_nTimerID;
+
+	tm				m_timeSession;
 
 private:	// data	
 

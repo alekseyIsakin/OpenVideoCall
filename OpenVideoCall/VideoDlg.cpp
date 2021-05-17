@@ -22,11 +22,17 @@ CVideoDlg::CVideoDlg(CWnd* pParent /*=NULL*/)
 	m_lpBigShowed = NULL;
     m_bFilter = FALSE;
     m_bShowInfo = FALSE;
+	m_timeSession.tm_sec = 0;
+	m_timeSession.tm_min = 0;
+	m_timeSession.tm_hour = 0;
+
+	m_timeSession.tm_year = 99;
 }
 
 CVideoDlg::~CVideoDlg()
 {
 	m_brHead.DeleteObject();
+	StopTimer();
 }
 
 void CVideoDlg::DoDataExchange(CDataExchange* pDX)
@@ -36,6 +42,8 @@ void CVideoDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BTNMIN_VIDEO, m_btnMin);
 	DDX_Control(pDX, IDC_BTNRSTO_VIDEO, m_btnRst);
 	DDX_Control(pDX, IDC_BTNCLOSE_VIDEO, m_btnClose);
+	DDX_Control(pDX, IDC_STAT_TIMER_TEXT, m_statTimer);
+
 }
 
 
@@ -115,7 +123,8 @@ BEGIN_MESSAGE_MAP(CVideoDlg, CDialogEx)
 	ON_MESSAGE(WM_VIDEOUNMUTECLIENT, &CVideoDlg::UnHideClient)
 
 	ON_WM_SHOWWINDOW()
-    ON_WM_MOVE()
+	ON_WM_TIMER()
+	ON_WM_MOVE()
 END_MESSAGE_MAP()
 
 void CVideoDlg::OnCbnSelchangeCmb()
@@ -133,8 +142,10 @@ void CVideoDlg::OnBtnClickPublish()
 	BOOL isPublish = CAgoraObject::GetAgoraObject()->IsPublish();
 	ListWindowRemoveAll();
 
-	if (!isPublish) PublishStream();
-	else			UnPublishStream();
+	if (!isPublish)
+		PublishStream();
+	else 
+		UnPublishStream();
 
 }
 
@@ -147,8 +158,50 @@ void CVideoDlg::UnPublishStream(BOOL joinBack)
 	m_btnPublish.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
 
 	GetParent()->SendMessage(WM_LEAVECHANNEL, 0, 0);
+
 	if (joinBack)
 		GetParent()->SendMessage(WM_JOINCHANNEL, (WPARAM)ch_state, curSel);
+
+	StopTimer();
+}
+
+void CVideoDlg::StopTimer()
+{
+	if (m_nTimerID != NULL) 
+	{
+		KillTimer(1);
+		m_nTimerID = NULL;
+	}
+}
+
+void CVideoDlg::StartTimer(int IDevent, int Elapse)
+{
+	StopTimer();
+	m_nTimerID = SetTimer(IDevent, Elapse, NULL);
+}
+
+void CVideoDlg::ResetTimeCounter()
+{
+	StopTimer();
+
+	m_timeSession.tm_sec = 0;
+	m_timeSession.tm_min = 0;
+	m_timeSession.tm_hour = 0;
+
+	m_timeSession.tm_year = 99;
+}
+
+void CVideoDlg::UpdateTimerLabel()
+{
+	time_t time_session_time = mktime(&m_timeSession);
+	CTime time_session_ctime(time_session_time);
+	m_statTimer.SetWindowTextW(time_session_ctime.Format("%H:%M:%S"));
+}
+
+void CVideoDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	UpdateTimerLabel();
+	m_timeSession.tm_sec += 1;
 }
 
 void CVideoDlg::PublishStream()
@@ -171,6 +224,7 @@ void CVideoDlg::PublishStream()
 
 		GetParent()->SendMessage(WM_LEAVECHANNEL, 0, 0);
 		GetParent()->SendMessage(WM_JOINCHANNEL, (WPARAM)ch_state, curSel);
+		StartTimer();
 	}
 }
 // CVideoDlg
@@ -671,6 +725,8 @@ void CVideoDlg::OnBnClickedBtnclose()
 	m_dlgChat.ShowWindow(SW_HIDE);
 	m_dlgChat.ClearHistory();
 	m_btnMessage.SwitchButtonStatus(CAGButton::AGBTN_NORMAL);
+	
+	ResetTimeCounter();
 
 	CDialogEx::OnOK();
 }
@@ -1331,6 +1387,7 @@ void CVideoDlg::InitCtrls()
     m_btnMore.EnableFrameEffect(FALSE);
     m_btnMore.SetBackImage(IDB_BTNMORE_VIDEO, RGB(0x26, 0x26, 0x26));
 
+	UpdateTimerLabel();
 	//m_btnPublish.SetWindowTextW(_T("Publish"));
 }
 
@@ -1655,6 +1712,7 @@ LRESULT CVideoDlg::OnDesktopShareStart(WPARAM wParam, LPARAM lParam)
 void CVideoDlg::OnShowWindow(BOOL bShow, UINT nStatus)
 {
 	CDialogEx::OnShowWindow(bShow, nStatus);
+	UpdateTimerLabel();
 
 	if (bShow && GetSafeHwnd() != NULL)
 		RebindVideoWnd();
