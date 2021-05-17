@@ -33,6 +33,9 @@ protected:
 	//afx_msg void OnBnClickedBtntestChannel();
 	afx_msg void OnBnClickedBtnjoinChannel();
 	//afx_msg void OnBnClickedBtnsetChannel();
+	afx_msg void OnBnClickedBtnmin();
+	afx_msg void OnBnClickedBtnclose();
+	afx_msg LRESULT OnNcHitTest(CPoint point);
 
 	DECLARE_MESSAGE_MAP()
 

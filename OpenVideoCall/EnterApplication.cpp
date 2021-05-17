@@ -10,7 +10,7 @@ IMPLEMENT_DYNAMIC(CEnterApplication, CDialogEx)
 CEnterApplication::CEnterApplication(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CEnterApplication::IDD, pParent)
 {
-
+	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
 CEnterApplication::~CEnterApplication()
@@ -21,17 +21,21 @@ void CEnterApplication::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_BTNJOIN_APPLICATION, m_btnJoin);
+	DDX_Control(pDX, IDC_BTNMIN, m_btnMin);
+	DDX_Control(pDX, IDC_BTNCLOSE, m_btnClose);
 }
 
 BEGIN_MESSAGE_MAP(CEnterApplication, CDialogEx)
+	ON_WM_NCHITTEST()
+	ON_BN_CLICKED(IDC_BTNMIN, &CEnterApplication::OnBnClickedBtnmin)
+	ON_BN_CLICKED(IDC_BTNCLOSE, &CEnterApplication::OnBnClickedBtnclose)
 	ON_BN_CLICKED(IDC_BTNJOIN_APPLICATION, &CEnterApplication::OnBnClickedBtnjoinChannel)
+	ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 BOOL CEnterApplication::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
-
-	// Add "About..." menu item to system menu.
 
 	// Set the icon for this dialog.  The framework does this automatically
 	//  when the application's main window is not a dialog
@@ -53,11 +57,24 @@ BOOL CEnterApplication::OnInitDialog()
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
-void CEnterApplication::OnPaint()
+void CEnterApplication::OnBnClickedBtnmin()
 {
-	CPaintDC dc(this);
+	ShowWindow(SW_MINIMIZE);
+}
 
-	DrawClient(&dc);
+
+void CEnterApplication::OnBnClickedBtnclose()
+{
+	CDialogEx::OnCancel();
+}
+
+LRESULT CEnterApplication::OnNcHitTest(CPoint point)
+{
+	LRESULT lResult = CDialogEx::OnNcHitTest(point);
+	if (lResult == HTCLIENT && ::GetAsyncKeyState(MK_LBUTTON) < 0)
+		lResult = HTCAPTION;
+
+	return lResult;
 }
 
 void CEnterApplication::DrawClient(CDC* lpDC)
@@ -65,34 +82,39 @@ void CEnterApplication::DrawClient(CDC* lpDC)
 	CRect	rcText;
 	CRect	rcClient;
 	LPCTSTR lpString = NULL;
+	//CFont* defFont = lpDC->SelectObject(&m_ftTitle);
+
+	//m_imgNetQuality.Draw(lpDC, m_nLastmileQuality, CPoint(16, 40), ILD_NORMAL);
 
 	GetClientRect(&rcClient);
+	lpDC->FillSolidRect(0, 0, 720, 24, RGB(0, 161, 230));
+	lpDC->SetBkColor(RGB(0x00, 0x9E, 0xEB));
+	lpDC->SetTextColor(RGB(0xFF, 0xFF, 0xFF));
 
-	CFont* defFont = lpDC->SelectObject(&m_ftHead);
-	lpDC->SetBkColor(RGB(0xFF, 0xFF, 0xFF));
-	lpDC->SetTextColor(RGB(0x44, 0x45, 0x46));
-	lpString = LANG_STR("IDS_CHN_TITLE");
-	lpDC->TextOut(12, 10, lpString, _tcslen(lpString));
 
-	lpDC->SelectObject(&m_penFrame);
-	rcText.SetRect(rcClient.Width() / 2 - 188, 120, rcClient.Width() / 2 + 172, 152);
-	lpDC->RoundRect(&rcText, CPoint(32, 32));
+	lpString = _T("RSI Exchange Interpreter Desktop");
+	lpDC->TextOut(rcClient.Width() / 2 - 100, 3, lpString, _tcslen(lpString));
 
-	rcText.OffsetRect(0, 48);
-	lpDC->RoundRect(&rcText, CPoint(32, 32));
+	//lpDC->SelectObject(&m_ftDes);
+	//lpDC->SetTextColor(RGB(0x91, 0x96, 0xA0));
+	//lpDC->SetBkColor(RGB(0xFF, 0xFF, 0xFF));
+	//lpString = LANG_STR("IDS_CONTACT");
+	//lpDC->TextOut(rcClient.Width() / 2 - 50, rcClient.Height() - 55, lpString, _tcslen(lpString));
 
-	lpDC->SelectObject(&m_ftDesc);
-	lpDC->SetTextColor(RGB(0x91, 0x96, 0xA0));
-	lpString = LANG_STR("IDS_CHN_DSC1");
-	lpDC->TextOut(12, 45, lpString, _tcslen(lpString));
-	lpString = LANG_STR("IDS_CHN_DSC2");
-	lpDC->TextOut(12, 65, lpString, _tcslen(lpString));
+	//lpDC->SelectObject(&m_ftPhone);
+	//lpDC->SetTextColor(RGB(0x44, 0x45, 0x46));
+	//lpString = LANG_STR("IDS_PHONENUMBER");
+	//lpDC->TextOut(rcClient.Width() / 2 + 45, rcClient.Height() - 55, lpString, _tcslen(lpString));
 
-	lpDC->SetTextColor(RGB(0xD8, 0xD8, 0xD8));
-	lpString = LANG_STR("IDS_CHN_ENCTYPE");
-	lpDC->TextOut(240, 176, lpString, _tcslen(lpString));
+	//lpDC->SelectObject(&m_ftDes);
+	//lpDC->SetTextColor(RGB(0x91, 0x96, 0xA0));
+	//lpDC->SetBkColor(RGB(0xFF, 0xFF, 0xFF));
+	//lpString = AVC_VER;// _T("v1.3");
+	CString strVersion = CAgoraObject::GetSDKVersionEx();
 
-	lpDC->SelectObject(defFont);
+	rcText.SetRect(0, rcClient.Height() - 30, rcClient.Width(), rcClient.Height() - 5);
+	//lpDC->DrawText(strVersion, _tcslen(strVersion), &rcText, DT_CENTER | DT_SINGLELINE);
+	//lpDC->SelectObject(defFont);
 }
 
 void CEnterApplication::InitCtrls()
@@ -116,5 +138,12 @@ void CEnterApplication::InitCtrls()
 
 void CEnterApplication::OnBnClickedBtnjoinChannel()
 {
-	//GetParent()->SendMessage(WM_JOINCHANNEL, 0, 0);
+	CDialogEx::OnOK();
+}
+
+void CEnterApplication::OnPaint()
+{
+	CPaintDC dc(this);
+
+	DrawClient(&dc);
 }

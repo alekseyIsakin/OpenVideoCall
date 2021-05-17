@@ -77,16 +77,29 @@ BOOL COpenVideoCallApp::InitInstance()
 
 	INT_PTR nResponse = 0;
 	CLogoDlg Logo;
-	
 
 	nResponse = Logo.DoModal();
-	COpenVideoCallDlg	avcDlg;
 	CEnterApplication StartMenu;
 
-	m_pMainWnd = &avcDlg;
-	nResponse = avcDlg.DoModal();
 	nResponse = StartMenu.DoModal();
+	
 
+	if (nResponse == IDOK)
+	{
+		COpenVideoCallDlg	avcDlg;
+		m_pMainWnd = &avcDlg;
+		nResponse = avcDlg.DoModal();
+	}
+	else if (nResponse == IDCANCEL)
+	{
+		
+	}
+	else if (nResponse == -1)
+	{
+		TRACE(traceAppMsg, 0, "Warning: dialog creation failed, so application is terminating unexpectedly.\n");
+		TRACE(traceAppMsg, 0, "Warning: if you are using MFC controls on the dialog, you cannot #define _AFX_NO_MFC_CONTROLS_IN_DIALOGS.\n");
+	}
+	
 	if (nResponse == IDOK)
 	{
 		// TODO: Place code here to handle when the dialog is
