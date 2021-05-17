@@ -31,7 +31,7 @@ void CEnterChannelDlg::DoDataExchange(CDataExchange* pDX)
     DDX_Control(pDX, IDC_EDENCKEY_CHANNEL, m_ctrUserName);
     DDX_Control(pDX, IDC_BTNTEST_CHANNEL, m_btnTest);
     DDX_Control(pDX, IDC_BTNJOIN_CHANNEL, m_btnJoin);
-    DDX_Control(pDX, IDC_BTNSET_CHANNEL, m_btnSetup);
+    //DDX_Control(pDX, IDC_BTNSET_CHANNEL, m_btnSetup);
 }
 
 
@@ -117,7 +117,7 @@ void CEnterChannelDlg::InitCtrls()
 
     m_btnJoin.MoveWindow(ClientRect.Width() / 2 - 180, 212, 360, 36, TRUE);
     m_btnTest.MoveWindow(ClientRect.Width() / 2 - 180, 314, 108, 36, TRUE);
-	m_btnSetup.MoveWindow(ClientRect.Width()/2-60, 314, 240, 36, TRUE);
+	//m_btnSetup.MoveWindow(ClientRect.Width()/2-60, 314, 240, 36, TRUE);
 	
 
     m_btnJoin.SetBackColor(RGB(0x00, 0xA0, 0xE9), RGB(0x05, 0x78, 0xAA), RGB(0x05, 0x78, 0xAA), RGB(0xE6, 0xE6, 0xE6));
@@ -131,11 +131,11 @@ void CEnterChannelDlg::InitCtrls()
     m_btnTest.SetTextColor(RGB(0x55, 0x58, 0x5A), RGB(0x00, 0xA0, 0xE9), RGB(0x00, 0xA0, 0xE9), RGB(0xCC, 0xCC, 0xCC));
 	m_btnTest.SetWindowText(LANG_STR("IDS_CHN_BTTEST"));
 
-    m_btnSetup.SetBorderColor(RGB(0xD8, 0xD8, 0xD8), RGB(0x00, 0xA0, 0xE9), RGB(0x00, 0xA0, 0xE9), RGB(0xCC, 0xCC, 0xCC));
-    m_btnSetup.SetBackColor(RGB(0xFF, 0xFF, 0xFF), RGB(0xFF, 0xFF, 0xFF), RGB(0xFF, 0xFF, 0xFF), RGB(0xFF, 0xFF, 0xFF));
-	m_btnSetup.SetFont(&m_ftBtn);
-    m_btnSetup.SetTextColor(RGB(0x55, 0x58, 0x5A), RGB(0x00, 0xA0, 0xE9), RGB(0x00, 0xA0, 0xE9), RGB(0xCC, 0xCC, 0xCC));
-	m_btnSetup.SetWindowText(_T("1920*1080,15fps, 3mbps"));
+ //   m_btnSetup.SetBorderColor(RGB(0xD8, 0xD8, 0xD8), RGB(0x00, 0xA0, 0xE9), RGB(0x00, 0xA0, 0xE9), RGB(0xCC, 0xCC, 0xCC));
+ //   m_btnSetup.SetBackColor(RGB(0xFF, 0xFF, 0xFF), RGB(0xFF, 0xFF, 0xFF), RGB(0xFF, 0xFF, 0xFF), RGB(0xFF, 0xFF, 0xFF));
+	//m_btnSetup.SetFont(&m_ftBtn);
+ //   m_btnSetup.SetTextColor(RGB(0x55, 0x58, 0x5A), RGB(0x00, 0xA0, 0xE9), RGB(0x00, 0xA0, 0xE9), RGB(0xCC, 0xCC, 0xCC));
+	//m_btnSetup.SetWindowText(_T("1920*1080,15fps, 3mbps"));
 
 	CMFCButton::EnableWindowsTheming(FALSE);
 }
@@ -225,7 +225,7 @@ CString CEnterChannelDlg::GetChannelName()
 
 void CEnterChannelDlg::SetVideoString(LPCTSTR lpVideoString)
 {
-	m_btnSetup.SetWindowText(lpVideoString);
+	//m_btnSetup.SetWindowText(lpVideoString);
 }
 
 void CEnterChannelDlg::CleanEncryptionSecret()
@@ -247,5 +247,5 @@ void CEnterChannelDlg::SetCtrlPos()
 	int height = 36;
 	m_btnJoin.MoveWindow(ClientRect.Width() / 2 - 180, 310, 360, height, TRUE);
 	m_btnTest.MoveWindow(ClientRect.Width() / 2 - 180, 355, 108, height, TRUE);
-	m_btnSetup.MoveWindow(ClientRect.Width() / 2 - 60, 355, 240, height, TRUE);
+	//m_btnSetup.MoveWindow(ClientRect.Width() / 2 - 60, 355, 240, height, TRUE);
 }

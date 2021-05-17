@@ -45,7 +45,7 @@ private:
     //CAGComboBox     m_cmbEncType;
     CAGButton		m_btnTest;
 	CAGButton		m_btnJoin;
-	CAGButton		m_btnSetup;
+	//CAGButton		m_btnSetup;
 
 	CFont			m_ftEncy;
 	CFont			m_ftHead;
