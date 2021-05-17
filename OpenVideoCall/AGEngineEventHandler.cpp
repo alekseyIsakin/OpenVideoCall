@@ -15,6 +15,11 @@ void CAGEngineEventHandler::SetMsgReceiver(HWND hWnd)
 {
 	m_hMainWnd = hWnd;
 }
+void CAGEngineEventHandler::onLocalUserRegistered(uid_t uid, const char* userAccount)
+{
+	CAgoraObject::GetAgoraObject()->SelfUIDAdd(uid);
+	CAgoraObject::GetAgoraObject()->SetSelfAccount(userAccount);
+}
 
 void CAGEngineEventHandler::onJoinChannelSuccess(const char* channel, uid_t uid, int elapsed)
 {
@@ -111,6 +116,8 @@ void CAGEngineEventHandler::onLeaveChannel(const RtcStats& stat)
 	LPAGE_LEAVE_CHANNEL lpData = new AGE_LEAVE_CHANNEL;
 	CAgoraObject::GetAgoraObject()->ClearUID();
 	memcpy(&lpData->rtcStat, &stat, sizeof(RtcStats));
+
+	CAgoraObject::GetAgoraObject()->ClearUID();
 
 	if(m_hMainWnd != NULL)
 		::PostMessage(m_hMainWnd, WM_MSGID(EID_LEAVE_CHANNEL), (WPARAM)lpData, 0);
@@ -216,8 +223,6 @@ void CAGEngineEventHandler::onUserJoined(uid_t uid, int elapsed)
 	lpData->uid = uid;
 	lpData->elapsed = elapsed;
 	
-	CAgoraObject::GetAgoraObject()->AddUID(uid);
-
 	if(m_hMainWnd != NULL)
 		::PostMessage(m_hMainWnd, WM_MSGID(EID_USER_JOINED), (WPARAM)lpData, 0);
 }
@@ -228,8 +233,6 @@ void CAGEngineEventHandler::onUserOffline(uid_t uid, USER_OFFLINE_REASON_TYPE re
 
 	lpData->uid = uid;
 	lpData->reason = reason;
-
-	CAgoraObject::GetAgoraObject()->DelUID(uid);
 
 	if(m_hMainWnd != NULL)
 		::PostMessage(m_hMainWnd, WM_MSGID(EID_USER_OFFLINE), (WPARAM)lpData, 0);
@@ -272,7 +275,6 @@ void CAGEngineEventHandler::onStreamMessage(uid_t uid, int streamId, const char*
 
     if (m_hMainWnd != NULL)
         ::PostMessage(m_hMainWnd, WM_MSGID(EID_STREAM_MESSAGE), (WPARAM)lpData, 0);
-
 }
 
 void CAGEngineEventHandler::onApiCallExecuted(int err, const char* api, const char* result)

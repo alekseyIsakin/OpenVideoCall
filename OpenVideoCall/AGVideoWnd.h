@@ -3,6 +3,7 @@
 
 #define WM_SHOWMODECHANGED	WM_USER+300
 #define WM_SHOWBIG			WM_USER+301
+#define WM_RESIZED			WM_USER+302
 
 class CAGInfoWnd : public CWnd
 {
@@ -74,17 +75,15 @@ public:
 	void SetBigShowFlag(BOOL bBigShow);
 	BOOL IsBigShow() { return m_bBigShow; };
 
-	void InitCtrls();
+	BOOL GetIsHidden();
+	void HideWnd(bool hide);
+	void IsHidden();
 
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
-	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
-	afx_msg void OnMuteClick();
-	afx_msg void OnVideoMuteClick();
+
 
 	DECLARE_MESSAGE_MAP()
 
@@ -93,6 +92,7 @@ private:
 	COLORREF		m_crBackColor;
 
 	CAGInfoWnd		m_wndInfo;
+	//CAGBckWnd		m_wndBck;
 
 private:
 	UINT		m_nUID;
@@ -107,13 +107,8 @@ private:
 	BOOL		m_bBigShow;
 
     BOOL        m_bBackground;
-
-	CAGButton		m_btnEnableAudio;
-	CAGButton		m_btnShowVid;
-	BOOL ctr_Created;
 	BOOL bMuted;
 	BOOL bHidden;
-	BOOL CtrlMode;
 public:
     afx_msg void OnPaint();
 };

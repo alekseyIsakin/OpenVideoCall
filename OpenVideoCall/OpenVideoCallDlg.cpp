@@ -16,8 +16,6 @@
 
 // CAgoraVideoCallDlg dialog
 
-
-
 COpenVideoCallDlg::COpenVideoCallDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(COpenVideoCallDlg::IDD, pParent)
 {
@@ -242,8 +240,10 @@ void COpenVideoCallDlg::DrawClient(CDC *lpDC)
     lpDC->FillSolidRect(0, 0, 720, 24, RGB(0, 161, 230));
 	lpDC->SetBkColor(RGB(0x00, 0x9E, 0xEB));
 	lpDC->SetTextColor(RGB(0xFF, 0xFF, 0xFF));
-	lpString = LANG_STR("IDS_TITLE");
-	lpDC->TextOut(rcClient.Width()/2 - 80, 3, lpString, _tcslen(lpString));
+
+
+	lpString = _T("RSI Exchange Interpreter Desktop");
+	lpDC->TextOut(rcClient.Width()/2 - 100, 3, lpString, _tcslen(lpString));
 	
     lpDC->SelectObject(&m_ftDes);
     lpDC->SetTextColor(RGB(0x91, 0x96, 0xA0));
@@ -319,8 +319,8 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
     lpAgoraObject->SetDefaultParameters();
 
 	//10482357
-	//CString strChannelName = m_dlgEnterChannel.GetChannelName();
-	CString strChannelName = _T("10482357");
+	//CString strChannelName = _T("10482357");
+	CString strChannelName = m_dlgEnterChannel.GetChannelName();
 
 	Tokens netToken;
 	netToken.GetCloudToken(strChannelName);
@@ -344,18 +344,30 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 	
 	//cancel setVideoProfile bitrate since version 2.1.0
     m_nVideoSolution = m_dlgSetup.GetVideoSolution();
-   // lpRtcEngine->setVideoProfile((VIDEO_PROFILE_TYPE)m_nVideoSolution, m_dlgSetup.IsWHSwap());
     lpAgoraObject->EnableVideo(TRUE);
 
     VideoEncoderConfiguration config;
-    config.bitrate = m_dlgSetup.GetBirate();
-    config.frameRate = (FRAME_RATE)m_dlgSetup.GetFPS();
-    SIZE resolution = m_dlgSetup.GetVideoResolution();
-    config.dimensions.width = resolution.cx;
-    config.dimensions.height = resolution.cy;
-    lpRtcEngine->setVideoEncoderConfiguration(config);
+	//config.bitrate = m_dlgSetup.GetBirate();
+	//config.frameRate = (FRAME_RATE)m_dlgSetup.GetFPS();
+	//SIZE resolution = m_dlgSetup.GetVideoResolution();
+	//config.dimensions.width = resolution.cx;
+	//config.dimensions.height = resolution.cy;    
+	////////////////////////////////////
+	config.bitrate = BASE_BITRATE;
+	config.frameRate = BASE_FRAME_RATE;
 
-	m_dlgVideo.SetWindowText(_T("Transliter-3000"));
+	SIZE resolution = BASE_RESOLUTION;
+	config.dimensions.width = resolution.cx;
+	config.dimensions.height = resolution.cy;
+	config.degradationPreference = MAINTAIN_QUALITY;
+	config.orientationMode = ORIENTATION_MODE_ADAPTIVE;
+
+	lpRtcEngine->setVideoProfile(VIDEO_PROFILE_LANDSCAPE_480P_4, m_dlgSetup.IsWHSwap());
+	lpRtcEngine->setAudioProfile(AUDIO_PROFILE_SPEECH_STANDARD, AUDIO_SCENARIO_MEETING);
+    lpRtcEngine->setVideoEncoderConfiguration(config);
+	m_dlgVideo.SetWindowText(_T("RSI Exchange Interpreter Desktop"));
+	///////////////////////////////////
+
 	lpRtcEngine->setupLocalVideo(vc);
 	lpRtcEngine->startPreview();
 
@@ -366,15 +378,17 @@ LRESULT COpenVideoCallDlg::OnJoinChannel(WPARAM wParam, LPARAM lParam)
 
 	int ret = 0;
 
-	langHolder Host		= *(netToken.GetTargetLngBgnItr() + indRelay);		// Source stream
+	langHolder Src		= *(netToken.GetTargetLngBgnItr() + indRelay);		// Source stream
 	langHolder LangRelay= *(netToken.GetRelayLngBgnItr()  + indDest);		// Translators stream
 	langHolder LangDest = *(netToken.GetTargetLngBgnItr() + indDest);		// Destination stream
 	
 	ret = lpAgoraObject->JoinChannelTransl(CString(LangRelay.langFull.c_str()), LangRelay.token.c_str(), 0);
-	ret = lpAgoraObject->JoinChannelSrc(CString(Host.langFull.c_str()), Host.token.c_str(), 0);
+	ret = lpAgoraObject->JoinChannelSrc(CString(Src.langFull.c_str()),			Src.token.c_str(), 0);
 
-
-	agora::util::AutoPtr<agora::media::IMediaEngine> mediaEngine;
+	if (!lpAgoraObject->IsHostJoin()) {
+		langHolder Host	= *(netToken.GetTargetLngEndItr()-1);		// Host stream
+		ret = lpAgoraObject->JoinChannelHost(CString(Host.langFull.c_str()), Host.token.c_str(), 0);
+	}
 
 	switch (typeChange)
 	{
@@ -402,11 +416,11 @@ LRESULT COpenVideoCallDlg::OnLeaveChannel(WPARAM wParam, LPARAM lParam)
 
 	BOOL isPublish = lpAgoraObject->IsPublish();
 
-	if (isPublish) {
-		lpAgoraObject->LeaveDestChannel();
-	}
-	lpAgoraObject->LeaveSrcChannel();
+	if (isPublish) { lpAgoraObject->LeaveDestChannel(); }
 	lpAgoraObject->LeaveTranslChannel();
+	lpAgoraObject->LeaveSrcChannel();
+	lpAgoraObject->LeaveHostChannel();
+	lpAgoraObject->LeaveCahnnel();
 
 	//lpAgoraObject->GetEngine()->stopPreview();
     

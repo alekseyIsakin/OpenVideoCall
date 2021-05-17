@@ -1,12 +1,13 @@
-#pragma once
+ï»¿#pragma once
 #include "AGButton.h"
 #include "AGVideoWnd.h"
 #include "DeviceDlg.h"
 #include "AGScreenCaptureDlg.h"
 #include "AGDesktopCaptureDlg.h"
 #include "ChatDlg.h"
+#include "TranslWnd.h"
 
-// CVideoDlg ¶Ô»°¿ò
+
 enum class CHANNEL_CHANGE {
 	CHANNEL_CHANGE_RELAY,
 	CHANNEL_PUBLISH,
@@ -18,17 +19,17 @@ class CVideoDlg : public CDialogEx
 	DECLARE_DYNAMIC(CVideoDlg)
 
 public:
-	CVideoDlg(CWnd* pParent = NULL);   // ±ê×¼¹¹Ôìº¯Êý
+	CVideoDlg(CWnd* pParent = NULL);   // ï¿½ï¿½×¼ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½
 	virtual ~CVideoDlg();
 
-// ¶Ô»°¿òÊý¾Ý
+// ï¿½Ô»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	enum { IDD = IDD_VIDEO_DIALOG };
 
 	enum { 
-		SCREEN_VIDEO1 = 0,	// µ¥ÆÁ
-		SCREEN_VIDEO4,		// 4·ÖÆÁ
-		SCREEN_VIDEOMULTI,	// 1´ó4Ð¡
-//		SCREEN_WHITEBOARD	// °×°å
+		SCREEN_VIDEO1 = 0,	// ï¿½ï¿½ï¿½ï¿½
+		SCREEN_VIDEO4,		// 4ï¿½ï¿½ï¿½ï¿½
+		SCREEN_VIDEOMULTI,	// 1ï¿½ï¿½4Ð¡
+//		SCREEN_WHITEBOARD	// ï¿½×°ï¿½
 	};
 
 //	enum {
@@ -40,6 +41,7 @@ public:
 	HWND GetLocalVideoWnd() { return m_wndLocal.GetSafeHwnd(); };
 
 	void RebindVideoWnd();
+	void UpdateVideoWnd(uid_t uid, bool mute);
 
 	void ShowControlButton(BOOL bShow = TRUE);
 
@@ -52,7 +54,7 @@ protected:
 	
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§ï¿½ï¿½
 	virtual BOOL OnInitDialog();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
@@ -81,8 +83,6 @@ protected:
     afx_msg void OnBnClickedBtnMore();
 	
 	afx_msg void OnBnClickedBtncough();
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 
     afx_msg void OnBnClickedBtntip();
     afx_msg void OnBnClickedBtnsetup();
@@ -95,7 +95,7 @@ protected:
 
 	afx_msg void OnBnClickedHostMode();
 	afx_msg void OnBnClickedGuestMode();
-	// ÓÃÓÚ´¦ÀíÒýÇæµÄ»Øµ÷ÏûÏ¢
+	// ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»Øµï¿½ï¿½ï¿½Ï¢
 	afx_msg LRESULT OnEIDJoinChannelSuccess(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnEIDReJoinChannelSuccess(WPARAM wParam, LPARAM lParam);
 	
@@ -144,7 +144,8 @@ protected:
 	void OnCbnSelchangeCmb();
 	void OnBtnClickPublish();
 
-	void pass() { ; }			// nothing
+	void PublishStream();
+	void UnPublishStream(BOOL joinBack=true);
 private:
 	CBrush			m_brHead;
 
@@ -177,7 +178,9 @@ private:
 	UINT			m_nBigShowedUID;
 	
 	CAGVideoWnd		m_wndLocal;
+	CAGBckWnd		m_wndTrLocal;
 	CAGVideoWnd		m_wndVideo[4];
+	CAGBckWnd		m_wndTransl[4];
 	CAGVideoWnd		*m_lpBigShowed;
 
 	CDeviceDlg		m_dlgDevice;

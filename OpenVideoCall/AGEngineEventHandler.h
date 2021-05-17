@@ -45,6 +45,8 @@ public:
 	virtual void onConnectionInterrupted() override;
 
 	virtual void onUserEnableVideo(uid_t uid, bool enabled) override;
+	virtual void onLocalUserRegistered(uid_t uid, const char* userAccount) override;
+
 private:
 	HWND		m_hMainWnd;
 };

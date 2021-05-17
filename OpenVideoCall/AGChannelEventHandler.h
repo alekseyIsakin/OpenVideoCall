@@ -6,7 +6,8 @@
 enum class CHANNEL_TYPE {
 	CHANNEL_SRC = 255,
 	CHANNEL_TRANSL,
-	CHANNEL_DEST
+	CHANNEL_DEST,
+	CHANNEL_HOST
 };
 
 class AGChannelEventHandler 
@@ -34,9 +35,6 @@ public:
 	}
 
 	virtual void onJoinChannelSuccess(IChannel* rtcChannel, uid_t uid, int elapsed) {
-
-		
-
 		LPAGE_JOINCHANNEL_SUCCESS lpData = new AGE_JOINCHANNEL_SUCCESS;
 
 		int nChannelLen = strlen(rtcChannel->channelId()) + 1;
@@ -52,9 +50,6 @@ public:
 		}
 
 	virtual void onRejoinChannelSuccess(IChannel* rtcChannel, uid_t uid, int elapsed) {
-
-		
-
 		LPAGE_JOINCHANNEL_SUCCESS lpData = new AGE_JOINCHANNEL_SUCCESS;
 
 		int nChannelLen = strlen(rtcChannel->channelId()) + 1;
@@ -237,4 +232,7 @@ public:
 		CONNECTION_CHANGED_REASON_TYPE reason) {
 
 	}
+
+	//virtual int muteRemoteAudioStream(uid_t userId, bool mute);
+	//virtual int muteAllRemoteAudioStreams(bool mute);
 };

@@ -8,6 +8,7 @@
 
 #include "afxdialogex.h"
 
+#define USER_NAME_DEF _T("User Name")
 
 // CEnterChannelDlg 对话框
 
@@ -27,7 +28,7 @@ void CEnterChannelDlg::DoDataExchange(CDataExchange* pDX)
 {
     CDialogEx::DoDataExchange(pDX);
     DDX_Control(pDX, IDC_EDCHNAME_CHANNEL, m_ctrChannel);
-    DDX_Control(pDX, IDC_EDENCKEY_CHANNEL, m_ctrEncKey);
+    DDX_Control(pDX, IDC_EDENCKEY_CHANNEL, m_ctrUserName);
     DDX_Control(pDX, IDC_BTNTEST_CHANNEL, m_btnTest);
     DDX_Control(pDX, IDC_BTNJOIN_CHANNEL, m_btnJoin);
     DDX_Control(pDX, IDC_BTNSET_CHANNEL, m_btnSetup);
@@ -68,6 +69,7 @@ BOOL CEnterChannelDlg::OnInitDialog()
     m_ftHead.CreateFont(15, 0, 0, 0, FW_NORMAL, FALSE, FALSE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, _T("Arial"));
 	m_ftDesc.CreateFont(15, 0, 0, 0, FW_NORMAL, FALSE, FALSE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, _T("Arial"));
     m_ftBtn.CreateFont(16, 0, 0, 0, FW_NORMAL, FALSE, FALSE, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_SWISS, _T("Arial"));
+
     m_penFrame.CreatePen(PS_SOLID, 1, RGB(0xD8, 0xD8, 0xD8));
 
 	m_dlgDevice.Create(CDeviceDlg::IDD, this);
@@ -93,23 +95,25 @@ void CEnterChannelDlg::InitCtrls()
 	m_ctrChannel.ShowCaret();
     m_ctrChannel.SetTip(LANG_STR("IDS_CHN_CHTIP"));
 
-	m_ctrEncKey.MoveWindow(ClientRect.Width() / 2 - 160, 176, 160, 22, TRUE);
-    m_ctrEncKey.SetFont(&m_ftHead);
-	m_ctrEncKey.SetCaretPos(CPoint(12, 148));
-	m_ctrEncKey.ShowCaret();
-    m_ctrEncKey.SetTip(LANG_STR("IDS_CHN_KEYTIP"));
+	m_ctrUserName.MoveWindow(ClientRect.Width() / 2 - 160, 176, 160, 22, TRUE);
+    m_ctrUserName.SetFont(&m_ftHead);
+	m_ctrUserName.SetCaretPos(CPoint(12, 148));
+	m_ctrUserName.ShowCaret();
+	m_ctrUserName.SetWindowTextW(nullptr);
+    m_ctrUserName.SetTip(USER_NAME_DEF);
+	m_ctrUserName.SetFocus();
 
-    m_cmbEncType.Create(WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST | CBS_OWNERDRAWVARIABLE, CRect(ClientRect.Width() / 2 + 1, 168, 180, 32), this, IDC_CMBENCTYPE_CHANNEL);
-    m_cmbEncType.MoveWindow(ClientRect.Width() / 2 + 50, 173, 120, 22, TRUE);
-    m_cmbEncType.SetFont(&m_ftHead);
+ //   m_cmbEncType.Create(WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST | CBS_OWNERDRAWVARIABLE, CRect(ClientRect.Width() / 2 + 1, 168, 180, 32), this, IDC_CMBENCTYPE_CHANNEL);
+ //   m_cmbEncType.MoveWindow(ClientRect.Width() / 2 + 50, 173, 120, 22, TRUE);
+ //   m_cmbEncType.SetFont(&m_ftHead);
 
-    m_cmbEncType.SetButtonImage(IDB_CMBBTN, 12, 12, RGB(0xFF, 0x00, 0xFF));
-    m_cmbEncType.SetFaceColor(RGB(0xFF, 0xFF, 0xFF), RGB(0xFF, 0xFF, 0xFF));
-    m_cmbEncType.InsertString(0, LANG_STR("IDS_CHN_AES128XTS"));
-    m_cmbEncType.InsertString(1, LANG_STR("IDS_CHN_AES256XTS"));
-	m_cmbEncType.InsertString(2, LANG_STR("IDS_CHN_AES_128_ECB"));
-	m_cmbEncType.InsertString(3, LANG_STR("IDS_CHN_SM4_128ECB"));
-    m_cmbEncType.SetCurSel(0);
+ //   m_cmbEncType.SetButtonImage(IDB_CMBBTN, 12, 12, RGB(0xFF, 0x00, 0xFF));
+ //   m_cmbEncType.SetFaceColor(RGB(0xFF, 0xFF, 0xFF), RGB(0xFF, 0xFF, 0xFF));
+ //   m_cmbEncType.InsertString(0, LANG_STR("IDS_CHN_AES128XTS"));
+ //   m_cmbEncType.InsertString(1, LANG_STR("IDS_CHN_AES256XTS"));
+	//m_cmbEncType.InsertString(2, LANG_STR("IDS_CHN_AES_128_ECB"));
+	//m_cmbEncType.InsertString(3, LANG_STR("IDS_CHN_SM4_128ECB"));
+ //   m_cmbEncType.SetCurSel(0);
 
     m_btnJoin.MoveWindow(ClientRect.Width() / 2 - 180, 212, 360, 36, TRUE);
     m_btnTest.MoveWindow(ClientRect.Width() / 2 - 180, 314, 108, 36, TRUE);
@@ -192,26 +196,14 @@ void CEnterChannelDlg::OnBnClickedBtntestChannel()
 void CEnterChannelDlg::OnBnClickedBtnjoinChannel()
 {
 	CString nickName;
-	m_ctrEncKey.GetWindowText(nickName);
+	m_ctrUserName.GetWindowText(nickName);
 
-	//CString str = CAgoraObject::GetAgoraObject()->GetCallID();
-	//CString strKey;
-	//m_ctrEncKey.GetWindowText(strKey);
-	//if (strKey.GetLength() > 0)
-	//{
-	//	// configuration of encrypt
-	//	EncryptionConfig config;
-	//	// set encrypt mode
-	//	config.encryptionMode = ENCRYPTION_MODE(m_cmbEncType.GetCurSel() + 1);
-	//	// set encrypt key
- //   char szKey[520] = { 0 };
- //   WideCharToMultiByte(CP_UTF8, 0, strKey.GetBuffer(0), strKey.GetLength(), szKey, 520, NULL, NULL);
- //   config.encryptionKey = szKey;
-	//	// EnableEncryption of engine.
-	//	CAgoraObject::GetAgoraObject()->EnableEncryption(true, config);
-	//}
-	GetParent()->SendMessage(WM_JOINCHANNEL, 0, 0);
-	//return nickName;
+	if (nickName == USER_NAME_DEF) return;
+	
+	bool ret = CAgoraObject::GetAgoraObject()->RegistrLocalAccount(nickName);
+	
+	if (ret)
+		GetParent()->SendMessage(WM_JOINCHANNEL, 0, 0);
 }
 
 
@@ -238,7 +230,7 @@ void CEnterChannelDlg::SetVideoString(LPCTSTR lpVideoString)
 
 void CEnterChannelDlg::CleanEncryptionSecret()
 {
-    m_ctrEncKey.SetWindowText(_T(""));
+    m_ctrUserName.SetWindowText(_T(""));
 }
 
 
@@ -249,8 +241,8 @@ void CEnterChannelDlg::SetCtrlPos()
 	GetClientRect(&ClientRect);
 
 	m_ctrChannel.MoveWindow(ClientRect.Width() / 2 - 160, 128, 320, 22, TRUE);
-	m_ctrEncKey.MoveWindow(ClientRect.Width() / 2 - 160, 176, 140, 22, TRUE);
-	m_cmbEncType.MoveWindow(ClientRect.Width() / 2 + 50, 173, 120, 22, TRUE);
+	m_ctrUserName.MoveWindow(ClientRect.Width() / 2 - 160, 176, 320, 22, TRUE);
+	//m_cmbEncType.MoveWindow(ClientRect.Width() / 2 + 50, 173, 120, 22, TRUE);
 
 	int height = 36;
 	m_btnJoin.MoveWindow(ClientRect.Width() / 2 - 180, 310, 360, height, TRUE);

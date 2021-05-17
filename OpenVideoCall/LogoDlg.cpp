@@ -105,12 +105,19 @@ void CLogoDlg::DrawClient(CDC *lpDC)
 
     memDC.CreateCompatibleDC(lpDC);
     memDC.SelectObject(&m_bmpLogo);
-	lpString = LANG_STR("IDS_TITLE");
+
+
+	lpString = _T("RSI Exchange Interpreter Desktop");
+
+
     lpDC->FillSolidRect(0, 0, 720, 24, RGB(0, 161, 230));
 	lpDC->SetBkColor(RGB(0x00, 0x9E, 0xEB));
 	lpDC->SetTextColor(RGB(0xFF, 0xFF, 0xFF));
 	rcText.SetRect(5, 5, 20, 400);
-	lpDC->TextOut(320, 3, lpString, _tcslen(lpString));
+
+
+	lpDC->TextOut(260, 3, lpString, _tcslen(lpString));
+
 
 	lpDC->SetBkColor(RGB(0xFF, 0xFF, 0xFF));
 	lpDC->SetTextColor(RGB(0x91, 0x96, 0xA0));
