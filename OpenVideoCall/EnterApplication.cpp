@@ -24,7 +24,7 @@ void CEnterApplication::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CEnterApplication, CDialogEx)
-	//ON_BN_CLICKED(IDC_BTNJOIN_APPLICATION, &CEnterApplication::OnBnClickedBtnjoinChannel)
+	ON_BN_CLICKED(IDC_BTNJOIN_APPLICATION, &CEnterApplication::OnBnClickedBtnjoinChannel)
 END_MESSAGE_MAP()
 
 void CEnterApplication::OnPaint()
