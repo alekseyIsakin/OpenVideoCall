@@ -90,5 +90,5 @@ void CEnterApplication::InitCtrls()
 
 void CEnterApplication::OnBnClickedBtnjoinChannel()
 {
-	GetParent()->SendMessage(WM_JOINCHANNEL, 0, 0);
+	//GetParent()->SendMessage(WM_JOINCHANNEL, 0, 0);
 }
